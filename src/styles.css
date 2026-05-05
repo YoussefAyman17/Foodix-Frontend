@@ -1,1 +1,73 @@
-/* You can add global styles to this file, and also import other style files */
+.foodix-footer {
+  background-color: #0f1214;
+  color: #a5a5a5;
+  padding: 80px 0 30px 0;
+  position: relative;
+}
+
+.footer-heading {
+  color: #ffffff;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 25px;
+  text-transform: uppercase;
+}
+
+.footer-description {
+  margin-top: 20px;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+/* Social Icons */
+.social-icons {
+  margin-top: 25px;
+}
+.social-icons a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  border-radius: 50%;
+  margin-right: 10px;
+  text-decoration: none;
+  transition: 0.3s;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.social-icons a:hover {
+  background: #e63946;
+}
+
+.contact-list li,
+.opening-times li {
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+}
+
+.link-list li {
+  margin-bottom: 10px;
+}
+.link-list a {
+  color: #a5a5a5;
+  text-decoration: none;
+  transition: 0.3s;
+}
+.nav-links a {
+  transition: 0.3s !important;
+}
+.link-list a:hover,
+.nav-links a:hover {
+  color: #e63946 !important;
+}
+.navbar-toggler {
+  border-color: white;
+  color: white !important;
+}
+
+
+
+
+
