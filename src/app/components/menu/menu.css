@@ -1,0 +1,51 @@
+.card_menu {
+  height: 100%;
+  transition: 0.3s ease-in-out;
+}
+.card_menu:hover {
+  box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.25);
+  transform: translateY(-5px);
+}
+.card_menu img {
+  height: 180px;
+  object-fit: cover;
+}
+
+.active {
+  background-color: #bf1109 !important;
+  color: white !important;
+}
+
+.btn2 {
+  background-color: #f1dacb;
+  color: black;
+  border: none;
+}
+
+.text_menu_card:hover {
+  color: #bf1109;
+}
+
+.border_menu {
+  transition: 0.3s ease-in-out;
+}
+.border_menu:hover {
+  border-color: #bf1109 !important;
+}
+
+/* #Beef{
+
+  display: none;
+} */
+/* 
+#Grilled {
+  display: none;
+}
+
+#steakBliss {
+  display: none;
+}
+
+#sizzling {
+  display: none;
+} */
