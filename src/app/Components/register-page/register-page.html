@@ -1,0 +1,145 @@
+<div class="container-fluid p-0 d-flex justify-content-center align-items-center vh-100">
+  <div class="card shadow-lg rounded-4 overflow-hidden" style="max-width: 900px; width: 100%;">
+
+    <div class="row g-0">
+
+      <div class="col-sm-6 d-none d-md-block">
+        <div class="h-100 w-100">
+          <img src="1.jpg" class=" img-fluid h-100 object-fit-cover" alt="food">
+        </div>
+      </div>
+
+
+      <div class="col-sm-6 d-flex align-items-center justify-content-center">
+        <div style="width: 85%; max-width: 400px;">
+          <h3 class="fw-bold mb-2">Sign up</h3>
+          <p class="text-muted small ">Let's get you all set up so you can access your account.</p>
+
+          <form [formGroup]="registerForm" (ngSubmit)=" registerSubmit()" class="row g-3">
+
+            <div class="col-12">
+              <input formControlName="userName" type="text" class="form-control rounded-2" placeholder="Full Name"
+                [style.border]="registerForm.get('userName')?.errors && registerForm.get('userName')?.touched? '1px solid #dc3545' : ''">
+
+              @if(registerForm.get('userName')?.errors &&registerForm.get('userName')?.touched){
+              @if(registerForm.get('userName')?.getError('required')){
+              <div class="error-text">
+                Full Name is required
+              </div>
+              }
+              @else if (registerForm.get('userName')?.getError('minlength')) {
+              <div class="error-text">
+                Full Name must be at least 3 characters
+              </div>
+              }
+              @else if (registerForm.get('userName')?.getError('maxlength')) {
+              <div class="error-text">
+                Full Name must be at most 20 characters
+              </div>
+              }
+              }
+            </div>
+
+
+            <div class="col-sm-12">
+              <input formControlName="email" type="email" class="form-control rounded-2" placeholder="Email"
+                [style.border]="registerForm.get('email')?.errors && registerForm.get('email')?.touched? '1px solid #dc3545' : ''">
+              @if(registerForm.get('email')?.errors &&registerForm.get('email')?.touched){
+              @if(registerForm.get('email')?.getError('required')){
+              <div class="error-text">
+                Email is required
+              </div>
+              }
+              @else if (registerForm.get('email')?.getError('email')) {
+              <div class="error-text">
+                email must be valid
+              </div>
+              }
+              }
+
+            </div>
+
+
+            <div class="col-12">
+              <input formControlName="password" type="password" class="form-control rounded-2" placeholder="Password"
+                [style.border]="registerForm.get('password')?.errors && registerForm.get('password')?.touched? '1px solid #dc3545' : ''">
+              @if(registerForm.get('password')?.errors &&registerForm.get('password')?.touched){
+              @if(registerForm.get('password')?.getError('required')){
+              <div class="error-text">
+                Password is required
+              </div>
+              }
+              @else if (registerForm.get('password')?.getError('pattern')) {
+              <div class="error-text">
+                Password conatains at least 6 characters,1 uppercase,1 lowercase,1 number and 1 special character
+              </div>
+              }
+              }
+            </div>
+
+
+            <div class="col-12">
+              <input formControlName="repeatPassword" type="password" class="form-control rounded-2"
+                placeholder="Confirm Password"
+                [style.border]="registerForm.get('repeatPassword')?.errors && registerForm.get('repeatPassword')?.touched? '1px solid #dc3545' : ''">
+              @if(registerForm.get('repeatPassword')?.errors &&registerForm.get('repeatPassword')?.touched){
+              @if(registerForm.get('repeatPassword')?.getError('required')){
+              <div class="error-text">
+                Confirm Password is required
+              </div>
+              }
+              }
+
+              @if(registerForm.getError('notMatched')&&registerForm.get('repeatPassword')?.touched){
+              <div class="error-text">
+                The password doesn't match
+              </div>
+
+              }
+
+            </div>
+
+
+            <div class="col-12 form-check">
+              <input formControlName='agree' class="form-check-input" type="checkbox" id="terms">
+              <label class="form-check-label small" for="terms">
+                I agree to all the <span class="text-danger">Terms</span> and <span class="text-danger">Privacy
+                  Policies</span>
+              </label>
+            </div>
+
+            @if(errorMessage()){
+            <div class="error-text text-center">
+              {{errorMessage()}}
+            </div>
+            }
+
+            <div class="col-12">
+              <button class="btn btn-dark w-100" [disabled]="!registerForm.valid||isLoading()">Create account
+                @if(isLoading()){
+                <i class=" fa-solid fa-spin fa-spinner"></i>
+                }
+              </button>
+            </div>
+
+
+            <div class="col-12 text-center small">
+              Already have an account? <a routerLink="/login" class="text-danger text-decoration-none">Login</a>
+            </div>
+
+
+            <!-- <div class="col-12 text-center text-muted small">or sign up with</div>
+
+
+            <button class="btn btn-light w-100 google-btn">
+              <img src="https://cdn-icons-png.flaticon.com/512/281/281764.png" width="18">
+            </button> -->
+
+
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,81 @@
+<div class="container-fluid p-0 d-flex justify-content-center align-items-center vh-100">
+  <div class="card shadow-lg rounded-4 overflow-hidden " style="max-width: 900px; width: 100%;">
+
+    <div class="row g-0">
+
+      <div class="col-sm-6 p-5 d-flex flex-column justify-content-center">
+
+        <h2 class="mb-2 fw-bold">Login</h2>
+        <p class="text-muted mb-4">Login to access your account</p>
+
+        <form [formGroup]="loginForm" (ngSubmit)="loginSubmit()">
+
+          <div class="mb-3">
+            <input formControlName="email" type="email" class="form-control rounded-2" placeholder="Email"
+              [style.border]="loginForm.get('email')?.errors && loginForm.get('email')?.touched? '1px solid #dc3545' : ''">
+
+            @if(loginForm.get('email')?.errors &&loginForm.get('email')?.touched){
+            @if(loginForm.get('email')?.getError('required')){
+            <div class="error-text">
+              Email is required
+            </div>
+            }
+            @else if (loginForm.get('email')?.getError('email')) {
+            <div class="error-text">
+              email must be valid
+            </div>
+            }
+            }
+          </div>
+
+          <div class="mb-3">
+            <input formControlName="password" type="password" class="form-control rounded-2" placeholder="Password"
+              [style.border]="loginForm.get('password')?.errors && loginForm.get('password')?.touched? '1px solid #dc3545' : ''">
+            @if(loginForm.get('password')?.errors &&loginForm.get('password')?.touched){
+            @if(loginForm.get('password')?.getError('required')){
+            <div class="error-text">
+              Password is required
+            </div>
+            }
+            @else if (loginForm.get('password')?.getError('pattern')) {
+            <div class="error-text">
+              Password conatains at least 6 characters,1 uppercase,1 lowercase,1 number and 1 special character
+            </div>
+            }
+            }
+
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <a routerLink="/forgotPassword" class="text-danger text-decoration-none">Forgot Password?</a>
+          </div>
+
+          @if(errorMessage()){
+          <div class="error-text text-center">
+            {{errorMessage()}}
+          </div>
+          }
+          <button class="btn btn-dark w-100 mb-3" [disabled]="!loginForm.valid||isLoading()">Login
+            @if(isLoading()){
+            <i class=" fa-solid fa-spin fa-spinner"></i>
+            }
+          </button>
+
+          <p class=" text-center small">
+            Don't have an account?
+            <a routerLink="/signUp" class="text-danger text-decoration-none">Sign up</a>
+          </p>
+
+          <div class="col-12 text-center text-muted small mb-2">Or login with</div>
+          <div id="google-btn"></div>
+        </form>
+      </div>
+
+
+      <div class="col-sm-6 d-none d-md-block">
+        <img src="2.jpg" class="img-fluid h-100 w-100 object-fit-cover">
+      </div>
+
+    </div>
+  </div>
+</div>

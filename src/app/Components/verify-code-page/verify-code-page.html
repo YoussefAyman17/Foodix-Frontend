@@ -1,0 +1,63 @@
+<div class="container d-flex justify-content-center align-items-center vh-100">
+
+  <div class="verify-card shadow-lg rounded-4" style="max-width: 550px; width: 100%;">
+
+    <div class="verify-content">
+
+      <a routerLink="/login" class="back-link d-inline-block text-danger text-decoration-none mb-3">
+        ← Back to login
+      </a>
+
+      <h2 class="fw-bold mb-2">Verify code</h2>
+
+      <p class="text-muted mb-4">
+        An authentication code has been sent to your email
+      </p>
+
+      <form [formGroup]="verifyForm" (ngSubmit)="verifySubmit()">
+
+        <div class="mb-2">
+          <input formControlName="resetCode" type="text" class="form-control rounded-2" placeholder="Enter code"
+            [style.border]="verifyForm.get('resetCode')?.errors && verifyForm.get('resetCode')?.touched? '1px solid #dc3545' : ''">
+          @if(verifyForm.get('resetCode')?.errors &&verifyForm.get('resetCode')?.touched){
+          @if(verifyForm.get('resetCode')?.getError('required')){
+          <div class="error-text">
+            Code is required
+          </div>
+          }
+          @else if (verifyForm.get('resetCode')?.getError('pattern')) {
+          <div class="error-text">
+            Reset code must conatains 6 numbers
+          </div>
+          }
+          }
+        </div>
+
+        <p class="text-muted mb-4">
+          Did not receive a code?
+          <span (click)="resendCode(); $event.preventDefault()" class="text-danger resend-link"
+            style="cursor: pointer;">
+            Resend
+          </span>
+        </p>
+
+        @if(errorMessage()){
+        <div class="error-text text-center">
+          {{errorMessage()}}
+        </div>
+        }
+
+        <button class="btn btn-dark w-100 mt-3" [disabled]="!verifyForm.valid||isLoading()">
+          Verify
+          @if(isLoading()){
+          <i class=" fa-solid fa-spin fa-spinner"></i>
+          }
+        </button>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</div>

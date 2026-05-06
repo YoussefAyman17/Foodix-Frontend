@@ -1,0 +1,72 @@
+ :host {
+   position: fixed;
+   inset: 0;
+   background-color: #F5EADA;
+ }
+
+ .container {
+   min-height: 100vh;
+ }
+
+ .verify-card {
+   background-color: #F5EADA;
+   border: none;
+   padding: 50px 60px;
+ }
+
+ .verify-content {
+   width: 100%;
+   max-width: 450px;
+   margin: auto;
+ }
+
+ h2 {
+   color: #222;
+ }
+
+ .text-muted {
+   color: #6e6e6e !important;
+   font-size: 14px;
+ }
+
+ .back-link {
+   color: #555;
+   font-size: 13px;
+ }
+
+ .form-control {
+   height: 45px;
+   border: 1px solid #cfcfcf;
+   background: #fff;
+   box-shadow: none;
+   color: #222;
+ }
+
+ .form-control::placeholder {
+   color: #999;
+ }
+
+ .form-control:focus {
+   border-color: #999;
+   box-shadow: none;
+ }
+
+ .btn-dark {
+   background: black;
+   border: none;
+   border-radius: 8px;
+   padding: 10px;
+ }
+
+ .btn-dark:hover {
+   background: #222;
+ }
+
+ .error-text {
+   color: #dc3545;
+   font-size: 13px;
+ }
+
+ a {
+   cursor: pointer;
+ }

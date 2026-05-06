@@ -8,7 +8,7 @@ import { Footer } from './components/footer/footer';
   standalone:true,
   imports: [Navbar,Footer ,RouterOutlet],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App {
   protected readonly title = signal('front-end');
