@@ -28,11 +28,12 @@ export class Auth {
     return this.httpClient.put(`${environment.baseURL}resetPassword`, data);
   }
 
-  loginWithGoogleApi(idToken: string): Observable<any> {
-    return this.httpClient.post(`${environment.baseURL}google`, { idToken });
+  loginWithGoogleApi(data: { idToken: string }): Observable<any> {
+    return this.httpClient.post(`${environment.baseURL}google`, data);
   }
   userData() {
     let token = localStorage.getItem('userToken');
+    if (!token) return;
     this.decodedUserData = jwtDecode(token!);
     console.log(this.decodedUserData);
   }

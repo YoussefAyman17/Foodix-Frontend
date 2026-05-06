@@ -1,4 +1,4 @@
-import { Component, signal, OnInit, OnDestroy, Renderer2 } from '@angular/core';
+import { Component, signal, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -10,7 +10,7 @@ import {
 import { Router, RouterLink, RouterModule } from '@angular/router';
 
 import { Auth } from '../../core/services/auth';
-
+declare var google: any;
 @Component({
   selector: 'app-login-page',
   standalone: true,
@@ -22,19 +22,7 @@ export class LoginPage {
   constructor(
     private auth: Auth,
     private router: Router,
-    private renderer: Renderer2,
   ) {}
-
-  // for background colour
-  // export class LoginPage implement OnInit,OnDestroy
-  // ngOnInit() {
-  //   this.renderer.addClass(document.body, 'auth-bg');
-  // }
-
-  // ngOnDestroy() {
-  //   this.renderer.removeClass(document.body, 'auth-bg');
-  // }
-
   errorMessage = signal<string>('');
   isLoading = signal<boolean>(false);
 
@@ -45,6 +33,46 @@ export class LoginPage {
       Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{6,}$/),
     ]),
   });
+
+  // login with google
+  ngAfterViewInit(): void {
+    this.initGoogle();
+  }
+
+  initGoogle() {
+    if (typeof google !== 'undefined') {
+      google.accounts.id.initialize({
+        client_id: '576818685459-qtd0h48oflhfo62fpnd549oi23s5sr8n.apps.googleusercontent.com',
+        callback: (res: any) => this.handelGoogle(res),
+      });
+
+      google.accounts.id.renderButton(document.getElementById('google-btn'), {
+        theme: 'filled_black',
+        size: 'large',
+        text: 'continue_with',
+        shape: 'pill',
+        width: '350',
+      });
+    } else {
+      setTimeout(() => this.initGoogle(), 300);
+    }
+  }
+
+  handelGoogle(res: any) {
+    const idToken = res.credential;
+    this.auth.loginWithGoogleApi({ idToken }).subscribe({
+      next: (resp) => {
+        localStorage.setItem('userToken', resp.token);
+        this.auth.userData();
+        // this.router.navigate(['/home']);
+      },
+      error: (err) => {
+        this.errorMessage.set(err.error.message);
+      },
+    });
+  }
+
+  // login
   loginSubmit() {
     if (this.loginForm.valid) {
       this.errorMessage.set('');

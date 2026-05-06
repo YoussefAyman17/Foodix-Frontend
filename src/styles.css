@@ -1,4 +1,9 @@
- .auth-bg {
-   /* background: radial-gradient(circle at top, #121212 0%, #070707 100%); */
-   background-color: #F5EADA;
+ /* .auth-bg { */
+ /* background: radial-gradient(circle at top, #121212 0%, #070707 100%); */
+ /* background-color: #F5EADA; */
+ /* } */
+
+ body {
+   margin: 0;
+   padding: 0;
  }
