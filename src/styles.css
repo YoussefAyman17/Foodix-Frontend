@@ -1,1 +1,4 @@
-/* You can add global styles to this file, and also import other style files */
+ .auth-bg {
+   /* background: radial-gradient(circle at top, #121212 0%, #070707 100%); */
+   background-color: #F5EADA;
+ }
