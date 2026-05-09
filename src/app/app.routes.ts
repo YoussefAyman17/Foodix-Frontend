@@ -6,8 +6,8 @@ import { ForgotPasswordPage } from './Components/forgot-password-page/forgot-pas
 import { VerifyCodePage } from './Components/verify-code-page/verify-code-page';
 import { ResetPasswordPage } from './Components/reset-password-page/reset-password-page';
 
-import { Home } from './components/home/home';
-import { Menu } from './components/menu/menu';
+import { Home } from './Components/home/home';
+import { Menu } from './Components/menu/menu';
 
 export const routes: Routes = [
   // Auth routes

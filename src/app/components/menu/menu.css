@@ -33,6 +33,30 @@
   border-color: #bf1109 !important;
 }
 
+
+
+
+/*
+
+
+*/
+
+/* الـ active state للكاتيجوري */
+.category-card.active .category-img-wrapper {
+  border-color: red !important;
+}
+
+.category-card.active p {
+  color: red;
+}
+
+/* hover effect */
+.category-card:hover .category-img-wrapper {
+  border-color: #ccc !important;
+}
+
+
+
 /* #Beef{
 
   display: none;

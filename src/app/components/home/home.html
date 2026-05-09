@@ -34,7 +34,7 @@
 
 
 <!-- Categories -->
-<section class="bg-light py-5">
+<!-- <section class="bg-light py-5">
   <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h2 class="fw-bolder fs-1 m-0">OUR CATEGORIES</h2>
@@ -106,7 +106,47 @@
       </div>
     </div>
   </div>
+</section> -->
+
+<!-- Categories -->
+<section class="bg-light py-5">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="fw-bolder fs-1 m-0">OUR CATEGORIES</h2>
+      <button type="button"
+        class="bottom_see rounded-3 py-3 px-5 btn btn-outline-danger text-muted fw-bold fs-5"
+        routerLink="/menu">
+        See More
+      </button>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-12 col-md-6 col-lg-3" *ngFor="let cat of categories">
+        <a routerLink="/menu" style="text-decoration:none; color:black;">
+          <div class="card border-0 p-3 category-card"
+            style="background-color: rgb(233, 229, 229)">
+            <div class="d-flex align-items-center gap-3 py-3">
+
+              <div class="bg-white rounded-circle p-2">
+                <!-- لو الكاتيجوري عندها image -->
+                <img *ngIf="cat.image" [src]="cat.image" width="32px" [alt]="cat.name" />
+                <!-- لو مفيش image هيعرض أيقونة default -->
+                <i *ngIf="!cat.image" class="fa-solid fa-burger fs-3"></i>
+              </div>
+
+              <div>
+                <h6 class="fw-bold m-0 text-uppercase">{{ cat.name }}</h6>
+                <small class="text-muted">items</small>
+              </div>
+
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
 </section>
+
 <!-- ======== Categories ========= -->
 
 
@@ -298,7 +338,7 @@
 
 
 <!-- Menu Section -->
-<section id="menuSec" style="padding-top: 120px; padding-bottom: 100px">
+<!-- <section id="menuSec" style="padding-top: 120px; padding-bottom: 100px">
   <div class="container">
     <div class="row">
       <div class="col-12">
@@ -443,7 +483,60 @@
       </div>
     </div>
   </div>
+</section> -->
+
+<!-- Menu Section -->
+<section id="menuSec" style="padding-top: 120px; padding-bottom: 100px">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="section-title text-uppercase text-center fadeInDown">
+          <span class="text-warning fw-bolder mb-5">
+            <i class="fa-solid fa-bell-concierge"></i> Delicious Menu
+          </span>
+          <h3 class="mt-3 sec-heading">
+            Explore Our Delicious<br />Menu
+          </h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-6" *ngFor="let meal of topMeals">
+        <a [routerLink]="['/product', meal.itemId]"
+          style="text-decoration:none; color:black;">
+          <div class="menu-item p-4" style="height:150px">
+
+            <div class="thumb-img">
+              <img [src]="meal.img" [alt]="meal.name"
+                class="rounded-circle"
+                style="width:60px; height:60px; object-fit:cover" />
+            </div>
+
+            <div class="txt-content mb-3">
+              <div class="content">
+                <h4 class="title">
+                  {{ meal.name }}
+                  <span class="text-muted fs-6">
+                    <i style="color: gold" class="fa-solid fa-star"></i>
+                    {{ meal.rating }}
+                  </span>
+                </h4>
+                <p>{{ meal.short_description }}</p>
+              </div>
+              <div>
+                <span class="price text-danger fs-5">${{ meal.price }}</span>
+              </div>
+            </div>
+
+          </div>
+        </a>
+      </div>
+    </div>
+
+  </div>
 </section>
+
 <!-- ===== Menu Section ======= -->
 
 
