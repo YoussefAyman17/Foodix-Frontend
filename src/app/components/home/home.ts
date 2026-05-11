@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CategoryService } from '../../core/services/category';
 import { MealService } from '../../core/services/meal';
-import { forkJoin } from 'rxjs';
+import { catchError, forkJoin, of } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -22,14 +22,22 @@ export class Home implements OnInit {
   ) {}
 
   ngOnInit() {
-
     this.categoryService.getAllCategories().subscribe({
       next: (res) => {
-        this.categories = res.data;
+        this.categories = Array.isArray(res?.data) ? res.data : [];
 
+        if (!this.categories.length) {
+          this.topMeals = [];
+          return;
+        }
 
         const mealRequests = this.categories.map((cat) =>
-          this.mealService.getMealsByCategory(cat.slug),
+          this.mealService.getMealsByCategory(cat.slug).pipe(
+            catchError((err) => {
+              console.error(err);
+              return of({ data: [] });
+            }),
+          ),
         );
 
         forkJoin(mealRequests).subscribe({
@@ -37,10 +45,10 @@ export class Home implements OnInit {
             let allTopMeals: any[] = [];
 
             results.forEach((res, index) => {
-              const catMeals = res.data;
+              const catMeals = Array.isArray(res?.data) ? res.data : [];
 
               const top2 = [...catMeals]
-                .sort((a, b) => b.rating - a.rating)
+                .sort((a, b) => Number(b.rating ?? 0) - Number(a.rating ?? 0))
                 .slice(0, 2)
                 .map((meal) => ({
                   ...meal,
@@ -50,7 +58,9 @@ export class Home implements OnInit {
               allTopMeals.push(...top2);
             });
 
-            this.topMeals = allTopMeals.sort((a, b) => b.rating - a.rating);
+            this.topMeals = allTopMeals.sort(
+              (a, b) => Number(b.rating ?? 0) - Number(a.rating ?? 0),
+            );
           },
           error: (err) => console.error(err),
         });

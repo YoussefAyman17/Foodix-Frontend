@@ -15,7 +15,6 @@ export class CategoryService {
     return this.http.get(this.baseUrl);
   }
 
-
   // GET /api/categories/:id
   getCategoryById(id: number): Observable<any> {
     return this.http.get(`${this.baseUrl}/${id}`);
@@ -26,18 +25,13 @@ export class CategoryService {
     return this.http.post(this.baseUrl, data);
   }
 
-
   // PATCH /api/categories/:id
   updateCategory(id: number, data: any): Observable<any> {
     return this.http.patch(`${this.baseUrl}/${id}`, data);
   }
 
-
- // DELETE /api/categories/:id
+  // DELETE /api/categories/:id
   deleteCategory(id: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/${id}`);
+    return this.http.delete(`${this.baseUrl}/${id}`); 
   }
-
-  
-
 }

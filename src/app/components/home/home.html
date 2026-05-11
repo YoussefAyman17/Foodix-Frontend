@@ -24,7 +24,7 @@
         Savor the taste of our delicious, expertly crafted dishes made with
         the finest ingredients, offering a perfect blend of flavors.
       </p>
-      <button onclick="window.open('menu.html', '_self')" class="btn1 px-5 py-3">
+      <button routerLink="/menu" class="btn1 px-5 py-3">
         Order Now
       </button>
     </div>
@@ -49,7 +49,7 @@
         <div class="card border-0 p-3 category-card" style="background-color: rgb(233, 229, 229)">
           <div class="d-flex align-items-center gap-3 py-3">
             <div class="bg-light rounded-circle p-2">
-              <i class="fa-solid fa-burger fs-4 p-0 "></i>
+              <i class="bi bi-egg-fried fs-4 p-0"></i>
               <img src="./img_food/food.png" width="32px" alt="" />
             </div>
             <div>
@@ -64,7 +64,7 @@
         <div class="card border-0 p-3 category-card" style="background-color: rgb(233, 229, 229)">
           <div class="d-flex align-items-center gap-3 py-3">
             <div class="bg-light rounded-circle p-2">
-              <i class="fa-solid fa-burger fs-4 p-0 "></i>
+              <i class="bi bi-egg-fried fs-4 p-0"></i>
               <img src="./img_food/food2.png" width="32px" alt="" />
             </div>
             <div>
@@ -79,7 +79,7 @@
         <div class="card border-0 p-3 category-card" style="background-color: rgb(233, 229, 229)">
           <div class="d-flex align-items-center gap-3 py-3">
             <div class="bg-light rounded-circle p-2">
-              <i class="fa-solid fa-burger fs-4 p-0 "></i>
+              <i class="bi bi-egg-fried fs-4 p-0"></i>
               <img src="./img_food/taco.png" width="32px" alt="" />
             </div>
             <div>
@@ -94,7 +94,7 @@
         <div class="card border-0 p-3 category-card" style="background-color: rgb(233, 229, 229)">
           <div class="d-flex align-items-center gap-3 py-3">
             <div class="bg-light rounded-circle p-2">
-              <i class="fa-solid fa-burger fs-4 p-0 "></i>
+              <i class="bi bi-egg-fried fs-4 p-0"></i>
               <img src="./img_food/spaghetti.png" width="32px" alt="" />
             </div>
             <div>
@@ -131,12 +131,14 @@
                 <!-- لو الكاتيجوري عندها image -->
                 <img *ngIf="cat.image" [src]="cat.image" width="32px" [alt]="cat.name" />
                 <!-- لو مفيش image هيعرض أيقونة default -->
-                <i *ngIf="!cat.image" class="fa-solid fa-burger fs-3"></i>
+                <i *ngIf="!cat.image" class="bi bi-egg-fried fs-3"></i>
               </div>
 
               <div>
                 <h6 class="fw-bold m-0 text-uppercase">{{ cat.name }}</h6>
-                <small class="text-muted">items</small>
+                <!-- <small class="text-muted">items</small> -->
+                 <small class="text-muted">{{ cat.mealsCount }} items</small>
+
               </div>
 
             </div>
@@ -165,7 +167,7 @@
       <div class="col-lg-6">
         <!-- Badge -->
         <div class="about-badge">
-          <span class="text-warning fw-bolder mb-5"><i class="fa-solid fa-bell-concierge"></i> About us</span>
+          <span class="text-warning fw-bolder mb-5"><i class="bi bi-bell-fill"></i> About us</span>
         </div>
 
         <!-- Title -->
@@ -200,7 +202,7 @@
         </div>
 
         <!-- CTA -->
-        <button class="btn1 px-5 py-3" onclick="window.open('menu.html', '_self')">
+        <button class="btn1 px-5 py-3" routerLink="/menu">
           Read More
         </button>
       </div>
@@ -217,7 +219,7 @@
         class="content col-12 col-sm-6 text-center text-sm-start d-flex flex-column align-items-center align-items-sm-start mb-5 mb-sm-0">
         <!-- title -->
         <div class="text">
-          <span><i class="fa-solid fa-money-bill-wheat mb-3"></i> Get 25%
+          <span><i class="bi bi-cash-coin mb-3"></i> Get 25%
             Discount</span>
           <h2>Today our special Combo offers</h2>
         </div>
@@ -247,7 +249,7 @@
         <!--counter -->
 
         <!-- <a href="menu" class="btn">Read More</a> -->
-        <button onclick="window.open('menu.html', '_self')" class="btn1 py-3 px-5">
+        <button routerLink="/menu" class="btn1 py-3 px-5">
           Read More
         </button>
       </div>
@@ -270,7 +272,7 @@
     <div class="row">
       <div class="col-12">
         <div class="section-title text-uppercase text-center fadeInDown">
-          <span class="text-warning fw-bolder mb-5"><i class="fa-solid fa-bell-concierge"></i> Why choose us</span>
+          <span class="text-warning fw-bolder mb-5"><i class="bi bi-bell-fill"></i> Why choose us</span>
           <h2 class="mt-3" style="font-size: 50px; font-weight: 900">
             Why We’re Your Best Choice
           </h2>
@@ -284,7 +286,7 @@
       <div class="col-lg-3 col-md-6">
         <div class="feature-card">
           <div class="card-icon">
-            <i class="fa-solid fa-burger"></i>
+            <i class="bi bi-shield-check"></i>
           </div>
           <h3 class="card-title">Hygienic Food</h3>
           <p class="card-desc">
@@ -297,7 +299,7 @@
       <div class="col-lg-3 col-md-6">
         <div class="feature-card">
           <div class="card-icon">
-            <i class="fa-solid fa-recycle"></i>
+            <i class="bi bi-recycle"></i>
           </div>
           <h3 class="card-title">Fresh Environment</h3>
           <p class="card-desc">
@@ -310,7 +312,7 @@
       <div class="col-lg-3 col-md-6">
         <div class="feature-card">
           <div class="card-icon">
-            <i class="fa-solid fa-users"></i>
+            <i class="bi bi-people-fill"></i>
           </div>
           <h3 class="card-title">Skilled Chefs</h3>
           <p class="card-desc">
@@ -323,7 +325,7 @@
       <div class="col-lg-3 col-md-6">
         <div class="feature-card">
           <div class="card-icon">
-            <i class="fa-solid fa-champagne-glasses"></i>
+            <i class="bi bi-stars"></i>
           </div>
           <h3 class="card-title">Event & Party</h3>
           <p class="card-desc">
@@ -343,7 +345,7 @@
     <div class="row">
       <div class="col-12">
         <div class="section-title text-uppercase text-center fadeInDown">
-          <span class="text-warning fw-bolder mb-5"><i class="fa-solid fa-bell-concierge"></i> Delicious Menu</span>
+          <span class="text-warning fw-bolder mb-5"><i class="bi bi-bell-fill"></i> Delicious Menu</span>
           <h3 class="mt-3 sec-heading">
             Explore Our Delicious<br />
             Menu
@@ -492,7 +494,7 @@
       <div class="col-12">
         <div class="section-title text-uppercase text-center fadeInDown">
           <span class="text-warning fw-bolder mb-5">
-            <i class="fa-solid fa-bell-concierge"></i> Delicious Menu
+            <i class="bi bi-bell-fill"></i> Delicious Menu
           </span>
           <h3 class="mt-3 sec-heading">
             Explore Our Delicious<br />Menu
@@ -503,12 +505,12 @@
 
     <div class="row">
       <div class="col-lg-6" *ngFor="let meal of topMeals">
-        <a [routerLink]="['/product', meal.itemId]"
+        <a routerLink="/menu"
           style="text-decoration:none; color:black;">
           <div class="menu-item p-4" style="height:150px">
 
             <div class="thumb-img">
-              <img [src]="meal.img" [alt]="meal.name"
+              <img [src]="meal.image || meal.img" [alt]="meal.name"
                 class="rounded-circle"
                 style="width:60px; height:60px; object-fit:cover" />
             </div>
@@ -518,7 +520,7 @@
                 <h4 class="title">
                   {{ meal.name }}
                   <span class="text-muted fs-6">
-                    <i style="color: gold" class="fa-solid fa-star"></i>
+                    <i style="color: gold" class="bi bi-star-fill"></i>
                     {{ meal.rating }}
                   </span>
                 </h4>
@@ -548,7 +550,7 @@
       <div class="col-12 mb-5">
         <div class="section-title text-uppercase text-center">
           <span class="team-text">
-            <i class="fa-solid fa-plate-wheat"></i> Our Special Chefs
+            <i class="bi bi-egg-fried"></i> Our Special Chefs
           </span>
           <h3 class="sec-heading">
             Introducing Our Culinary <br />
@@ -566,16 +568,16 @@
             <div class="social">
               <ul>
                 <li>
-                  <a href="##"><i class="fa-brands fa-facebook"></i></a>
+                  <a href="##"><i class="bi bi-facebook"></i></a>
                 </li>
                 <li>
-                  <a href="##"><i class="fa-brands fa-twitter"></i></a>
+                  <a href="##"><i class="bi bi-twitter"></i></a>
                 </li>
                 <li>
-                  <a href="##"><i class="fa-brands fa-linkedin-in"></i></a>
+                  <a href="##"><i class="bi bi-linkedin"></i></a>
                 </li>
                 <li>
-                  <a href="##"><i class="fa-brands fa-youtube"></i></a>
+                  <a href="##"><i class="bi bi-youtube"></i></a>
                 </li>
               </ul>
             </div>
@@ -596,16 +598,16 @@
             <div class="social">
               <ul>
                 <li>
-                  <a href="##"><i class="fa-brands fa-facebook"></i></a>
+                  <a href="##"><i class="bi bi-facebook"></i></a>
                 </li>
                 <li>
-                  <a href="##"><i class="fa-brands fa-twitter"></i></a>
+                  <a href="##"><i class="bi bi-twitter"></i></a>
                 </li>
                 <li>
-                  <a href="##"><i class="fa-brands fa-linkedin-in"></i></a>
+                  <a href="##"><i class="bi bi-linkedin"></i></a>
                 </li>
                 <li>
-                  <a href="##"><i class="fa-brands fa-youtube"></i></a>
+                  <a href="##"><i class="bi bi-youtube"></i></a>
                 </li>
               </ul>
             </div>
@@ -625,16 +627,16 @@
             <div class="social">
               <ul>
                 <li>
-                  <a href="##"><i class="fa-brands fa-facebook"></i></a>
+                  <a href="##"><i class="bi bi-facebook"></i></a>
                 </li>
                 <li>
-                  <a href="##"><i class="fa-brands fa-twitter"></i></a>
+                  <a href="##"><i class="bi bi-twitter"></i></a>
                 </li>
                 <li>
-                  <a href="##"><i class="fa-brands fa-linkedin-in"></i></a>
+                  <a href="##"><i class="bi bi-linkedin"></i></a>
                 </li>
                 <li>
-                  <a href="##"><i class="fa-brands fa-youtube"></i></a>
+                  <a href="##"><i class="bi bi-youtube"></i></a>
                 </li>
               </ul>
             </div>
@@ -662,7 +664,7 @@
     <div class="row">
       <div class="col-12">
         <div class="section-title text-uppercase text-center fadeInDown">
-          <span class="text-warning fw-bolder mb-5"><i class="fa-solid fa-bell-concierge"></i> Testimonials</span>
+          <span class="text-warning fw-bolder mb-5"><i class="bi bi-bell-fill"></i> Testimonials</span>
           <h3 class="mt-3" style="font-size: 50px; font-weight: 900">
             Our Guests Are Saying
           </h3>
@@ -677,11 +679,11 @@
             <div class="carousel-item active" data-bs-interval="4000">
               <div class="card p-5">
                 <ul class="rating d-flex list-unstyled mb-5 text-warning gap-1">
-                  <li><i class="fa-solid fa-star"></i></li>
-                  <li><i class="fa-solid fa-star"></i></li>
-                  <li><i class="fa-solid fa-star"></i></li>
-                  <li><i class="fa-solid fa-star"></i></li>
-                  <li><i class="fa-solid fa-star"></i></li>
+                  <li><i class="bi bi-star-fill"></i></li>
+                  <li><i class="bi bi-star-fill"></i></li>
+                  <li><i class="bi bi-star-fill"></i></li>
+                  <li><i class="bi bi-star-fill"></i></li>
+                  <li><i class="bi bi-star-fill"></i></li>
                 </ul>
 
                 <p class="mb-5">
@@ -705,7 +707,7 @@
                   <div
                     class="quote bg-success rounded-circle text-white d-flex justify-content-center align-items-center"
                     style="width: 50px; height: 50px">
-                    <i class="fa-solid fa-quote-right fs-5"></i>
+                    <i class="bi bi-quote fs-5"></i>
                   </div>
                 </div>
               </div>
@@ -713,11 +715,11 @@
             <div class="carousel-item" data-bs-interval="4000">
               <div class="card p-5">
                 <ul class="rating d-flex list-unstyled mb-5 text-warning gap-1">
-                  <li><i class="fa-solid fa-star"></i></li>
-                  <li><i class="fa-solid fa-star"></i></li>
-                  <li><i class="fa-solid fa-star"></i></li>
-                  <li><i class="fa-solid fa-star"></i></li>
-                  <li><i class="fa-solid fa-star"></i></li>
+                  <li><i class="bi bi-star-fill"></i></li>
+                  <li><i class="bi bi-star-fill"></i></li>
+                  <li><i class="bi bi-star-fill"></i></li>
+                  <li><i class="bi bi-star-fill"></i></li>
+                  <li><i class="bi bi-star-fill"></i></li>
                 </ul>
 
                 <p class="mb-5">
@@ -741,7 +743,7 @@
                   <div
                     class="quote bg-success rounded-circle text-white d-flex justify-content-center align-items-center"
                     style="width: 50px; height: 50px">
-                    <i class="fa-solid fa-quote-right fs-5"></i>
+                    <i class="bi bi-quote fs-5"></i>
                   </div>
                 </div>
               </div>
@@ -749,11 +751,11 @@
             <div class="carousel-item" data-bs-interval="4000">
               <div class="card p-5">
                 <ul class="rating d-flex list-unstyled mb-5 text-warning gap-1">
-                  <li><i class="fa-solid fa-star"></i></li>
-                  <li><i class="fa-solid fa-star"></i></li>
-                  <li><i class="fa-solid fa-star"></i></li>
-                  <li><i class="fa-solid fa-star"></i></li>
-                  <li><i class="fa-solid fa-star"></i></li>
+                  <li><i class="bi bi-star-fill"></i></li>
+                  <li><i class="bi bi-star-fill"></i></li>
+                  <li><i class="bi bi-star-fill"></i></li>
+                  <li><i class="bi bi-star-fill"></i></li>
+                  <li><i class="bi bi-star-fill"></i></li>
                 </ul>
 
                 <p class="mb-5">
@@ -777,7 +779,7 @@
                   <div
                     class="quote bg-success rounded-circle text-white d-flex justify-content-center align-items-center"
                     style="width: 50px; height: 50px">
-                    <i class="fa-solid fa-quote-right fs-5"></i>
+                    <i class="bi bi-quote fs-5"></i>
                   </div>
                 </div>
               </div>

@@ -22,12 +22,11 @@ export class Menu implements OnInit {
   ) {}
 
   ngOnInit() {
-    // زي الـ fetch القديم بس من API
     this.categoryService.getAllCategories().subscribe({
       next: (res) => {
+        console.log(res);
         this.categories = res.data;
 
-        // جيب أول كاتيجوري تلقائي زي ما كنت بتعمل قديم
         if (this.categories.length > 0) {
           this.getProducts(this.categories[0].slug);
           this.activeCategory = this.categories[0].slug;
@@ -37,11 +36,11 @@ export class Menu implements OnInit {
     });
   }
 
-  // زي الـ getProducts القديمة بتاعتك
   getProducts(slug: string) {
-    this.activeCategory = slug; // زي ما كنت بتعمل active class
+    this.activeCategory = slug; 
     this.mealService.getMealsByCategory(slug).subscribe({
       next: (res) => {
+        console.log(res);
         this.meals = res.data;
       },
       error: (err) => console.error(err),

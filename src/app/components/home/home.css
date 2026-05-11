@@ -297,6 +297,14 @@ Maghraby
   transition: color 0.3s;
 }
 
+.feature-icon {
+  width: 80px;
+  height: 80px;
+  color: #bf1109;
+  fill: currentColor;
+  transition: color 0.3s;
+}
+
 /* Card title */
 .card-title {
   font-weight: 800;
@@ -309,6 +317,7 @@ Maghraby
 .feature-card:hover {
   background-color: #bf1109;
   .card-icon i,
+  .feature-icon,
   .card-title {
     color: #fff !important;
   }
@@ -575,3 +584,7 @@ style
         color: #0f1214;
         margin-top: 10px;
       }
+
+
+
+      

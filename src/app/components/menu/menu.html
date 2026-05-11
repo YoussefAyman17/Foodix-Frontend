@@ -28,13 +28,14 @@
     </div>
 </section>
 
- -->
+-->
+
+
 
 
 
 <section class="py-5" style="background-color: #f7f1e1">
     <div class="container">
-
         <div class="text-center mb-5">
             <h1 class="fw-bold">CHOOSE MENU</h1>
             <p class="fw-bold text-muted">
@@ -44,26 +45,40 @@
             </p>
         </div>
 
-        <!-- بدل الأزرار: sections قابلة للضغط -->
         <div class="d-flex mx-auto justify-content-center gap-4 pb-5 flex-wrap">
-            <div *ngFor="let cat of categories" class="category-card text-center"
-                [class.active]="activeCategory === cat.slug" (click)="getProducts(cat.slug)"
-                style="cursor: pointer; width: 120px;">
-
-                <!-- صورة الكاتيجوري -->
-                <div class="category-img-wrapper rounded-circle overflow-hidden mx-auto mb-2"
-                    style="width: 80px; height: 80px; border: 3px solid transparent;">
-                    <img [src]="cat.image" [alt]="cat.name" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-
-                <p class="fw-bold mb-0">{{ cat.name }}</p>
-            </div>
+            <button *ngFor="let cat of categories" type="button" class="btn2 px-4 py-2 fw-bold rounded-3"
+                [class.active]="activeCategory === cat.slug" (click)="getProducts(cat.slug)">
+                {{ cat.name }}
+            </button>
         </div>
 
-        <!-- الكاردز زي ما هي -->
-        <div class="row g-4" id="menuSection">
+        <div class="row g-4">
             <div class="col-12 col-sm-6 col-lg-4" *ngFor="let p of meals">
-                <!-- نفس الكارد القديمة -->
+                <div class="card_menu card shadow rounded-4 d-flex flex-column justify-content-between">
+                    <img [src]="p.image" class="card-img-top rounded-top-4" [alt]="p.name" />
+                    <div
+                        class="card-header bg-white border-0 d-flex justify-content-between align-items-center pt-3 px-0 border-bottom mx-3 mb-3">
+                        <span class="text-danger fw-bold fs-5">${{ p.price }}</span>
+                        <span class="text-muted fs-6">
+                            <i style="color: gold" class="fa-solid fa-star"></i>
+                            {{ p.rating }}
+                        </span>
+                    </div>
+
+                    <div class="card-body pt-2">
+                        <h5 class="fw-bold mb-3 text_menu_card">{{ p.name }}</h5>
+                        <p class="text-muted mb-3">
+                            <i class="fa-regular fa-circle-check text-danger me-2"></i>
+                            {{ p.short_description }}
+                        </p>
+
+                        <button class="border_menu btn w-100 fw-bold rounded-3 py-2"
+                            style="border: 2px solid black; color: #333"
+                            [routerLink]="['/product', activeCategory, p.id]">
+                            <i class="bi bi-cart3 me-2"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
