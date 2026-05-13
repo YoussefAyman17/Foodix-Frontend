@@ -1,0 +1,291 @@
+/* ===== WRAPPER ===== */
+.profile-wrapper {
+  background-color: #f4f4f4;
+  min-height: 100vh;
+  padding: 40px 20px;
+  font-family: 'Hanken Grotesk', sans-serif;
+}
+
+/* ===== PAGE HEADER ===== */
+.page-header {
+  margin-bottom: 28px;
+}
+
+.page-header h1 {
+  font-size: 32px;
+  font-weight: 900;
+  color: #0f1214;
+  margin-bottom: 4px;
+}
+
+.page-header p {
+  font-size: 14px;
+  color: #777;
+  margin: 0;
+}
+
+/* ===== GRID ===== */
+.cards-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== CARD ===== */
+.card {
+  background-color: #ffffff;
+  border-radius: 14px;
+  border: none;
+  padding: 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* ===== CARD HEAD ===== */
+.card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.card-head h2 {
+  font-size: 17px;
+  font-weight: 800;
+  color: #0f1214;
+  margin: 0 0 3px;
+}
+
+.card-head p {
+  font-size: 13px;
+  color: #999;
+  margin: 0;
+}
+
+/* ===== EDIT BUTTON ===== */
+.edit-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  background-color: #fff;
+  color: #0f1214;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.edit-btn:hover {
+  border-color: #bf1109;
+  color: #bf1109;
+}
+
+/* ===== AVATAR ===== */
+.avatar {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background-color: #f07020;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 auto 24px;
+}
+
+/* ===== FIELDS ===== */
+.field {
+  margin-bottom: 18px;
+}
+
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #555;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.field input {
+  width: 100%;
+  border: none;
+  border-bottom: 1.5px solid #e0e0e0;
+  padding: 7px 0;
+  font-size: 14px;
+  color: #0f1214;
+  background: transparent;
+  outline: none;
+  transition: border-color 0.2s;
+  font-family: 'Hanken Grotesk', sans-serif;
+}
+
+.field input:not([readonly]):focus {
+  border-bottom-color: #bf1109;
+}
+
+.field input[readonly] {
+  color: #888;
+  cursor: default;
+}
+
+.field small {
+  font-size: 11px;
+  color: #bbb;
+  display: block;
+  margin-top: 3px;
+}
+
+/* ===== PHONE ROW ===== */
+.phone-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.phone-row input {
+  flex: 1;
+}
+
+.flag {
+  font-size: 13px;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 7px;
+  padding: 5px 10px;
+  background: #f9f9f9;
+  white-space: nowrap;
+  margin-bottom: 1px;
+}
+
+/* ===== TWO COLUMNS ===== */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* ===== SUCCESS MESSAGE ===== */
+.success-msg {
+  background-color: #e9f7ef;
+  color: #2e9e4f;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  border-left: 3px solid #2e9e4f;
+}
+
+/* ===== SAVE BUTTON ===== */
+.save-btn {
+  width: 100%;
+  background-color: #bf1109;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background-color 0.25s ease;
+  font-family: 'Hanken Grotesk', sans-serif;
+}
+
+.save-btn:hover {
+  background-color: #a00e08;
+}
+
+.save-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* ===== SECURITY CARD ===== */
+.security-card h2 {
+  font-size: 17px;
+  font-weight: 800;
+  color: #0f1214;
+  margin: 0 0 3px;
+}
+
+.security-card > p {
+  font-size: 13px;
+  color: #999;
+  margin: 0 0 8px;
+}
+
+.lock-icon {
+  font-size: 40px;
+  text-align: center;
+  margin: 28px 0 14px;
+}
+
+.security-card h3 {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f1214;
+  margin-bottom: 6px;
+}
+
+.security-card > p:last-of-type {
+  text-align: center;
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 24px;
+}
+
+/* ===== CHANGE PASSWORD BUTTON ===== */
+.change-pass-btn {
+  display: block;
+  margin: 0 auto;
+  background-color: #f07020;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 11px 28px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+  font-family: 'Hanken Grotesk', sans-serif;
+}
+
+.change-pass-btn:hover {
+  background-color: #d45e10;
+}
+
+.avatar-img {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto 24px;
+}
+
+.error-msg {
+  background-color: #fdecea;
+  color: #bf1109;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  border-left: 3px solid #bf1109;
+}

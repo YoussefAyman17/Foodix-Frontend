@@ -1,0 +1,39 @@
+<section class="product-details">
+  @if (isLoading()) {
+    <div class="state">Loading...</div>
+  } @else if (errorMessage()) {
+    <div class="state">
+      <p>{{ errorMessage() }}</p>
+      <a routerLink="/menu">Back to menu</a>
+    </div>
+  } @else if (meal) {
+    <div class="product-layout">
+      <div class="image-wrap">
+        <img [src]="meal.img || meal.image" [alt]="meal.name" />
+      </div>
+
+      <div class="content">
+        <a routerLink="/menu" class="back-link">Back to menu</a>
+        <h1>{{ meal.name }}</h1>
+        <p class="description">{{ meal.description || meal.short_description }}</p>
+
+        <div class="meta">
+          <span>{{ meal.price }} EGP</span>
+          <span>{{ meal.rating || 0 }} / 5</span>
+        </div>
+
+        @if (meal.sizes?.length) {
+          <div class="sizes">
+            @for (size of meal.sizes; track size.size) {
+              <span>{{ size.size }} +{{ size.extraPrice }} EGP</span>
+            }
+          </div>
+        }
+
+        <button type="button" class="cart-btn" [disabled]="!meal.isAvailable">
+          {{ meal.isAvailable ? 'Add to Cart' : 'Unavailable' }}
+        </button>
+      </div>
+    </div>
+  }
+</section>

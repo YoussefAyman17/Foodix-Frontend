@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CategoryService {
-  private baseUrl = 'http://localhost:3000/api/categories';
+  private baseUrl = `${environment.apiURL}/categories`;
 
   constructor(private http: HttpClient) {}
 
@@ -32,6 +33,6 @@ export class CategoryService {
 
   // DELETE /api/categories/:id
   deleteCategory(id: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/${id}`); 
+    return this.http.delete(`${this.baseUrl}/${id}`);
   }
 }

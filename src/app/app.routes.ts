@@ -8,6 +8,9 @@ import { ResetPasswordPage } from './Components/reset-password-page/reset-passwo
 
 import { Home } from './Components/home/home';
 import { Menu } from './Components/menu/menu';
+import { ProfilePage } from './Components/profile-page/profile-page';
+import { MyOrdersPage } from './Components/my-orders-page/my-orders-page';
+import { ProductDetails } from './Components/product-details/product-details';
 
 export const routes: Routes = [
   // Auth routes
@@ -20,5 +23,8 @@ export const routes: Routes = [
 
   // App routes
   { path: 'home', component: Home, title: 'Home' },
-  { path: 'menu', component: Menu, title: 'Menu' }
+  { path: 'menu', component: Menu, title: 'Menu' },
+  { path: 'product/:slug/:id', component: ProductDetails, title: 'Product Details' },
+  { path: 'profile', component: ProfilePage, title: 'profile' },
+  { path: 'my-orders-page', component: MyOrdersPage, title: 'My Orders' },
 ];

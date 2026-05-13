@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CategoryService } from '../../core/services/category';
 import { MealService } from '../../core/services/meal';
 import { catchError, forkJoin, of } from 'rxjs';
+import { Inject, PLATFORM_ID } from '@angular/core';
 
 @Component({
   selector: 'app-home',
@@ -19,9 +20,12 @@ export class Home implements OnInit {
   constructor(
     private categoryService: CategoryService,
     private mealService: MealService,
+    @Inject(PLATFORM_ID) private platformId: object,
   ) {}
 
   ngOnInit() {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     this.categoryService.getAllCategories().subscribe({
       next: (res) => {
         this.categories = Array.isArray(res?.data) ? res.data : [];

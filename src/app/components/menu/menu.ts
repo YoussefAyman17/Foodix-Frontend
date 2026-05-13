@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { CategoryService } from '../../core/services/category';
 import { MealService } from '../../core/services/meal';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [CommonModule,RouterModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './menu.html',
   styleUrl: './menu.css',
 })
@@ -19,9 +19,12 @@ export class Menu implements OnInit {
   constructor(
     private categoryService: CategoryService,
     private mealService: MealService,
+    @Inject(PLATFORM_ID) private platformId: object,
   ) {}
 
   ngOnInit() {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     this.categoryService.getAllCategories().subscribe({
       next: (res) => {
         console.log(res);
@@ -37,7 +40,7 @@ export class Menu implements OnInit {
   }
 
   getProducts(slug: string) {
-    this.activeCategory = slug; 
+    this.activeCategory = slug;
     this.mealService.getMealsByCategory(slug).subscribe({
       next: (res) => {
         console.log(res);

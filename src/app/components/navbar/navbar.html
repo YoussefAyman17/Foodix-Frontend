@@ -1,10 +1,8 @@
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg sticky-top" style="
-        background-color: rgb(0, 0, 0);
-        height: 90px;
-        font-family: sans-serif;">
+<nav class="navbar navbar-expand-lg sticky-top"
+    style="background-color: rgb(0, 0, 0); height: 90px; font-family: sans-serif">
     <div class="container d-flex align-items-center h-100">
-        <a class="navbar-brand" routerLink="/Home" routerLinkActive="active-link">
+        <a class="navbar-brand" routerLink="/home" routerLinkActive="active-link">
             <img src="/Assets/Logo/logo-white.png" alt="logo" />
         </a>
         <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas"
@@ -28,6 +26,16 @@
                     <a class="nav-link text-light" routerLink="/" routerLinkActive="active-link"
                         [routerLinkActiveOptions]="{ exact: true }">Checkout</a>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-light" routerLink="/profile" routerLinkActive="active-link"
+                        [routerLinkActiveOptions]="{ exact: true }">profile</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-light" routerLink="/my-orders-page" routerLinkActive="active-link"
+                        [routerLinkActiveOptions]="{ exact: true }">myorders</a>
+                </li>
             </ul>
 
             <button style="background-color: green" type="button" class="btn text-light fw-bold px-4 py-3 rounded-3"
@@ -45,16 +53,24 @@
             <div class="offcanvas-body d-flex flex-column align-items-center gap-3">
                 <ul class="navbar-nav text-center fs-5 fw-bold flex-column">
                     <li class="nav-item">
-                        <a class="nav-link text-light" routerLink="/Home" routerLinkActive="active-link">Home</a>
+                        <a class="nav-link text-light" routerLink="/home" routerLinkActive="active-link">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-light" routerLink="/Menu" routerLinkActive="active-link">Menu</a>
+                        <a class="nav-link text-light" routerLink="/menu" routerLinkActive="active-link">Menu</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-light" routerLink="/Home" routerLinkActive="active-link">Contact</a>
+                        <a class="nav-link text-light" routerLink="/home" routerLinkActive="active-link">Contact</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-light" routerLink="/Home" routerLinkActive="active-link">Checkout</a>
+                        <a class="nav-link text-light" routerLink="/home" routerLinkActive="active-link">Checkout</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" routerLink="/profile" routerLinkActive="active-link">Profile</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link text-light" routerLink="/my-orders-page"
+                            routerLinkActive="active-link">my_order</a>
                     </li>
                 </ul>
 
@@ -66,8 +82,30 @@
             </div>
         </div>
     </div>
-</nav>
 
+    <!-- بدل أي حاجة موجودة في الأسفل، حط ده -->
+    <div class="d-flex align-items-center gap-2 mt-auto p-3" style="border-top: 1px solid #333">
+        <div style="
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: #f07020;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        color: #fff;
+        font-size: 15px;
+        flex-shrink: 0;
+      ">
+            {{ userInitial }}
+        </div>
+        <div>
+            <div style="color: #fff; font-size: 14px; font-weight: 700">{{ userName }}</div>
+            <div style="color: #888; font-size: 12px">{{ userEmail }}</div>
+        </div>
+    </div>
+</nav>
 
 <!-- ====== Navbar ===== -->
 
@@ -76,9 +114,7 @@
 <div class="offcanvas offcanvas-end" style="background-color: rgb(0, 0, 0)" tabindex="-1" id="cartOffcanvas">
     <div class="offcanvas-header border-bottom border-secondary justify-content-between">
         <h5 class="text-light fw-bold m-0">My cart</h5>
-        <button type="button" class="btn btn-danger btn-sm px-2" data-bs-dismiss="offcanvas">
-            ✕
-        </button>
+        <button type="button" class="btn btn-danger btn-sm px-2" data-bs-dismiss="offcanvas">✕</button>
     </div>
     <div class="offcanvas-body" id="offcanvas-body"></div>
 </div>

@@ -1,0 +1,90 @@
+@if (isPageLoading()) {
+<div class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading your profile...</p>
+</div>
+} @else {
+<div class="profile-wrapper">
+    <div class="page-header">
+        <h1>Account Settings</h1>
+        <p>Manage your personal information and security settings</p>
+    </div>
+
+    <div class="cards-grid">
+        <div class="card">
+            <div class="card-head">
+                <div>
+                    <h2>Personal Information</h2>
+                    <p>Update your account details</p>
+                </div>
+                <button class="edit-btn" (click)="toggleEdit()">
+                    ✏️ {{ isEditing() ? 'Cancel' : 'Edit' }}
+                </button>
+            </div>
+
+            @if (user.profilePic) {
+            <img class="avatar-img" [src]="user.profilePic" alt="profile" />
+            } @else {
+            <div class="avatar">{{ getUserInitial() }}</div>
+            }
+
+            @if (successMessage()) {
+            <div class="success-msg">✅ {{ successMessage() }}</div>
+            }
+            @if (errorMessage()) {
+            <div class="error-msg">❌ {{ errorMessage() }}</div>
+            }
+
+            <div class="field">
+                <label>Full Name</label>
+                <input type="text" [(ngModel)]="user.userName" [readonly]="!isEditing()" />
+            </div>
+
+            <div class="field">
+                <label>Email Address</label>
+                <input type="email" [value]="user.email" readonly />
+                <small>Email cannot be changed</small>
+            </div>
+
+            <div class="field">
+                <label>Phone Number</label>
+                <div class="phone-row">
+                    <span class="flag">🇪🇬 EG</span>
+                    <input type="tel" [(ngModel)]="user.phone" [readonly]="!isEditing()" />
+                </div>
+            </div>
+
+            <div class="two-col">
+                <div class="field">
+                    <label>Governorate</label>
+                    <input type="text" [(ngModel)]="user.address.governorate" [readonly]="!isEditing()" />
+                </div>
+                <div class="field">
+                    <label>City</label>
+                    <input type="text" [(ngModel)]="user.address.city" [readonly]="!isEditing()" />
+                </div>
+            </div>
+
+            <div class="field">
+                <label>Street Address</label>
+                <input type="text" [(ngModel)]="user.address.street" [readonly]="!isEditing()" />
+            </div>
+
+            @if (isEditing()) {
+            <button class="save-btn" (click)="saveChanges()" [disabled]="isLoading()">
+                {{ isLoading() ? 'Saving...' : 'Save Changes' }}
+            </button>
+            }
+        </div>
+
+        <div class="card security-card">
+            <h2>Security Settings</h2>
+            <p>Manage your password and security</p>
+            <div class="lock-icon">🔒</div>
+            <h3>Password Protected</h3>
+            <p>Your account is secured with a strong password</p>
+            <button class="change-pass-btn" (click)="changePassword()">Change Password</button>
+        </div>
+    </div>
+</div>
+}
