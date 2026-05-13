@@ -7,11 +7,12 @@ import { catchError, forkJoin, of } from 'rxjs';
 import { Inject, PLATFORM_ID } from '@angular/core';
 
 import { Navbar } from '../navbar/navbar';
+import { Footer } from "../footer/footer";
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, Navbar],
+  imports: [CommonModule, RouterModule, Navbar, Footer],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })

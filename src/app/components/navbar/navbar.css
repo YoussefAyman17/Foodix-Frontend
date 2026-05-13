@@ -1,0 +1,36 @@
+/* ====== My Account Offcanvas Links ====== */
+.account-link {
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    box-shadow 0.2s;
+}
+
+.account-link__bar {
+  display: none;
+  width: 4px;
+  height: 24px;
+  background: #f07020;
+  border-radius: 4px;
+}
+
+/* Active state */
+.account-link--active {
+  color: #f07020 !important;
+  background: rgba(240, 112, 32, 0.1) !important;
+  font-weight: 700 !important;
+}
+
+.account-link--active .account-link__bar {
+  display: inline-block;
+}
+
+/* Hover effect */
+.account-link:not(.account-link--active):hover {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: #f07020 !important;
+  box-shadow: inset 3px 0 0 rgba(240, 112, 32, 0.4);
+}

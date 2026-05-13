@@ -9,7 +9,7 @@ import { environment } from '../../../environments/environment'; // 🌟 تأك�
 export class OrderService {
   private http = inject(HttpClient);
 
-  private apiUrl = `http://localhost:3000/api/orders`;
+  private apiUrl = `${environment.apiURL}/orders`;
 
   getAllOrders(): Observable<any> {
     return this.http.get(this.apiUrl);
@@ -20,7 +20,7 @@ export class OrderService {
   }
 
   assignDeliveryPerson(id: number, deliveryPersonId: string): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/${id}/assign`, { deliveryPerson: deliveryPersonId });
+    return this.http.patch(`${this.apiUrl}/${id}/assign`, { deliveryPersonId });
   }
 
   getUserOrders(): Observable<any> {
@@ -36,6 +36,6 @@ export class OrderService {
   }
 
   getAllDeliveryPersons() {
-    return this.http.get(`http://localhost:3000/api/users/delivery`);
+    return this.http.get(`${environment.apiURL}/workers/delivery`);
   }
 }

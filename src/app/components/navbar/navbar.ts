@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { Auth } from '../../core/services/auth';
 import { CommonModule } from '@angular/common';
 
@@ -14,11 +14,13 @@ export class Navbar implements OnInit {
   userName: string = '';
   userEmail: string = '';
   userInitial: string = '';
-  // auth = inject(Auth);
-  constructor(public auth: Auth) {}
+
+  constructor(
+    public auth: Auth,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
-    // بنجيب البيانات من الـ token اللي موجود
     this.auth.userData();
     const decoded = this.auth.decodedUserData();
     if (decoded) {
@@ -26,5 +28,11 @@ export class Navbar implements OnInit {
       this.userEmail = decoded.email || '';
       this.userInitial = this.userName.charAt(0).toUpperCase();
     }
+  }
+
+  logout(): void {
+    localStorage.removeItem('userToken');
+    this.auth.decodedUserData.set(null);
+    this.router.navigate(['/login']);
   }
 }

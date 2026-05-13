@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { PLATFORM_ID } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MealService } from '../../services/meal';
 import { CategoryService } from '../../services/category';
@@ -20,6 +21,7 @@ export class ManageMeals implements OnInit {
   private fb = inject(FormBuilder);
   private cdr = inject(ChangeDetectorRef);
   private toastr = inject(ToastrService);
+  private platformId = inject(PLATFORM_ID);
 
   meals: Meal[] = [];
   categories: Category[] = [];
@@ -33,6 +35,11 @@ export class ManageMeals implements OnInit {
 
   ngOnInit() {
     this.initForm();
+    if (!isPlatformBrowser(this.platformId)) {
+      this.isLoading = false;
+      return;
+    }
+
     this.loadCategories();
     this.loadMeals();
   }
@@ -125,7 +132,9 @@ export class ManageMeals implements OnInit {
       },
       error: (err) => {
         console.error('Error fetching meals:', err);
-        this.toastr.error('Failed to load meals', 'Error');
+        if (isPlatformBrowser(this.platformId)) {
+          this.toastr.error('Failed to load meals', 'Error');
+        }
         this.isLoading = false;
         this.cdr.detectChanges();
       },

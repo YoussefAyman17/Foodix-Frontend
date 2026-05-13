@@ -6,7 +6,11 @@
       <img src="/Assets/Logo/logo-white.png" alt="logo" />
     </a>
     <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNav">
+<<<<<<< HEAD
       <i class="fa-solid fa-bars"></i>
+=======
+      <i class="bi bi-list"></i>
+>>>>>>> 41c3cc56f0e7245c070d472cd6782bd148f13963
     </button>
     <div class="d-none d-lg-flex align-items-center gap-3 ms-auto">
       <ul class="navbar-nav fs-5 fw-bold flex-row gap-3 nav-links">
@@ -14,6 +18,7 @@
           <a class="nav-link text-light" routerLink="/home" routerLinkActive="active-link"
             [routerLinkActiveOptions]="{ exact: true }">Home</a>
         </li>
+<<<<<<< HEAD
         @if (auth.isAdmin() == true) {
         <li class="nav-item">
           <a class="nav-link text-light" routerLink="/admin" routerLinkActive="active-link"
@@ -22,6 +27,8 @@
           </a>
         </li>
         }
+=======
+>>>>>>> 41c3cc56f0e7245c070d472cd6782bd148f13963
         <li class="nav-item">
           <a class="nav-link text-light" routerLink="/menu" routerLinkActive="active-link">Menu</a>
         </li>
@@ -32,6 +39,7 @@
         <li class="nav-item">
           <a class="nav-link text-light" routerLink="/" routerLinkActive="active-link"
             [routerLinkActiveOptions]="{ exact: true }">Checkout</a>
+<<<<<<< HEAD
         </li>
 
         <li class="nav-item">
@@ -42,6 +50,8 @@
         <li class="nav-item">
           <a class="nav-link text-light" routerLink="/my-orders-page" routerLinkActive="active-link"
             [routerLinkActiveOptions]="{ exact: true }">myorders</a>
+=======
+>>>>>>> 41c3cc56f0e7245c070d472cd6782bd148f13963
         </li>
       </ul>
 
@@ -49,8 +59,32 @@
         data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
         <i class="bi bi-cart3"></i>
       </button>
+
+      <!-- User Avatar Button -->
+      <button type="button" class="btn p-0 border-0" data-bs-toggle="offcanvas" data-bs-target="#userOffcanvas"
+        style="background: transparent;">
+        <div style="
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f07020;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+          ">
+          {{ userInitial || '?' }}
+        </div>
+      </button>
     </div>
 
+<<<<<<< HEAD
+=======
+    <!-- Mobile offcanvas nav -->
+>>>>>>> 41c3cc56f0e7245c070d472cd6782bd148f13963
     <div class="offcanvas offcanvas-start text-center d-lg-none" style="background-color: rgb(0, 0, 0)" tabindex="-1"
       id="offcanvasNav">
       <div class="offcanvas-header">
@@ -70,6 +104,7 @@
           </li>
           <li class="nav-item">
             <a class="nav-link text-light" routerLink="/home" routerLinkActive="active-link">Checkout</a>
+<<<<<<< HEAD
           </li>
           <li class="nav-item">
             <a class="nav-link text-light" routerLink="/profile" routerLinkActive="active-link">Profile</a>
@@ -77,6 +112,8 @@
 
           <li class="nav-item">
             <a class="nav-link text-light" routerLink="/my-orders-page" routerLinkActive="active-link">my_order</a>
+=======
+>>>>>>> 41c3cc56f0e7245c070d472cd6782bd148f13963
           </li>
         </ul>
 
@@ -84,10 +121,32 @@
           data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
           <i class="bi bi-cart3"></i>
         </button>
+
+        <!-- Mobile User Avatar -->
+        <button type="button" class="btn p-0 border-0 mt-2" data-bs-toggle="offcanvas" data-bs-target="#userOffcanvas"
+          style="background: transparent;">
+          <div style="
+              width: 44px;
+              height: 44px;
+              border-radius: 50%;
+              background: #f07020;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-weight: 800;
+              color: #fff;
+              font-size: 17px;
+              cursor: pointer;
+            ">
+            {{ userInitial || '?' }}
+          </div>
+        </button>
       </div>
     </div>
   </div>
+</nav>
 
+<<<<<<< HEAD
   <!-- بدل أي حاجة موجودة في الأسفل، حط ده -->
   <div class="d-flex align-items-center gap-2 mt-auto p-3" style="border-top: 1px solid #333">
     <div style="
@@ -109,21 +168,121 @@
       <div style="color: #fff; font-size: 14px; font-weight: 700">{{ userName }}</div>
       <div style="color: #888; font-size: 12px">{{ userEmail }}</div>
     </div>
+=======
+<!-- ====== User Side Offcanvas ===== -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="userOffcanvas" style="background-color: #1a1a1a; width: 280px;">
+  <div class="offcanvas-header" style="border-bottom: 1px solid #333;">
+    <h5 class="text-light fw-bold m-0">My Account</h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+>>>>>>> 41c3cc56f0e7245c070d472cd6782bd148f13963
   </div>
 
-  <!-- ====== Navbar ===== -->
+  <div class="offcanvas-body d-flex flex-column p-0">
+    <!-- Nav Items -->
+    <ul class="list-unstyled mt-2 px-3 flex-grow-1">
+      <li>
+        <!-- <a class="d-flex align-items-center gap-3 text-decoration-none py-3 px-2 rounded-3 mb-1" routerLink="/profile"
+          data-bs-dismiss="offcanvas"
+          style="color: #f07020; background: rgba(240,112,32,0.1); font-weight: 700; font-size: 15px;">
+          <i class="fa-regular fa-user fs-5"></i>
+          Profile
+          <span class="ms-auto"
+            style="width: 4px; height: 24px; background: #f07020; border-radius: 4px; display:inline-block;"></span>
+        </a> -->
 
-  <!-- Cart -->
+        <a routerLink="/profile" routerLinkActive="account-link--active" data-bs-dismiss="offcanvas"
+          class="d-flex align-items-center gap-3 text-decoration-none py-3 px-2 rounded-3 mb-1 account-link">
+          <i class="bi bi-person fs-5"></i>
+          Profile
+          <span class="ms-auto account-link__bar"></span>
+        </a>
 
+<<<<<<< HEAD
   <div class="offcanvas offcanvas-end" style="background-color: rgb(0, 0, 0)" tabindex="-1" id="cartOffcanvas">
     <div class="offcanvas-header border-bottom border-secondary justify-content-between">
       <h5 class="text-light fw-bold m-0">My cart</h5>
       <button type="button" class="btn btn-danger btn-sm px-2" data-bs-dismiss="offcanvas">
         ✕
+=======
+      </li>
+      <li>
+        <!-- <a class="d-flex align-items-center gap-3 text-decoration-none py-3 px-2 rounded-3 mb-1"
+          routerLink="/my-orders-page" data-bs-dismiss="offcanvas"
+          style="color: #fff; font-weight: 600; font-size: 15px;">
+          <i class="fa-regular fa-bag-shopping fs-5"></i>
+          My Orders
+        </a> -->
+
+
+        <a class="account-link d-flex align-items-center gap-3 text-decoration-none py-3 px-2 rounded-3 mb-1"
+          routerLink="/my-orders-page" routerLinkActive="account-link--active" data-bs-dismiss="offcanvas">
+          <i class="bi bi-clock-history fs-5"></i>
+          My Orders
+          <span class="ms-auto account-link__bar"></span>
+        </a>
+
+
+
+      </li>
+
+      @if (auth.isAdmin()) {
+      <li>
+        <a class="d-flex align-items-center gap-3 text-decoration-none py-3 px-2 rounded-3 mb-1" routerLink="/admin"
+          data-bs-dismiss="offcanvas" style="color: #fff; font-weight: 600; font-size: 15px;">
+          <i class="bi bi-speedometer2 fs-5"></i>
+          Admin Dashboard
+        </a>
+      </li>
+      }
+    </ul>
+
+    <!-- User Info + Logout at bottom -->
+    <div style="border-top: 1px solid #333; padding: 16px;">
+      <div class="d-flex align-items-center gap-2 mb-3">
+        <div style="
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #f07020;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #fff;
+            font-size: 15px;
+            flex-shrink: 0;
+          ">
+          {{ userInitial || '?' }}
+        </div>
+        <div>
+          <div style="color: #fff; font-size: 14px; font-weight: 700;">{{ userName }}</div>
+          <div style="color: #888; font-size: 12px;">{{ userEmail }}</div>
+        </div>
+      </div>
+
+      <button type="button" class="btn w-100 fw-bold" (click)="logout()" data-bs-dismiss="offcanvas"
+        style="background: transparent; border: 1px solid #e63946; color: #e63946; border-radius: 10px; padding: 10px;">
+        <i class="bi bi-box-arrow-right me-2"></i>
+        Logout
+>>>>>>> 41c3cc56f0e7245c070d472cd6782bd148f13963
       </button>
     </div>
-    <div class="offcanvas-body" id="offcanvas-body"></div>
   </div>
+</div>
+<!-- ====== End User Side Offcanvas ===== -->
 
+<<<<<<< HEAD
   <!-- ==== Cart === -->
 </nav>
+=======
+<!-- Cart Offcanvas -->
+<div class="offcanvas offcanvas-end" style="background-color: rgb(0, 0, 0)" tabindex="-1" id="cartOffcanvas">
+  <div class="offcanvas-header border-bottom border-secondary justify-content-between">
+    <h5 class="text-light fw-bold m-0">My cart</h5>
+    <button type="button" class="btn btn-danger btn-sm px-2" data-bs-dismiss="offcanvas">
+      ✕
+    </button>
+  </div>
+  <div class="offcanvas-body" id="offcanvas-body"></div>
+</div>
+>>>>>>> 41c3cc56f0e7245c070d472cd6782bd148f13963

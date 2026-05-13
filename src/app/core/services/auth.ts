@@ -51,7 +51,13 @@ export class Auth {
   private getHeaders() {
     const token = this.getToken();
 
+<<<<<<< HEAD
     return { headers: { authorization: token ? `${token}` : '' } };
+=======
+    return { headers: { authorization: token ? `${token}` : '' }};
+    // return { headers: { authorization: token ? token : '' } };
+
+>>>>>>> 41c3cc56f0e7245c070d472cd6782bd148f13963
   }
 
   userData() {
@@ -79,7 +85,6 @@ export class Auth {
   }
 
   getMyOrdersApi(): Observable<any> {
-    // 🌟 تم حل المشكلة هنا: تغيير apiURL إلى baseURL عشان تطابق الـ environment بتاعتك
-    return this.httpClient.get(`${environment.baseURL}orders/myorders`, this.getHeaders());
+return this.httpClient.get(`${environment.apiURL}/orders/myorders`, this.getHeaders());
   }
 }
