@@ -1,14 +1,19 @@
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { computed, Inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { jwtDecode } from 'jwt-decode';
+
 @Injectable({
   providedIn: 'root',
 })
 export class Auth {
-  decodedUserData: any;
+  decodedUserData = signal<any>(null);
+  isAdmin = computed(() => {
+    const user = this.decodedUserData();
+    return user?.role === 'Admin';
+  });
   constructor(
     private httpClient: HttpClient,
     @Inject(PLATFORM_ID) private platformId: object,
@@ -25,9 +30,11 @@ export class Auth {
   forgotPassApi(data: object): Observable<any> {
     return this.httpClient.post(`${environment.baseURL}forgetPassword`, data);
   }
+
   verifyApi(data: object): Observable<any> {
     return this.httpClient.post(`${environment.baseURL}verifyResetCode`, data);
   }
+
   resetPassApi(data: object): Observable<any> {
     return this.httpClient.put(`${environment.baseURL}resetPassword`, data);
   }
@@ -42,16 +49,26 @@ export class Auth {
   }
 
   private getHeaders() {
-    return { headers: { authorization: this.getToken() } };
+    const token = this.getToken();
+
+    return { headers: { authorization: token ? ` ${token}` : '' } };
   }
 
   userData() {
     let token = this.getToken();
     if (!token) return;
-    this.decodedUserData = jwtDecode(token!);
+
+    try {
+      const decoded = jwtDecode(token);
+
+      this.decodedUserData.set(decoded);
+    } catch (error) {
+      console.error('Invalid token format', error);
+      this.decodedUserData.set(null);
+    }
   }
 
-  //omar
+  // ================= Omar's Endpoints =================
 
   getMyProfileApi(): Observable<any> {
     return this.httpClient.get(`${environment.baseURL}me`, this.getHeaders());
@@ -62,6 +79,7 @@ export class Auth {
   }
 
   getMyOrdersApi(): Observable<any> {
-    return this.httpClient.get(`${environment.apiURL}/orders/myorders`, this.getHeaders());
+    // 🌟 تم حل المشكلة هنا: تغيير apiURL إلى baseURL عشان تطابق الـ environment بتاعتك
+    return this.httpClient.get(`${environment.baseURL}orders/myorders`, this.getHeaders());
   }
 }

@@ -45,6 +45,7 @@ export class Menu implements OnInit {
       next: (res) => {
         console.log(res);
         this.meals = res.data;
+        console.log(this.meals);
       },
       error: (err) => console.error(err),
     });

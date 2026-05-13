@@ -5,8 +5,8 @@ import { Footer } from './Components/footer/footer';
 
 @Component({
   selector: 'app-root',
-  standalone:true,
-  imports: [Navbar,Footer ,RouterOutlet],
+  standalone: true,
+  imports: [Navbar, Footer, RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })

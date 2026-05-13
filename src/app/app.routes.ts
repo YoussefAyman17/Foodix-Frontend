@@ -11,6 +11,7 @@ import { Menu } from './Components/menu/menu';
 import { ProfilePage } from './Components/profile-page/profile-page';
 import { MyOrdersPage } from './Components/my-orders-page/my-orders-page';
 import { ProductDetails } from './Components/product-details/product-details';
+import { adminGuard } from './admin/guards/admin-guard';
 
 export const routes: Routes = [
   // Auth routes
@@ -27,4 +28,11 @@ export const routes: Routes = [
   { path: 'product/:slug/:id', component: ProductDetails, title: 'Product Details' },
   { path: 'profile', component: ProfilePage, title: 'profile' },
   { path: 'my-orders-page', component: MyOrdersPage, title: 'My Orders' },
+
+  // Admin routes
+  {
+    path: 'admin',
+    canActivate: [adminGuard],
+    loadChildren: () => import('./admin/admin-module').then((m) => m.AdminModule),
+  },
 ];

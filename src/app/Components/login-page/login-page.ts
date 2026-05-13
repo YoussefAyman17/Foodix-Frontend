@@ -28,10 +28,7 @@ export class LoginPage {
 
   loginForm: FormGroup = new FormGroup({
     email: new FormControl(null, [Validators.required, Validators.email]),
-    password: new FormControl(null, [
-      Validators.required,
-      Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{6,}$/),
-    ]),
+    password: new FormControl(null, [Validators.required]),
   });
 
   // login with google
@@ -84,7 +81,7 @@ export class LoginPage {
           this.isLoading.set(false);
           localStorage.setItem('userToken', res.token);
           this.auth.userData();
-          // this.router.navigate(['/home']);
+          this.router.navigate(['/home']);
         },
         error: (err) => {
           this.errorMessage.set(err.error.message);

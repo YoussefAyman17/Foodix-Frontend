@@ -1,91 +1,166 @@
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg sticky-top"
-    style="background-color: rgb(0, 0, 0); height: 90px; font-family: sans-serif">
-    <div class="container d-flex align-items-center h-100">
-        <a class="navbar-brand" routerLink="/home" routerLinkActive="active-link">
-            <img src="/Assets/Logo/logo-white.png" alt="logo" />
-        </a>
-        <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas"
-            data-bs-target="#offcanvasNav">
-            <i class="fa-solid fa-bars"></i>
-        </button>
-        <div class="d-none d-lg-flex align-items-center gap-3 ms-auto">
-            <ul class="navbar-nav fs-5 fw-bold flex-row gap-3 nav-links">
-                <li class="nav-item">
-                    <a class="nav-link text-light" routerLink="/home" routerLinkActive="active-link"
-                        [routerLinkActiveOptions]="{ exact: true }">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-light" routerLink="/menu" routerLinkActive="active-link">Menu</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-light" routerLink="/" routerLinkActive="active-link"
-                        [routerLinkActiveOptions]="{ exact: true }">Contact</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-light" routerLink="/" routerLinkActive="active-link"
-                        [routerLinkActiveOptions]="{ exact: true }">Checkout</a>
-                </li>
+<nav
+  class="navbar navbar-expand-lg sticky-top"
+  style="background-color: rgb(0, 0, 0); height: 90px; font-family: sans-serif"
+>
+  <div class="container d-flex align-items-center h-100">
+    <a class="navbar-brand" routerLink="/home" routerLinkActive="active-link">
+      <img src="/Assets/Logo/logo-white.png" alt="logo" />
+    </a>
+    <button
+      class="navbar-toggler d-lg-none"
+      type="button"
+      data-bs-toggle="offcanvas"
+      data-bs-target="#offcanvasNav"
+    >
+      <i class="fa-solid fa-bars"></i>
+    </button>
+    <div class="d-none d-lg-flex align-items-center gap-3 ms-auto">
+      <ul class="navbar-nav fs-5 fw-bold flex-row gap-3 nav-links">
+        <li class="nav-item">
+          <a
+            class="nav-link text-light"
+            routerLink="/home"
+            routerLinkActive="active-link"
+            [routerLinkActiveOptions]="{ exact: true }"
+            >Home</a
+          >
+        </li>
+        @if (auth.isAdmin() == true) {
+          <li class="nav-item">
+            <a
+              class="nav-link text-light"
+              routerLink="/admin"
+              routerLinkActive="active-link"
+              [routerLinkActiveOptions]="{ exact: true }"
+            >
+              <i class="bi bi-speedometer2"></i> Admin Dashboard
+            </a>
+          </li>
+        }
+        <li class="nav-item">
+          <a class="nav-link text-light" routerLink="/menu" routerLinkActive="active-link">Menu</a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link text-light"
+            routerLink="/"
+            routerLinkActive="active-link"
+            [routerLinkActiveOptions]="{ exact: true }"
+            >Contact</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link text-light"
+            routerLink="/"
+            routerLinkActive="active-link"
+            [routerLinkActiveOptions]="{ exact: true }"
+            >Checkout</a
+          >
+        </li>
 
-                <li class="nav-item">
-                    <a class="nav-link text-light" routerLink="/profile" routerLinkActive="active-link"
-                        [routerLinkActiveOptions]="{ exact: true }">profile</a>
-                </li>
+        <li class="nav-item">
+          <a
+            class="nav-link text-light"
+            routerLink="/profile"
+            routerLinkActive="active-link"
+            [routerLinkActiveOptions]="{ exact: true }"
+            >profile</a
+          >
+        </li>
 
-                <li class="nav-item">
-                    <a class="nav-link text-light" routerLink="/my-orders-page" routerLinkActive="active-link"
-                        [routerLinkActiveOptions]="{ exact: true }">myorders</a>
-                </li>
-            </ul>
+        <li class="nav-item">
+          <a
+            class="nav-link text-light"
+            routerLink="/my-orders-page"
+            routerLinkActive="active-link"
+            [routerLinkActiveOptions]="{ exact: true }"
+            >myorders</a
+          >
+        </li>
+      </ul>
 
-            <button style="background-color: green" type="button" class="btn text-light fw-bold px-4 py-3 rounded-3"
-                data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
-                <i class="bi bi-cart3"></i>
-            </button>
-        </div>
-
-        <div class="offcanvas offcanvas-start text-center d-lg-none" style="background-color: rgb(0, 0, 0)"
-            tabindex="-1" id="offcanvasNav">
-            <div class="offcanvas-header">
-                <img src="./Assets/Logo/logo-white.png" alt="logo" height="40" />
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
-            </div>
-            <div class="offcanvas-body d-flex flex-column align-items-center gap-3">
-                <ul class="navbar-nav text-center fs-5 fw-bold flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link text-light" routerLink="/home" routerLinkActive="active-link">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" routerLink="/menu" routerLinkActive="active-link">Menu</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" routerLink="/home" routerLinkActive="active-link">Contact</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" routerLink="/home" routerLinkActive="active-link">Checkout</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" routerLink="/profile" routerLinkActive="active-link">Profile</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link text-light" routerLink="/my-orders-page"
-                            routerLinkActive="active-link">my_order</a>
-                    </li>
-                </ul>
-
-                <button style="background-color: green" type="button"
-                    class="btn text-light fw-bold fs-5 px-4 py-3 rounded-3" data-bs-toggle="offcanvas"
-                    data-bs-target="#cartOffcanvas">
-                    <i class="bi bi-cart3"></i>
-                </button>
-            </div>
-        </div>
+      <button
+        style="background-color: green"
+        type="button"
+        class="btn text-light fw-bold px-4 py-3 rounded-3"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#cartOffcanvas"
+      >
+        <i class="bi bi-cart3"></i>
+      </button>
     </div>
 
-    <!-- بدل أي حاجة موجودة في الأسفل، حط ده -->
-    <div class="d-flex align-items-center gap-2 mt-auto p-3" style="border-top: 1px solid #333">
-        <div style="
+    <div
+      class="offcanvas offcanvas-start text-center d-lg-none"
+      style="background-color: rgb(0, 0, 0)"
+      tabindex="-1"
+      id="offcanvasNav"
+    >
+      <div class="offcanvas-header">
+        <img src="./Assets/Logo/logo-white.png" alt="logo" height="40" />
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="offcanvas"
+        ></button>
+      </div>
+      <div class="offcanvas-body d-flex flex-column align-items-center gap-3">
+        <ul class="navbar-nav text-center fs-5 fw-bold flex-column">
+          <li class="nav-item">
+            <a class="nav-link text-light" routerLink="/home" routerLinkActive="active-link"
+              >Home</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" routerLink="/menu" routerLinkActive="active-link"
+              >Menu</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" routerLink="/home" routerLinkActive="active-link"
+              >Contact</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" routerLink="/home" routerLinkActive="active-link"
+              >Checkout</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" routerLink="/profile" routerLinkActive="active-link"
+              >Profile</a
+            >
+          </li>
+
+          <li class="nav-item">
+            <a
+              class="nav-link text-light"
+              routerLink="/my-orders-page"
+              routerLinkActive="active-link"
+              >my_order</a
+            >
+          </li>
+        </ul>
+
+        <button
+          style="background-color: green"
+          type="button"
+          class="btn text-light fw-bold fs-5 px-4 py-3 rounded-3"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#cartOffcanvas"
+        >
+          <i class="bi bi-cart3"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- بدل أي حاجة موجودة في الأسفل، حط ده -->
+  <div class="d-flex align-items-center gap-2 mt-auto p-3" style="border-top: 1px solid #333">
+    <div
+      style="
         width: 38px;
         height: 38px;
         border-radius: 50%;
@@ -97,26 +172,34 @@
         color: #fff;
         font-size: 15px;
         flex-shrink: 0;
-      ">
-            {{ userInitial }}
-        </div>
-        <div>
-            <div style="color: #fff; font-size: 14px; font-weight: 700">{{ userName }}</div>
-            <div style="color: #888; font-size: 12px">{{ userEmail }}</div>
-        </div>
+      "
+    >
+      {{ userInitial }}
     </div>
-</nav>
+    <div>
+      <div style="color: #fff; font-size: 14px; font-weight: 700">{{ userName }}</div>
+      <div style="color: #888; font-size: 12px">{{ userEmail }}</div>
+    </div>
+  </div>
 
-<!-- ====== Navbar ===== -->
+  <!-- ====== Navbar ===== -->
 
-<!-- Cart -->
+  <!-- Cart -->
 
-<div class="offcanvas offcanvas-end" style="background-color: rgb(0, 0, 0)" tabindex="-1" id="cartOffcanvas">
+  <div
+    class="offcanvas offcanvas-end"
+    style="background-color: rgb(0, 0, 0)"
+    tabindex="-1"
+    id="cartOffcanvas"
+  >
     <div class="offcanvas-header border-bottom border-secondary justify-content-between">
-        <h5 class="text-light fw-bold m-0">My cart</h5>
-        <button type="button" class="btn btn-danger btn-sm px-2" data-bs-dismiss="offcanvas">✕</button>
+      <h5 class="text-light fw-bold m-0">My cart</h5>
+      <button type="button" class="btn btn-danger btn-sm px-2" data-bs-dismiss="offcanvas">
+        ✕
+      </button>
     </div>
     <div class="offcanvas-body" id="offcanvas-body"></div>
-</div>
+  </div>
 
-<!-- ==== Cart === -->
+  <!-- ==== Cart === -->
+</nav>

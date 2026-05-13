@@ -1,4 +1,4 @@
-
+@import 'ngx-toastr/toastr';
 .foodix-footer {
   background-color: #0f1214;
   color: #a5a5a5;
@@ -68,7 +68,59 @@
   color: white !important;
 }
 
+.toast-container,
+#toast-container,
+.toast-top-right,
+.overlay-container {
+  z-index: 999999 !important;
+  position: fixed !important;
+}
 
+/* 1. الخلفية الغامقة الشفافة اللي بتغطي الشاشة كلها */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); /* أسود شفاف */
+  display: flex;
+  justify-content: center;
+  align-items: center; /* توسيط المودال بالطول والعرض */
+  z-index: 9999; /* رقم عالي جداً عشان يغطي على الـ Sidebar والـ Navbar */
+  padding: 20px;
+}
 
+/* 2. صندوق المودال الأبيض نفسه */
+.custom-modal {
+  background-color: #ffffff;
+  border-radius: 12px; /* حواف ناعمة */
+  padding: 25px;
+  width: 100%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 
+  /* 🌟 مهم جداً: عشان الفورم طويلة، نخلي المودال ليه طول أقصى ويعمل Scroll داخلي */
+  max-height: 90vh;
+  overflow-y: auto;
+}
 
+/* 3. حجم المودال الكبير (عشان يستوعب العمودين) */
+.custom-modal.modal-lg {
+  max-width: 850px;
+}
+
+/* تنسيق الـ Scrollbar جوه المودال عشان يكون شكله شيك (اختياري) */
+.custom-modal::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-modal::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+.custom-modal::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 10px;
+}
+.custom-modal::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

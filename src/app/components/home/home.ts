@@ -6,10 +6,12 @@ import { MealService } from '../../core/services/meal';
 import { catchError, forkJoin, of } from 'rxjs';
 import { Inject, PLATFORM_ID } from '@angular/core';
 
+import { Navbar } from '../navbar/navbar';
+
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, Navbar],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })

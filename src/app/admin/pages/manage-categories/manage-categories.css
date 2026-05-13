@@ -1,0 +1,180 @@
+.category-card,
+.stat-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  transition:
+    transform 0.2s ease-in-out,
+    box-shadow 0.2s;
+}
+
+.category-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.fs-sm {
+  font-size: 0.9rem;
+}
+
+.btn-add-category {
+  background-color: #f97316;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+}
+.btn-add-category:hover {
+  background-color: #ea580c;
+  color: white;
+}
+
+.icon-box {
+  width: 50px;
+  height: 50px;
+}
+
+.bg-red {
+  background-color: #f43f5e;
+}
+.bg-orange {
+  background-color: #f97316;
+}
+.bg-blue {
+  background-color: #3b82f6;
+}
+.bg-pink {
+  background-color: #ec4899;
+}
+.bg-green {
+  background-color: #10b981;
+}
+.bg-yellow {
+  background-color: #eab308;
+}
+.bg-purple {
+  background-color: #a855f7;
+}
+.bg-cyan {
+  background-color: #06b6d4;
+}
+
+.btn-action {
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 8px;
+  border: none;
+  transition: all 0.2s;
+}
+
+.btn-edit {
+  background-color: #f8fafc;
+  color: #475569;
+}
+.btn-edit:hover {
+  background-color: #e2e8f0;
+}
+
+.btn-delete {
+  background-color: #fef2f2;
+  color: #ef4444;
+}
+.btn-delete:hover {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+.delete-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  background-color: #fee2e2;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.85);
+  z-index: 1050;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.custom-modal {
+  background-color: #ffffff;
+  width: 100%;
+  max-width: 450px;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  animation: slideDown 0.3s ease-in-out;
+}
+
+.form-control,
+.form-select {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.95rem;
+}
+.form-control:focus,
+.form-select:focus {
+  border-color: #f97316;
+  box-shadow: 0 0 0 0.2rem rgba(249, 115, 22, 0.15);
+}
+
+.btn-cancel {
+  background-color: #e2e8f0;
+  color: #475569;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+}
+.btn-cancel:hover {
+  background-color: #cbd5e1;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes slideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ================= Skeleton Animation ================= */
+.skeleton-box {
+  background: #f1f5f9;
+
+  background-image: linear-gradient(90deg, #f1f5f9 0px, #e2e8f0 40px, #f1f5f9 80px);
+  background-size: 200%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -100% 0;
+  }
+  100% {
+    background-position: 100% 0;
+  }
+}

@@ -1,0 +1,453 @@
+<div class="container-fluid py-4">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h3 class="fw-bold mb-1">Live Meals</h3>
+      <p class="text-muted mb-0 fs-sm">Manage your restaurant menu items, sizes, and prices</p>
+    </div>
+    <button
+      class="btn btn-orange text-white fw-bold d-flex align-items-center gap-2 px-4 py-2"
+      (click)="openModal('add')"
+    >
+      <i class="bi bi-plus-lg"></i> Add New Meal
+    </button>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="row g-4 mb-4">
+    <div class="col-md-3">
+      <div class="card stat-card border-0 p-3 h-100">
+        <p class="text-muted fs-sm mb-1 fw-semibold">Total Meals</p>
+        <h2 class="fw-bold mb-0 text-dark">{{ totalMealsCount }}</h2>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card stat-card border-0 p-3 h-100">
+        <p class="text-muted fs-sm mb-1 fw-semibold">Available</p>
+        <h2 class="fw-bold mb-0 text-success">{{ availableMealsCount }}</h2>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card stat-card border-0 p-3 h-100">
+        <p class="text-muted fs-sm mb-1 fw-semibold">Out of Stock</p>
+        <h2 class="fw-bold mb-0 text-danger">{{ outOfStockMealsCount }}</h2>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card stat-card border-0 p-3 h-100">
+        <p class="text-muted fs-sm mb-1 fw-semibold">Avg Rating</p>
+        <h2 class="fw-bold mb-0 text-dark">{{ averageRating }}</h2>
+      </div>
+    </div>
+  </div>
+
+  <!-- Category Filters -->
+  <div class="card table-card border-0 mb-4">
+    <div class="card-body">
+      <h6 class="fw-bold mb-3"><i class="bi bi-funnel text-orange"></i> Filter by Category</h6>
+      <div class="d-flex flex-wrap gap-3">
+        <div class="form-check custom-checkbox" *ngFor="let cat of categories">
+          <input
+            class="form-check-input cursor-pointer"
+            type="checkbox"
+            [id]="'filter_' + cat._id"
+            (change)="onCategoryFilterChange(cat._id!, $event)"
+          />
+          <label class="form-check-label cursor-pointer" [for]="'filter_' + cat._id">
+            {{ cat.name }}
+          </label>
+        </div>
+        <p class="text-muted fs-sm mb-0 mt-1" *ngIf="categories.length === 0">
+          Loading categories...
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table View -->
+  <div class="card table-card border-0 mb-5">
+    <div class="card-header bg-white border-bottom p-4">
+      <h5 class="mb-0 fw-bold">All Menu Items</h5>
+    </div>
+    <div class="table-responsive">
+      <table class="table custom-table align-middle mb-0">
+        <thead class="bg-light text-muted">
+          <tr>
+            <th class="ps-4">MEAL NAME</th>
+            <th>CATEGORY</th>
+            <th>PRICE</th>
+            <th>RATING</th>
+            <th>ORDERS</th>
+            <th>STATUS</th>
+            <th class="text-center pe-4">ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Skeleton Loading -->
+          <tr *ngIf="isLoading">
+            <td colspan="7" class="text-center py-5">
+              <div class="spinner-border text-orange" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </td>
+          </tr>
+
+          <!-- No Data Message -->
+          <tr *ngIf="!isLoading && filteredMeals.length === 0">
+            <td colspan="7" class="text-center py-5 text-muted">
+              <i class="bi bi-search fs-3 mb-2 d-block"></i>
+              No meals found.
+            </td>
+          </tr>
+
+          <!-- Meal Rows -->
+          <tr *ngFor="let meal of filteredMeals" class="table-row-hover">
+            <td class="ps-4">
+              <div class="d-flex align-items-center gap-3">
+                <img
+                  [src]="meal.img || 'assets/images/default-meal.png'"
+                  class="meal-thumbnail rounded"
+                  alt="Meal Image"
+                />
+                <span class="fw-bold text-dark">{{ meal.name }}</span>
+              </div>
+            </td>
+            <td class="text-muted fs-sm">
+              {{ meal.category.name || 'Uncategorized' }}
+            </td>
+            <td class="fw-bold">
+              {{ meal.price | currency: 'EGP ' }}
+            </td>
+            <td>
+              <i class="bi bi-star-fill text-warning me-1"></i>
+              <span class="fw-semibold">4.8</span>
+              <!-- استبدلها بـ meal.rating لو متوفرة -->
+            </td>
+            <td class="text-muted fs-sm">
+              {{ meal.orders_count || 0 }}
+            </td>
+            <td>
+              <span
+                class="badge"
+                [ngClass]="
+                  meal.isAvailable
+                    ? 'bg-success-light text-success-dark'
+                    : 'bg-danger-light text-danger-dark'
+                "
+              >
+                {{ meal.isAvailable ? 'Available' : 'Out of Stock' }}
+              </span>
+            </td>
+            <td class="text-center pe-4">
+              <div class="d-flex align-items-center justify-content-center gap-2">
+                <button
+                  class="btn btn-icon btn-light text-primary"
+                  (click)="openModal('view', meal)"
+                  title="View Details"
+                >
+                  <i class="bi bi-eye"></i>
+                </button>
+                <button
+                  class="btn btn-icon btn-light text-secondary"
+                  (click)="openModal('edit', meal)"
+                  title="Edit"
+                >
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button
+                  class="btn btn-icon btn-light text-danger"
+                  (click)="openModal('delete', meal)"
+                  title="Delete"
+                >
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODALS OVERLAY ================= -->
+<div class="modal-overlay" *ngIf="activeModal" (click)="closeModal()">
+  <div class="custom-modal modal-lg" (click)="$event.stopPropagation()">
+    <!-- View Modal -->
+    <ng-container *ngIf="activeModal === 'view'">
+      <div
+        class="d-flex justify-content-between align-items-center border-bottom border-orange-light pb-3 mb-4"
+      >
+        <h4 class="fw-bold mb-0 text-orange">Meal Details</h4>
+        <i class="bi bi-x-lg text-muted cursor-pointer fs-5" (click)="closeModal()"></i>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-4 text-center">
+          <img
+            [src]="selectedMeal?.img || 'assets/images/default-meal.png'"
+            class="img-fluid rounded mb-3 shadow-sm"
+            alt="Meal"
+          />
+          <h5 class="fw-bold">{{ selectedMeal?.name }}</h5>
+          <p class="text-muted">{{ selectedMeal?.category?.name || 'Uncategorized' }}</p>
+        </div>
+        <div class="col-md-8">
+          <div class="p-3 bg-light rounded">
+            <div class="row mb-2">
+              <div class="col-4 text-muted fw-semibold">Price:</div>
+              <div class="col-8 fw-bold">{{ selectedMeal?.price | currency: 'EGP ' }}</div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-4 text-muted fw-semibold">Status:</div>
+              <div class="col-8">
+                <span
+                  class="badge"
+                  [ngClass]="selectedMeal?.isAvailable ? 'bg-success' : 'bg-danger'"
+                >
+                  {{ selectedMeal?.isAvailable ? 'Available' : 'Out of Stock' }}
+                </span>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-4 text-muted fw-semibold">Description:</div>
+              <div class="col-8">{{ selectedMeal?.description || 'No detailed description.' }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- ================= ADD / EDIT MODAL ================= -->
+    <ng-container *ngIf="activeModal === 'add' || activeModal === 'edit'">
+      <div
+        class="d-flex justify-content-between align-items-center border-bottom border-orange-light pb-3 mb-4"
+      >
+        <h4 class="fw-bold mb-0 text-orange">
+          {{ activeModal === 'add' ? 'Add New Meal' : 'Edit Meal' }}
+        </h4>
+        <i class="bi bi-x-lg text-muted cursor-pointer fs-5" (click)="closeModal()"></i>
+      </div>
+
+      <form [formGroup]="mealForm" (ngSubmit)="onSubmitMeal()">
+        <div class="row g-4">
+          <!-- العمود الأول: البيانات الأساسية والعروض -->
+          <div class="col-md-6 border-end pe-md-4">
+            <h6 class="fw-bold text-orange mb-3">Basic Info</h6>
+
+            <div class="form-group mb-3">
+              <label class="form-label fs-sm text-muted mb-1"
+                >Meal Name <span class="text-danger">*</span></label
+              >
+              <input
+                type="text"
+                class="form-control"
+                formControlName="name"
+                placeholder="e.g. Cheese Burger"
+              />
+            </div>
+
+            <div class="form-group mb-3">
+              <label class="form-label fs-sm text-muted mb-1"
+                >Image URL <span class="text-danger">*</span></label
+              >
+              <div class="input-group">
+                <span class="input-group-text bg-light"
+                  ><i class="bi bi-image text-muted"></i
+                ></span>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="img"
+                  placeholder="Paste image link here..."
+                />
+              </div>
+
+              <div class="mt-2 text-center" *ngIf="mealForm.get('img')?.value">
+                <img
+                  [src]="mealForm.get('img')?.value"
+                  class="rounded shadow-sm"
+                  style="height: 80px; object-fit: cover"
+                  alt="Preview"
+                  onerror="this.style.display = 'none'"
+                />
+              </div>
+            </div>
+
+            <div class="form-group mb-3">
+              <label class="form-label fs-sm text-muted mb-1"
+                >Category <span class="text-danger">*</span></label
+              >
+              <select class="form-select" formControlName="category">
+                <option value="" disabled>Select Category</option>
+                <!-- 🌟 عشان إحنا عملنا Populate، الـ value بقت بتاخد cat._id -->
+                <option *ngFor="let cat of categories" [value]="cat._id">{{ cat.name }}</option>
+              </select>
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-12">
+                <label class="form-label fs-sm text-muted mb-1"
+                  >Price (EGP) <span class="text-danger">*</span></label
+                >
+                <input type="number" class="form-control" formControlName="price" />
+              </div>
+            </div>
+
+            <div class="form-check form-switch mb-4">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                role="switch"
+                id="isAvailableSwitch"
+                formControlName="isAvailable"
+              />
+              <label class="form-check-label ms-2 fw-bold" for="isAvailableSwitch"
+                >Available for Order</label
+              >
+            </div>
+
+            <h6 class="fw-bold text-danger mb-3">Offers & Sales</h6>
+
+            <div class="form-check form-switch mb-3">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                role="switch"
+                id="onSaleSwitch"
+                formControlName="on_sale"
+              />
+              <label class="form-check-label ms-2 text-muted" for="onSaleSwitch"
+                >Enable Discount / Sale</label
+              >
+            </div>
+
+            <div class="row g-2 mb-3" *ngIf="mealForm.get('on_sale')?.value">
+              <div class="col-6">
+                <label class="form-label fs-sm text-muted mb-1">Old Price</label>
+                <input type="number" class="form-control" formControlName="old_price" />
+              </div>
+              <div class="col-6">
+                <label class="form-label fs-sm text-muted mb-1">Discount Tag</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="discount_tag"
+                  placeholder="e.g. 20% OFF"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- العمود التاني: الوصف والأحجام -->
+          <div class="col-md-6 ps-md-4">
+            <h6 class="fw-bold text-orange mb-3">Details & Sizes</h6>
+
+            <div class="form-group mb-3">
+              <label class="form-label fs-sm text-muted mb-1">Short Description</label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="short_description"
+                placeholder="Max 150 characters"
+              />
+            </div>
+
+            <div class="form-group mb-4">
+              <label class="form-label fs-sm text-muted mb-1">Full Description</label>
+              <textarea
+                class="form-control"
+                formControlName="description"
+                rows="3"
+                placeholder="Detailed ingredients..."
+              ></textarea>
+            </div>
+
+            <div class="p-3 bg-light rounded-3 border mb-4">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <label class="fw-bold mb-0">Meal Sizes</label>
+                <button type="button" class="btn btn-sm btn-outline-orange" (click)="addSize()">
+                  <i class="bi bi-plus"></i> Add Size
+                </button>
+              </div>
+
+              <div formArrayName="sizes">
+                <div
+                  class="row g-2 mb-2 align-items-center"
+                  *ngFor="let sizeCtrl of sizesArray.controls; let i = index"
+                  [formGroupName]="i"
+                >
+                  <div class="col-5">
+                    <select class="form-select form-select-sm" formControlName="size">
+                      <option value="S">Small (S)</option>
+                      <option value="M">Medium (M)</option>
+                      <option value="L">Large (L)</option>
+                      <option value="XL">Extra Large (XL)</option>
+                      <option value="Single">Single</option>
+                      <option value="Double">Double</option>
+                      <option value="Triple">Triple</option>
+                      <option value="Family">Family</option>
+                    </select>
+                  </div>
+                  <div class="col-5">
+                    <input
+                      type="number"
+                      class="form-control form-control-sm"
+                      placeholder="Extra Price (+)"
+                      formControlName="extraPrice"
+                    />
+                  </div>
+                  <div class="col-2 text-end">
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-danger"
+                      (click)="removeSize(i)"
+                    >
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </div>
+                <p class="text-muted fs-sm mb-0 mt-2" *ngIf="sizesArray.length === 0">
+                  No sizes added. Default price will be used.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-3 mt-4 pt-3 border-top">
+          <button type="button" class="btn btn-light px-4 fw-bold" (click)="closeModal()">
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="btn btn-orange text-white px-4 fw-bold"
+            [disabled]="mealForm.invalid"
+          >
+            {{ activeModal === 'add' ? 'Save New Meal' : 'Update Meal' }}
+          </button>
+        </div>
+      </form>
+    </ng-container>
+
+    <!-- Delete Modal -->
+    <ng-container *ngIf="activeModal === 'delete'">
+      <div class="text-center pt-3 pb-2">
+        <div class="delete-icon-wrapper bg-danger-light mx-auto mb-3">
+          <i class="bi bi-trash text-danger fs-1"></i>
+        </div>
+        <h4 class="fw-bold mb-2">Delete Meal?</h4>
+        <p class="text-muted mb-4">
+          Are you sure you want to delete
+          <span class="fw-bold text-dark">"{{ selectedMeal?.name }}"</span>?<br />This action cannot
+          be undone.
+        </p>
+        <div class="d-flex justify-content-center gap-3">
+          <button class="btn btn-light px-4 fw-bold" (click)="closeModal()">Cancel</button>
+          <button class="btn btn-danger px-4 fw-bold" (click)="onSubmitDelete()">
+            Yes, Delete
+          </button>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

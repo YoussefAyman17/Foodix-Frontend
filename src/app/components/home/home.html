@@ -1,18 +1,27 @@
 <!--  Hero -->
+<app-navbar></app-navbar>
 <div id="background_hero" class="container-fluid d-flex p-5 mx-auto">
   <div class="row align-items-center mx-0 p-0 gap-0 ms-auto align-items-center">
     <div
-      class="col-12 col-lg-6 text-center position-relative d-flex justify-content-center align-items-center order-1 order-lg-2">
-      <img src="./Assets/hero section/text-03.png" style="
-              position: absolute;
-              top: 8%;
-              left: 1%;
-              width: 150px;
-              transform: rotate(-35deg);
-              z-index: 1;
-            " />
+      class="col-12 col-lg-6 text-center position-relative d-flex justify-content-center align-items-center order-1 order-lg-2"
+    >
+      <img
+        src="./Assets/hero section/text-03.png"
+        style="
+          position: absolute;
+          top: 8%;
+          left: 1%;
+          width: 150px;
+          transform: rotate(-35deg);
+          z-index: 1;
+        "
+      />
 
-      <img src="./Assets/hero section/hero-four_img1.png" alt="food" class="img-fluid rounded-circle" />
+      <img
+        src="./Assets/hero section/hero-four_img1.png"
+        alt="food"
+        class="img-fluid rounded-circle"
+      />
     </div>
 
     <div class="col-12 col-lg-6 text-center text-lg-start order-2 order-lg-1 px-5">
@@ -20,18 +29,16 @@
       <h1 style="font-size: clamp(40px, 6vw, 80px)" class="text-light fw-bold">
         Enjoy Our <span style="color: rgb(232, 0, 13)">Delicius</span> Food
       </h1>
+
       <p class="text-light fs-5" style="font-weight: 500">
-        Savor the taste of our delicious, expertly crafted dishes made with
-        the finest ingredients, offering a perfect blend of flavors.
+        Savor the taste of our delicious, expertly crafted dishes made with the finest ingredients,
+        offering a perfect blend of flavors.
       </p>
-      <button routerLink="/menu" class="btn1 px-5 py-3">
-        Order Now
-      </button>
+      <button onclick="window.open('menu.html', '_self')" class="btn1 px-5 py-3">Order Now</button>
     </div>
   </div>
 </div>
 <!-- ========= Hero ========== -->
-
 
 <!-- Categories -->
 <!-- <section class="bg-light py-5">
@@ -113,20 +120,20 @@
   <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h2 class="fw-bolder fs-1 m-0">OUR CATEGORIES</h2>
-      <button type="button"
+      <button
+        type="button"
         class="bottom_see rounded-3 py-3 px-5 btn btn-outline-danger text-muted fw-bold fs-5"
-        routerLink="/menu">
+        routerLink="/menu"
+      >
         See More
       </button>
     </div>
 
     <div class="row g-3">
       <div class="col-12 col-md-6 col-lg-3" *ngFor="let cat of categories">
-        <a routerLink="/menu" style="text-decoration:none; color:black;">
-          <div class="card border-0 p-3 category-card"
-            style="background-color: rgb(233, 229, 229)">
+        <a routerLink="/menu" style="text-decoration: none; color: black">
+          <div class="card border-0 p-3 category-card" style="background-color: rgb(233, 229, 229)">
             <div class="d-flex align-items-center gap-3 py-3">
-
               <div class="bg-white rounded-circle p-2">
                 <!-- لو الكاتيجوري عندها image -->
                 <img *ngIf="cat.image" [src]="cat.image" width="32px" [alt]="cat.name" />
@@ -137,10 +144,8 @@
               <div>
                 <h6 class="fw-bold m-0 text-uppercase">{{ cat.name }}</h6>
                 <!-- <small class="text-muted">items</small> -->
-                 <small class="text-muted">{{ cat.mealsCount }} items</small>
-
+                <small class="text-muted">{{ cat.mealsCount }} items</small>
               </div>
-
             </div>
           </div>
         </a>
@@ -150,7 +155,6 @@
 </section>
 
 <!-- ======== Categories ========= -->
-
 
 <!-- About -->
 <section class="about-section py-5">
@@ -176,9 +180,9 @@
 
           <!-- Description -->
           <p class="about-desc">
-            We are passionate about serving fresh, flavorful dishes crafted
-            with the finest ingredients. Every meal is thoughtfully prepared
-            to deliver a memorable dining experience you'll love.
+            We are passionate about serving fresh, flavorful dishes crafted with the finest
+            ingredients. Every meal is thoughtfully prepared to deliver a memorable dining
+            experience you'll love.
           </p>
         </div>
         <!-- Stat Cards -->
@@ -202,9 +206,7 @@
         </div>
 
         <!-- CTA -->
-        <button class="btn1 px-5 py-3" routerLink="/menu">
-          Read More
-        </button>
+        <button class="btn1 px-5 py-3" routerLink="/menu">Read More</button>
       </div>
     </div>
   </div>
@@ -216,11 +218,12 @@
   <div class="container text-white align-items-center">
     <div class="row align-items-center justify-content-center m-auto">
       <div
-        class="content col-12 col-sm-6 text-center text-sm-start d-flex flex-column align-items-center align-items-sm-start mb-5 mb-sm-0">
+        class="content col-12 col-sm-6 text-center text-sm-start d-flex flex-column align-items-center align-items-sm-start mb-5 mb-sm-0"
+      >
         <!-- title -->
         <div class="text">
-          <span><i class="bi bi-cash-coin mb-3"></i> Get 25%
-            Discount</span>
+          <span><i class="bi bi-cash-coin mb-3"></i> Get 25% Discount</span>
+
           <h2>Today our special Combo offers</h2>
         </div>
 
@@ -249,9 +252,7 @@
         <!--counter -->
 
         <!-- <a href="menu" class="btn">Read More</a> -->
-        <button routerLink="/menu" class="btn1 py-3 px-5">
-          Read More
-        </button>
+        <button routerLink="/menu" class="btn1 py-3 px-5">Read More</button>
       </div>
 
       <div class="img col-12 col-sm-6 text-center">
@@ -264,7 +265,6 @@
 </div>
 <!-- ====== offers ====== -->
 
-
 <!-- why choose us -->
 <section class="why-section">
   <div class="container">
@@ -272,10 +272,10 @@
     <div class="row">
       <div class="col-12">
         <div class="section-title text-uppercase text-center fadeInDown">
-          <span class="text-warning fw-bolder mb-5"><i class="bi bi-bell-fill"></i> Why choose us</span>
-          <h2 class="mt-3" style="font-size: 50px; font-weight: 900">
-            Why We’re Your Best Choice
-          </h2>
+          <span class="text-warning fw-bolder mb-5"
+            ><i class="bi bi-bell-fill"></i> Why choose us</span
+          >
+          <h2 class="mt-3" style="font-size: 50px; font-weight: 900">Why We’re Your Best Choice</h2>
         </div>
       </div>
     </div>
@@ -289,9 +289,7 @@
             <i class="bi bi-shield-check"></i>
           </div>
           <h3 class="card-title">Hygienic Food</h3>
-          <p class="card-desc">
-            We are passionate about serving fresh, flavorful
-          </p>
+          <p class="card-desc">We are passionate about serving fresh, flavorful</p>
         </div>
       </div>
 
@@ -302,9 +300,7 @@
             <i class="bi bi-recycle"></i>
           </div>
           <h3 class="card-title">Fresh Environment</h3>
-          <p class="card-desc">
-            We are passionate about serving fresh, flavorful
-          </p>
+          <p class="card-desc">We are passionate about serving fresh, flavorful</p>
         </div>
       </div>
 
@@ -315,9 +311,7 @@
             <i class="bi bi-people-fill"></i>
           </div>
           <h3 class="card-title">Skilled Chefs</h3>
-          <p class="card-desc">
-            We are passionate about serving fresh, flavorful
-          </p>
+          <p class="card-desc">We are passionate about serving fresh, flavorful</p>
         </div>
       </div>
 
@@ -328,16 +322,13 @@
             <i class="bi bi-stars"></i>
           </div>
           <h3 class="card-title">Event & Party</h3>
-          <p class="card-desc">
-            We are passionate about serving fresh, flavorful
-          </p>
+          <p class="card-desc">We are passionate about serving fresh, flavorful</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 <!-- ====== why choose us ===== -->
-
 
 <!-- Menu Section -->
 <!-- <section id="menuSec" style="padding-top: 120px; padding-bottom: 100px">
@@ -496,23 +487,22 @@
           <span class="text-warning fw-bolder mb-5">
             <i class="bi bi-bell-fill"></i> Delicious Menu
           </span>
-          <h3 class="mt-3 sec-heading">
-            Explore Our Delicious<br />Menu
-          </h3>
+          <h3 class="mt-3 sec-heading">Explore Our Delicious<br />Menu</h3>
         </div>
       </div>
     </div>
 
     <div class="row">
       <div class="col-lg-6" *ngFor="let meal of topMeals">
-        <a routerLink="/menu"
-          style="text-decoration:none; color:black;">
-          <div class="menu-item p-4" style="height:150px">
-
+        <a routerLink="/menu" style="text-decoration: none; color: black">
+          <div class="menu-item p-4" style="height: 150px">
             <div class="thumb-img">
-              <img [src]="meal.image || meal.img" [alt]="meal.name"
+              <img
+                [src]="meal.image || meal.img"
+                [alt]="meal.name"
                 class="rounded-circle"
-                style="width:60px; height:60px; object-fit:cover" />
+                style="width: 60px; height: 60px; object-fit: cover"
+              />
             </div>
 
             <div class="txt-content mb-3">
@@ -530,18 +520,14 @@
                 <span class="price text-danger fs-5">${{ meal.price }}</span>
               </div>
             </div>
-
           </div>
         </a>
       </div>
     </div>
-
   </div>
 </section>
 
 <!-- ===== Menu Section ======= -->
-
-
 
 <!-- Chefs -->
 <section>
@@ -549,9 +535,7 @@
     <div class="row align-items-center justify-content-center text-center">
       <div class="col-12 mb-5">
         <div class="section-title text-uppercase text-center">
-          <span class="team-text">
-            <i class="bi bi-egg-fried"></i> Our Special Chefs
-          </span>
+          <span class="team-text"> <i class="bi bi-egg-fried"></i> Our Special Chefs </span>
           <h3 class="sec-heading">
             Introducing Our Culinary <br />
             Masters
@@ -653,28 +637,31 @@
 </section>
 <!-- ======== Chefs ======== -->
 
-
 <!-- Testimonials Section -->
-<section id="testimonials" style="
-        padding-top: 120px;
-        padding-bottom: 100px;
-        background-color: #f7f1e1;
-      ">
+<section
+  id="testimonials"
+  style="padding-top: 120px; padding-bottom: 100px; background-color: #f7f1e1"
+>
   <div class="container">
     <div class="row">
       <div class="col-12">
         <div class="section-title text-uppercase text-center fadeInDown">
-          <span class="text-warning fw-bolder mb-5"><i class="bi bi-bell-fill"></i> Testimonials</span>
-          <h3 class="mt-3" style="font-size: 50px; font-weight: 900">
-            Our Guests Are Saying
-          </h3>
+          <span class="text-warning fw-bolder mb-5"
+            ><i class="bi bi-bell-fill"></i> Testimonials</span
+          >
+          <h3 class="mt-3" style="font-size: 50px; font-weight: 900">Our Guests Are Saying</h3>
         </div>
       </div>
     </div>
 
     <div class="row">
       <div class="col-12">
-        <div id="carouselExampleInterval" class="carousel slide py-5" data-bs-ride="carousel" data-bs-interval="4000">
+        <div
+          id="carouselExampleInterval"
+          class="carousel slide py-5"
+          data-bs-ride="carousel"
+          data-bs-interval="4000"
+        >
           <div class="carousel-inner">
             <div class="carousel-item active" data-bs-interval="4000">
               <div class="card p-5">
@@ -687,11 +674,9 @@
                 </ul>
 
                 <p class="mb-5">
-                  From the moment we walked in, we were impressed by the
-                  warm and inviting atmosphere. The food was
-                  exceptional—each dish was bursting with fresh, vibrant
-                  flavors. The staff was attentive and knowledgeable, making
-                  our dining experience.
+                  From the moment we walked in, we were impressed by the warm and inviting
+                  atmosphere. The food was exceptional—each dish was bursting with fresh, vibrant
+                  flavors. The staff was attentive and knowledgeable, making our dining experience.
                 </p>
                 <div class="author d-flex justify-content-between">
                   <div class="data d-flex gap-4">
@@ -706,7 +691,8 @@
 
                   <div
                     class="quote bg-success rounded-circle text-white d-flex justify-content-center align-items-center"
-                    style="width: 50px; height: 50px">
+                    style="width: 50px; height: 50px"
+                  >
                     <i class="bi bi-quote fs-5"></i>
                   </div>
                 </div>
@@ -723,11 +709,9 @@
                 </ul>
 
                 <p class="mb-5">
-                  From the moment we walked in, we were impressed by the
-                  warm and inviting atmosphere. The food was
-                  exceptional—each dish was bursting with fresh, vibrant
-                  flavors. The staff was attentive and knowledgeable, making
-                  our dining experience.
+                  From the moment we walked in, we were impressed by the warm and inviting
+                  atmosphere. The food was exceptional—each dish was bursting with fresh, vibrant
+                  flavors. The staff was attentive and knowledgeable, making our dining experience.
                 </p>
                 <div class="author d-flex justify-content-between">
                   <div class="data d-flex gap-4">
@@ -742,7 +726,8 @@
 
                   <div
                     class="quote bg-success rounded-circle text-white d-flex justify-content-center align-items-center"
-                    style="width: 50px; height: 50px">
+                    style="width: 50px; height: 50px"
+                  >
                     <i class="bi bi-quote fs-5"></i>
                   </div>
                 </div>
@@ -759,11 +744,9 @@
                 </ul>
 
                 <p class="mb-5">
-                  From the moment we walked in, we were impressed by the
-                  warm and inviting atmosphere. The food was
-                  exceptional—each dish was bursting with fresh, vibrant
-                  flavors. The staff was attentive and knowledgeable, making
-                  our dining experience.
+                  From the moment we walked in, we were impressed by the warm and inviting
+                  atmosphere. The food was exceptional—each dish was bursting with fresh, vibrant
+                  flavors. The staff was attentive and knowledgeable, making our dining experience.
                 </p>
                 <div class="author d-flex justify-content-between">
                   <div class="data d-flex gap-4">
@@ -778,7 +761,8 @@
 
                   <div
                     class="quote bg-success rounded-circle text-white d-flex justify-content-center align-items-center"
-                    style="width: 50px; height: 50px">
+                    style="width: 50px; height: 50px"
+                  >
                     <i class="bi bi-quote fs-5"></i>
                   </div>
                 </div>
@@ -787,12 +771,26 @@
           </div>
 
           <div class="carousel-indicators">
-            <button type="button" data-bs-target="#carouselExampleInterval" data-bs-slide-to="0" class="active"
-              aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#carouselExampleInterval" data-bs-slide-to="1"
-              aria-label="Slide 2"></button>
-            <button type="button" data-bs-target="#carouselExampleInterval" data-bs-slide-to="2"
-              aria-label="Slide 3"></button>
+            <button
+              type="button"
+              data-bs-target="#carouselExampleInterval"
+              data-bs-slide-to="0"
+              class="active"
+              aria-current="true"
+              aria-label="Slide 1"
+            ></button>
+            <button
+              type="button"
+              data-bs-target="#carouselExampleInterval"
+              data-bs-slide-to="1"
+              aria-label="Slide 2"
+            ></button>
+            <button
+              type="button"
+              data-bs-target="#carouselExampleInterval"
+              data-bs-slide-to="2"
+              aria-label="Slide 3"
+            ></button>
           </div>
         </div>
       </div>

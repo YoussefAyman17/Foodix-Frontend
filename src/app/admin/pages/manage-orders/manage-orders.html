@@ -1,0 +1,232 @@
+<div class="container-fluid py-4 bg-light-gray min-vh-100">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h3 class="fw-bold mb-1">Live Orders</h3>
+      <p class="text-muted mb-0 fs-sm">Monitor and manage all incoming orders in real-time</p>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-warning" role="status"></div>
+  </div>
+
+  <!-- Stats -->
+  <div class="row g-3 mb-4" *ngIf="!isLoading">
+    <div class="col">
+      <div class="card border-0 p-3 h-100">
+        <p class="text-muted mb-1">Total Orders</p>
+        <h3 class="fw-bold">{{ totalOrders }}</h3>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card border-0 p-3 h-100">
+        <p class="text-muted mb-1">Pending</p>
+        <h3 class="fw-bold text-warning">{{ pendingOrders }}</h3>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card border-0 p-3 h-100">
+        <p class="text-muted mb-1">Preparing</p>
+        <h3 class="fw-bold text-primary">{{ preparingOrders }}</h3>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card border-0 p-3 h-100">
+        <p class="text-muted mb-1">Out for Delivery</p>
+        <h3 class="fw-bold text-info">{{ outForDeliveryOrders }}</h3>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card border-0 p-3 h-100">
+        <p class="text-muted mb-1">Delivered</p>
+        <h3 class="fw-bold text-success">{{ deliveredOrders }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <!-- Orders -->
+  <div class="d-flex flex-column gap-4" *ngIf="!isLoading">
+    <div class="card border-0 p-4" *ngFor="let order of orders">
+      <!-- Header -->
+      <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
+        <div>
+          <h5 class="fw-bold mb-1">#ORD-{{ order.orderId }}</h5>
+          <small class="text-muted">
+            {{ getTimeAgo(order.createdAt) }}
+          </small>
+        </div>
+
+        <div class="text-end">
+          <h5 class="fw-bold mb-1">EGP {{ order.totalPrice }}</h5>
+          <span
+            class="badge"
+            [ngClass]="{
+              'bg-warning text-dark': order.status === 'Pending',
+              'bg-primary': order.status === 'Preparing',
+              'bg-info text-dark': order.status === 'On the way',
+              'bg-success': order.status === 'Delivered',
+              'bg-danger': order.status === 'Cancelled',
+            }"
+            ><i
+              class="bi me-1"
+              [ngClass]="{
+                'bi-clock': order.status === 'Pending',
+                'bi-box-seam': order.status === 'Preparing',
+                'bi-truck': order.status === 'On the way',
+                'bi-check-circle': order.status === 'Delivered',
+                'bi-x-lg': order.status === 'Cancelled',
+              }"
+            ></i>
+            {{ order.status }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Customer -->
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <p class="text-muted mb-1">Customer</p>
+          <h6>{{ order.userId.userName || 'Unknown User' }}</h6>
+          <small>{{ order.shippingAddress?.contactPhone }}</small>
+        </div>
+
+        <div class="col-md-6">
+          <p class="text-muted mb-1">Address</p>
+          <h6>
+            {{ order.shippingAddress?.street }}, {{ order.shippingAddress?.area }},
+            {{ order.shippingAddress?.city }}
+          </h6>
+        </div>
+
+        <div class="col-md-2 text-end">
+          <button class="btn btn-outline-primary btn-sm" (click)="openModal('view', order)">
+            <i class="bi bi-eye"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Items -->
+      <div class="mb-3">
+        <p class="text-muted mb-2">Items</p>
+        <div class="d-flex flex-wrap gap-2">
+          <span class="badge bg-light text-dark border" *ngFor="let item of order.orderItems">
+            {{ item.foodItem?.name || 'Meal' }} x{{ item.quantity }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="d-flex gap-2" *ngIf="order.status === 'Pending'">
+        <button class="btn btn-success" (click)="updateOrderStatus(order, 'Preparing')">
+          Accept
+        </button>
+
+        <button class="btn btn-danger" (click)="updateOrderStatus(order, 'Cancelled')">
+          Reject
+        </button>
+      </div>
+
+      <div class="d-flex gap-2" *ngIf="order.status === 'Preparing'">
+        <button class="btn btn-primary" (click)="openAssignModal(order)">
+          <i class="bi bi-truck"></i>
+          Assign Driver
+        </button>
+      </div>
+
+      <div class="d-flex gap-2" *ngIf="order.status === 'On the way'">
+        <button class="btn btn-success" (click)="updateOrderStatus(order, 'Delivered')">
+          Mark Delivered
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade show d-block" *ngIf="activeModal && selectedOrder">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content p-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>Order #ORD-{{ selectedOrder.orderId }}</h4>
+        <button class="btn-close" (click)="closeModal()"></button>
+      </div>
+
+      <p><strong>Customer:</strong> {{ selectedOrder.userId?.userName }}</p>
+      <p>
+        <strong>Phone:</strong>
+        {{ selectedOrder.shippingAddress?.contactPhone }}
+      </p>
+      <p>
+        <strong>Address:</strong>
+        {{ selectedOrder.shippingAddress?.street }}, {{ selectedOrder.shippingAddress?.area }},
+        {{ selectedOrder.shippingAddress?.city }}
+      </p>
+
+      <hr />
+
+      <h5>Items</h5>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Qty</th>
+            <th>Size</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of selectedOrder.orderItems">
+            <td>{{ item.foodItem?.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.size }}</td>
+            <td>{{ item.priceAtPurchase * item.quantity }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="text-end">
+        <h5>Total: EGP {{ selectedOrder.totalPrice }}</h5>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="activeModal === 'assignDelivery'">
+  <div class="assign-modal">
+    <div class="modal-header">
+      <div>
+        <h3>Assign Delivery Person</h3>
+        <p>Order #ORD-{{ selectedOrder?.orderId }}</p>
+      </div>
+
+      <button class="close-btn" (click)="closeModal()">×</button>
+    </div>
+
+    <div class="drivers-list">
+      <div
+        class="driver-card"
+        *ngFor="let driver of deliveryPersons"
+        (click)="assignDriver(driver)"
+      >
+        <div class="driver-info">
+          <h5>{{ driver.userName }}</h5>
+          <p>{{ driver.phone }}</p>
+        </div>
+
+        <div>
+          <span class="status-badge" [ngClass]="driver.isBusy ? 'busy' : 'available'">
+            {{ driver.isBusy ? 'Busy' : 'Available' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <button class="cancel-btn" (click)="closeModal()">Cancel</button>
+  </div>
+</div>

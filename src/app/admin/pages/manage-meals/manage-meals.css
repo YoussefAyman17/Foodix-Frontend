@@ -1,0 +1,107 @@
+/* ================= THEME COLORS ================= */
+.text-orange {
+  color: #f97316 !important;
+}
+
+.bg-orange {
+  background-color: #f97316 !important;
+}
+
+.btn-orange {
+  background-color: #f97316;
+  color: white;
+  border: none;
+  transition: all 0.2s;
+}
+
+.btn-orange:hover {
+  background-color: #ea580c;
+  color: white;
+}
+
+.border-orange-light {
+  border-bottom: 2px solid #ffedd5 !important;
+}
+
+/* ================= TABLE STYLING ================= */
+.table-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  border: 1px solid #f1f5f9 !important;
+}
+
+.custom-table th {
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f1f5f9;
+}
+
+.custom-table td {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f8fafc;
+}
+
+.table-row-hover:hover td {
+  background-color: #fafaf9;
+}
+
+/* صورة الوجبة المصغرة في الجدول */
+.meal-thumbnail {
+  width: 42px;
+  height: 42px;
+  object-fit: cover;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* ================= ACTION BUTTONS ================= */
+.btn-icon {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  transition: all 0.2s;
+}
+
+.btn-icon i {
+  font-size: 0.9rem;
+}
+
+.btn-icon:hover {
+  background-color: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+/* ================= BADGES ================= */
+.bg-success-light {
+  background-color: #d1fae5;
+}
+.text-success-dark {
+  color: #065f46;
+  font-weight: 600;
+}
+
+.bg-danger-light {
+  background-color: #fee2e2;
+}
+.text-danger-dark {
+  color: #991b1b;
+  font-weight: 600;
+}
+
+.delete-icon-wrapper {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
