@@ -3,11 +3,13 @@ import { CategoryService } from '../../core/services/category';
 import { MealService } from '../../core/services/meal';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { Navbar } from "../navbar/navbar";
+import { Footer } from "../footer/footer";
 
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, Navbar, Footer],
   templateUrl: './menu.html',
   styleUrl: './menu.css',
 })

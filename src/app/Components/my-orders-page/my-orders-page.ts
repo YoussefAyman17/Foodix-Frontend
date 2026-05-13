@@ -1,11 +1,13 @@
 import { Component, Inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Order } from '../../core/services/order';
+import { Navbar } from "../navbar/navbar";
+import { Footer } from "../footer/footer";
 
 @Component({
   selector: 'app-my-orders-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, Navbar, Footer],
   templateUrl: './my-orders-page.html',
   styleUrl: './my-orders-page.css',
 })
@@ -36,7 +38,8 @@ export class MyOrdersPage implements OnInit {
     this.isLoading.set(true);
     this.Order.getMyOrders().subscribe({
       next: (res) => {
-        const data = res["User's Orders"] || [];
+        // الباكند بيرجع { success, count, orders: [...] }
+        const data = res.orders || [];
         this.orders.set(data);
         this.filteredOrders.set(data);
         this.isLoading.set(false);
@@ -70,7 +73,7 @@ export class MyOrdersPage implements OnInit {
       result = result.filter(
         (o) =>
           ('FDX-' + o.orderId).toLowerCase().includes(q) ||
-          o.orderItems?.some((item: any) => item.foodItem?.name?.toLowerCase().includes(q)),
+          o.orderItems?.some((item: any) => item.name?.toLowerCase().includes(q)),
       );
     }
 
