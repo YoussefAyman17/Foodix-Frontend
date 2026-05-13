@@ -1,0 +1,248 @@
+/*
+
+.priority-high {
+  background-color: #ffedd5;
+  color: #ea580c;
+  border: 1px solid #fdba74;
+}
+
+.priority-medium {
+  background-color: #fef9c3;
+  color: #ca8a04;
+  border: 1px solid #fde047;
+}
+
+.priority-low {
+  background-color: #dcfce7;
+  color: #16a34a;
+  border: 1px solid #86efac;
+}
+
+
+
+.status-pending {
+  background-color: #fef3c7;
+  color: #b45309;
+}
+
+.status-progress {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+}
+
+.status-resolved {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+
+
+.service-badge {
+  background-color: #f1f5f9;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #334155;
+} */
+
+
+/* ================= THEME COLORS ================= */
+
+.text-orange {
+  color: #f97316 !important;
+}
+
+.bg-orange {
+  background-color: #f97316 !important;
+}
+
+.btn-orange {
+  background-color: #f97316;
+  color: white;
+  border: none;
+  transition: all 0.2s;
+}
+
+.btn-orange:hover {
+  background-color: #ea580c;
+  color: white;
+}
+
+.border-orange-light {
+  border-bottom: 2px solid #ffedd5 !important;
+}
+
+/* ================= TABLE CARD ================= */
+
+.table-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  border: 1px solid #f1f5f9 !important;
+  overflow: hidden;
+}
+
+/* ================= TABLE ================= */
+
+.custom-table th {
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f1f5f9;
+}
+
+.custom-table td {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f8fafc;
+}
+
+.table-row-hover:hover td {
+  background-color: #fafaf9;
+}
+
+/* ================= ACTION BUTTONS ================= */
+
+.btn-icon {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  transition: all 0.2s;
+}
+
+.btn-icon i {
+  font-size: 0.9rem;
+}
+
+.btn-icon:hover {
+  background-color: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+/* ================= STATUS BADGES ================= */
+
+.status-pending {
+  background-color: #fef3c7;
+  color: #b45309;
+  font-weight: 600;
+}
+
+.status-progress {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+.status-resolved {
+  background-color: #dcfce7;
+  color: #15803d;
+  font-weight: 600;
+}
+
+.status-rejected {
+  background-color: #c12828;
+  color: #fffdfd;
+  font-weight: 600;
+}
+
+/* ================= SERVICE BADGE ================= */
+
+.service-badge {
+  background-color: #f1f5f9;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #334155;
+  display: inline-block;
+}
+
+/* ================= MODAL ================= */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(3px);
+  z-index: 1050;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 1rem;
+}
+
+.custom-modal {
+  background: white;
+  border-radius: 18px;
+  width: 100%;
+  max-width: 850px;
+  padding: 2rem;
+
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+  animation: modalFade 0.2s ease;
+}
+
+@keyframes modalFade {
+
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ================= STATS CARDS ================= */
+
+.stat-card {
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  border: 1px solid #f1f5f9 !important;
+  transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+}
+
+/* ================= UTILITIES ================= */
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.fs-sm {
+  font-size: 0.875rem;
+}
+
+/* ================= SCROLLBAR ================= */
+
+.table-responsive::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 20px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+  background: #f8fafc;
+}

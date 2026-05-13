@@ -51,7 +51,7 @@ export class Auth {
   private getHeaders() {
     const token = this.getToken();
 
-    return { headers: { authorization: token ? ` ${token}` : '' } };
+    return { headers: { authorization: token ? `${token}` : '' } };
   }
 
   userData() {

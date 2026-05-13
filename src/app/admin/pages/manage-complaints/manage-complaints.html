@@ -1,1 +1,415 @@
-<p>manage-complaints works!</p>
+<div class="container-fluid py-4">
+
+  <!-- ================= HEADER ================= -->
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+      <h3 class="fw-bold mb-1">Complaints</h3>
+
+      <p class="text-muted mb-0 fs-sm">
+        Monitor and manage customer complaints efficiently
+      </p>
+    </div>
+
+  </div>
+
+  <!-- ================= STATS CARDS ================= -->
+
+  <div class="row g-4 mb-4">
+
+    <div class="col-md-3">
+      <div class="card stat-card border-0 p-3 h-100">
+        <p class="text-muted fs-sm mb-1 fw-semibold">
+          Total Complaints
+        </p>
+
+        <h2 class="fw-bold mb-0 text-dark">
+          {{ stats.totalComplaints }}
+        </h2>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card stat-card border-0 p-3 h-100">
+        <p class="text-muted fs-sm mb-1 fw-semibold">
+          Pending
+        </p>
+
+        <h2 class="fw-bold mb-0 text-warning">
+          {{ stats?.pendingComplaints }}
+        </h2>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card stat-card border-0 p-3 h-100">
+        <p class="text-muted fs-sm mb-1 fw-semibold">
+          In Progress
+        </p>
+
+        <h2 class="fw-bold mb-0 text-primary">
+          {{ stats?.inProgressComplaints }}
+        </h2>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card stat-card border-0 p-3 h-100">
+        <p class="text-muted fs-sm mb-1 fw-semibold">
+          Resolved
+        </p>
+
+        <h2 class="fw-bold mb-0 text-success">
+          {{ stats?.resolvedComplaints }}
+        </h2>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================= TABLE ================= -->
+
+  <div class="card table-card border-0">
+
+    <div class="card-header bg-white border-bottom p-4">
+
+      <h5 class="mb-0 fw-bold">
+        All Complaints
+      </h5>
+
+    </div>
+
+    <div class="table-responsive">
+
+      <table class="table custom-table align-middle mb-0">
+
+        <!-- ================= TABLE HEADER ================= -->
+
+        <thead class="bg-light text-muted">
+
+          <tr>
+
+            <th class="ps-4">
+              COMPLAINT ID
+            </th>
+
+            <th>
+              CUSTOMER
+            </th>
+
+            <th>
+              subject
+            </th>
+
+            <th>
+              Type
+            </th>
+
+            <th>
+              STATUS
+            </th>
+
+            <th>
+              DATE
+            </th>
+
+            <th class="text-center pe-4">
+              ACTIONS
+            </th>
+
+          </tr>
+
+        </thead>
+        <!-- ================= TABLE BODY ================= -->
+
+        <tbody>
+
+          <!-- Loading -->
+
+          <tr *ngIf="isLoading">
+            <td colspan="7" class="text-center py-5">
+              <div class="spinner-border text-orange" role="status"></div>
+            </td>
+          </tr>
+
+          <!-- No Data -->
+
+          <tr *ngIf="!isLoading && complaints.length === 0">
+
+            <td colspan="7" class="text-center py-5 text-muted">
+
+              <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+
+              No complaints found.
+
+            </td>
+
+          </tr>
+
+          <!-- Complaint Rows -->
+
+          <tr *ngFor="let complaint of complaints" class="table-row-hover">
+
+            <!-- ID -->
+
+            <td class="ps-4 fw-bold">
+
+              #CMP-{{ complaint.id }}
+
+            </td>
+
+            <!-- CUSTOMER -->
+
+            <td>
+
+              <div class="fw-bold text-dark">
+
+                {{ complaint.name }}
+
+              </div>
+
+              <div class="text-muted small">
+
+                {{ complaint.email }}
+
+              </div>
+
+            </td>
+
+            <!-- SUBJECT -->
+
+            <td class="fw-semibold">
+
+              {{ complaint.subject }}
+
+            </td>
+
+            <!-- SERVICE -->
+
+            <td>
+
+              <span class="service-badge">
+
+                {{ complaint.service }}
+
+              </span>
+
+            </td>
+
+            <!-- STATUS -->
+
+            <td>
+
+              <span class="badge rounded-pill px-3 py-2" [ngClass]="{
+                  'status-pending': complaint.status === 'pending',
+                  'status-progress': complaint.status === 'in process',
+                  'status-resolved': complaint.status === 'resolved',
+                  'status-rejected': complaint.status === 'rejected'
+
+                }">
+
+                {{ complaint.status }}
+
+              </span>
+
+            </td>
+
+            <!-- DATE -->
+
+            <td class="text-muted">
+
+              {{ complaint.createdAt }}
+
+            </td>
+
+            <!-- ACTIONS -->
+
+            <td class="text-center pe-4">
+
+              <div class="d-flex align-items-center justify-content-center gap-2">
+
+                <!-- View -->
+
+                <button class="btn btn-icon btn-light text-primary" (click)="openModal('view', complaint)" title="View">
+
+                  <i class="bi bi-eye"></i>
+
+                </button>
+
+
+              </div>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ================= MODAL OVERLAY ================= -->
+
+<div class="modal-overlay" *ngIf="activeModal" (click)="closeModal()">
+
+  <div class="custom-modal modal-lg" (click)="$event.stopPropagation()">
+
+    <!-- ================= VIEW MODAL ================= -->
+    <ng-container *ngIf="activeModal === 'view'">
+      <!-- Modal Header -->
+      <div class="d-flex justify-content-between align-items-center border-bottom border-orange-light pb-3 mb-4">
+        <h4 class="fw-bold mb-0 text-orange">Complaint Details</h4>
+        <i class="bi bi-x-lg text-muted cursor-pointer fs-5" (click)="closeModal()"></i>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-3 bg-light rounded">
+
+        <!-- Complaint ID (من الداتابيز _id) -->
+        <div class="row mb-3">
+          <div class="col-4 text-muted fw-semibold">Complaint ID:</div>
+          <div class="col-8">#{{ selectedComplaint?._id }}</div>
+        </div>
+        <!-- name -->
+        <div class="row mb-3">
+          <div class="col-4 text-muted fw-semibold">Customer:</div>
+          <div class="col-8">
+            <div>{{ selectedComplaint?.name }}</div>
+          </div>
+        </div>
+        <!-- Subject -->
+        <div class="row mb-3">
+          <div class="col-4 text-muted fw-semibold">Subject:</div>
+          <div class="col-8 text-dark fw-medium">
+            {{ selectedComplaint?.subject }}
+          </div>
+        </div>
+
+        <!-- Status (حسب حالات الاسكيما) -->
+        <div class="row mb-3">
+          <div class="col-4 text-muted fw-semibold">Status:</div>
+          <div class="col-8">
+            <span class="badge rounded-pill px-3 py-2" [ngClass]="{
+            'status-pending': selectedComplaint?.status === 'pending',
+            'status-progress': selectedComplaint?.status === 'in process',
+            'status-resolved': selectedComplaint?.status === 'resolved',
+            'status-rejected': selectedComplaint?.status === 'rejected'
+          }">
+              {{ selectedComplaint?.status }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Created At -->
+        <div class="row mb-3">
+          <div class="col-4 text-muted fw-semibold">Date:</div>
+          <div class="col-8 small">
+            {{ selectedComplaint?.createdAt}}
+          </div>
+        </div>
+        <!-- Message -->
+        <div class="row mb-3">
+          <div class="col-4 text-muted fw-semibold">
+            Message:
+          </div>
+
+          <div class="col-8">
+            <div class="p-3 bg-white border rounded small text-dark">
+              {{ selectedComplaint?.message }}
+            </div>
+          </div>
+
+        </div>
+
+
+        <!-- Action Buttons -->
+
+        <div class="d-flex justify-content-end gap-2 mt-4">
+
+          <!-- Reject -->
+
+          <button class="btn btn-outline-danger px-4" (click)="rejectComplaint()">
+
+            Reject
+
+          </button>
+
+          <!-- Add Response -->
+
+          <button class="btn btn-orange text-white px-4" (click)="openResponseModal(selectedComplaint!)">
+
+            Add Response
+
+          </button>
+        </div>
+
+      </div>
+    </ng-container>
+    <!-- ================= RESPONSE MODAL ================= -->
+
+    <ng-container *ngIf="activeModal === 'response'">
+
+      <!-- Header -->
+
+      <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+
+        <div>
+
+          <h4 class="fw-bold mb-1">
+            Add Response
+          </h4>
+
+          <p class="text-muted mb-0">
+            Complaint #CMP-{{ selectedComplaint?.id }}
+          </p>
+
+        </div>
+
+        <i class="bi bi-x-lg cursor-pointer" (click)="closeModal()">
+        </i>
+
+      </div>
+
+      <!-- Body -->
+
+      <div class="mb-4">
+
+        <label class="form-label fw-semibold mb-2">
+          Your Response
+        </label>
+
+        <textarea class="form-control" rows="6" placeholder="Enter your response to the customer..."
+          [(ngModel)]="responseText">
+        </textarea>
+
+      </div>
+
+      <!-- Footer -->
+
+      <div class="d-flex justify-content-end gap-3">
+
+        <button class="btn btn-light px-4" (click)="closeModal()">
+
+          Cancel
+
+        </button>
+
+        <button class="btn btn-orange text-white px-4" (click)="submitResponse()">
+
+          Send Response
+
+        </button>
+
+      </div>
+
+    </ng-container>
+  </div>
+
+
+</div>
