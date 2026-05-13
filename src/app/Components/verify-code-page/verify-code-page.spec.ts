@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { VerifyCodePage } from './verify-code-page';
 
@@ -9,6 +10,7 @@ describe('VerifyCodePage', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [VerifyCodePage],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(VerifyCodePage);

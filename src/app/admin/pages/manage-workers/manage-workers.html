@@ -1,1 +1,108 @@
-<p>manage-workers works!</p>
+<div class="worker-container">
+
+  <form [formGroup]="workerForm" (ngSubmit)="submitWorker()">
+
+    <input
+      type="text"
+      placeholder="Name"
+      formControlName="name"
+    />
+
+    <input
+      type="email"
+      placeholder="Email"
+      formControlName="email"
+    />
+
+    <input
+      type="text"
+      placeholder="Phone"
+      formControlName="phone"
+    />
+
+    <input
+      type="number"
+      placeholder="Salary"
+      formControlName="salary"
+    />
+
+    <select formControlName="shift">
+      <option value="Morning">Morning</option>
+      <option value="Evening">Evening</option>
+    </select>
+
+    <select formControlName="status">
+      <option value="Active">Active</option>
+      <option value="On Leave">On Leave</option>
+      <option value="Terminated">Terminated</option>
+    </select>
+
+    <select formControlName="vehicleType">
+      <option value="Motorcycle">Motorcycle</option>
+      <option value="Bicycle">Bicycle</option>
+    </select>
+
+    <input
+      type="text"
+      placeholder="Plate Number"
+      formControlName="plateNumber"
+    />
+
+    <button type="submit">
+      {{ isEditMode ? 'Update Worker' : 'Add Worker' }}
+    </button>
+
+  </form>
+
+  <table>
+
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Salary</th>
+        <th>Shift</th>
+        <th>Status</th>
+        <th>Vehicle</th>
+        <th>Plate</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      <tr *ngFor="let worker of workers">
+
+        <td>{{ worker.userId.userName }}</td>
+
+        <td>{{ worker.userId.email }}</td>
+
+        <td>{{ worker.salary }}</td>
+
+        <td>{{ worker.shift }}</td>
+
+        <td>{{ worker.status }}</td>
+
+        <td>{{ worker.deliveryDetails?.vehicleType }}</td>
+
+        <td>{{ worker.deliveryDetails?.plateNumber }}</td>
+
+        <td>
+
+          <button (click)="editWorker(worker)">
+            Edit
+          </button>
+
+          <button (click)="deleteWorker(worker._id!)">
+            Delete
+          </button>
+
+        </td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</div>

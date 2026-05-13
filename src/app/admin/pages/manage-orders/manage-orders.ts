@@ -24,6 +24,11 @@ export class ManageOrders implements OnInit {
   selectedOrder: Order | null = null;
 
   ngOnInit(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      this.isLoading = false;
+      return;
+    }
+
     this.loadOrders();
   }
 
@@ -120,7 +125,7 @@ export class ManageOrders implements OnInit {
 
     this.orderService.getAllDeliveryPersons().subscribe({
       next: (res: any) => {
-        this.deliveryPersons = res.data || res;
+        this.deliveryPersons = res.deliveryWorkers || res.OnlineDeliveryWorkers || res.data || [];
       },
       error: (err) => {
         console.error(err);

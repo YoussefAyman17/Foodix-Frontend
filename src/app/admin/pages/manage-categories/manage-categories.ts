@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { PLATFORM_ID } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CategoryService } from '../../services/category';
 import { Category } from '../../interfaces/category';
@@ -18,6 +19,7 @@ export class ManageCategories implements OnInit {
   private toastr = inject(ToastrService);
   private fb = inject(FormBuilder);
   private cdr = inject(ChangeDetectorRef);
+  private platformId = inject(PLATFORM_ID);
 
   categories: Category[] = [];
   totalCategories: number = 0;
@@ -32,8 +34,13 @@ export class ManageCategories implements OnInit {
   categoryForm!: FormGroup;
 
   ngOnInit() {
-    this.loadCategories();
     this.initForm();
+    if (!isPlatformBrowser(this.platformId)) {
+      this.isLoading = false;
+      return;
+    }
+
+    this.loadCategories();
   }
 
   initForm() {
