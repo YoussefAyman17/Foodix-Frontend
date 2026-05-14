@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { Auth } from '../../core/services/auth';
 import { CommonModule } from '@angular/common';
+import { CartService } from '../../core/services/cart';
 
 @Component({
   selector: 'app-navbar',
@@ -14,6 +15,9 @@ export class Navbar implements OnInit {
   userName: string = '';
   userEmail: string = '';
   userInitial: string = '';
+
+  // ✅ CartService متاح في الـ template عشان نعرض الـ badge
+  public cartService = inject(CartService);
 
   constructor(
     public auth: Auth,

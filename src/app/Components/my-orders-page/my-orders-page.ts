@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Order } from '../../core/services/order';
+import { OrderService } from '../../core/services/order';
 import { Navbar } from "../navbar/navbar";
 import { Footer } from "../footer/footer";
 
@@ -21,7 +21,7 @@ export class MyOrdersPage implements OnInit {
   filters = ['All', 'Preparing', 'On the way', 'Delivered', 'Pending', 'Cancelled'];
 
   constructor(
-    private Order: Order,
+    private orderService: OrderService,
     @Inject(PLATFORM_ID) private platformId: object,
   ) {}
 
@@ -36,7 +36,7 @@ export class MyOrdersPage implements OnInit {
 
   loadOrders(): void {
     this.isLoading.set(true);
-    this.Order.getMyOrders().subscribe({
+    this.orderService.getMyOrders().subscribe({
       next: (res) => {
         // الباكند بيرجع { success, count, orders: [...] }
         const data = res.orders || [];

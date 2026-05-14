@@ -3,8 +3,10 @@ import { isPlatformBrowser } from '@angular/common';
 import { Component, Inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MealService } from '../../core/services/meal';
+import { CartService } from '../../core/services/cart';
 import { Navbar } from '../navbar/navbar';
 import { Footer } from '../footer/footer';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-product-details',
@@ -18,49 +20,49 @@ export class ProductDetails implements OnInit {
   isLoading = signal<boolean>(true);
   errorMessage = signal<string>('');
   quantity = signal<number>(1);
-
-  // 2. متغير السعر الإضافي (لو اختار حجم)
   selectedSizePrice = signal<number>(0);
-
-  // 3. منتجات ذات صلة (يجب جلبها من الـ API)
   relatedItems = signal<any[]>([]);
 
   constructor(
     private route: ActivatedRoute,
     private mealService: MealService,
+    private cartService: CartService,
+    private toastr: ToastrService,
     @Inject(PLATFORM_ID) private platformId: object,
   ) {}
-  increaseQty() {
+
+  increaseQty(): void {
     this.quantity.update((q) => q + 1);
   }
 
-  decreaseQty() {
+  decreaseQty(): void {
     if (this.quantity() > 1) {
       this.quantity.update((q) => q - 1);
     }
   }
 
-  selectSize(event: any) {
-    const selectedSizeName = event.target.value;
-    const sizeObj = this.meal.sizes.find((s: any) => s.size === selectedSizeName);
-    if (sizeObj) {
-      this.selectedSizePrice.set(sizeObj.extraPrice);
-    }
+  selectSize(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+    const sizeObj = this.meal?.sizes?.find((s: any) => s.size === value);
+    this.selectedSizePrice.set(sizeObj ? sizeObj.extraPrice : 0);
   }
 
-  // دالة الإضافة للسلة
-  addToCart() {
-    // حساب السعر النهائي: (سعر الوجبة + سعر الحجم) * الكمية
-    const finalPrice = (this.meal.price + this.selectedSizePrice()) * this.quantity();
+  addToCart(): void {
+    if (!this.meal) return;
 
-    const cartItem = {
+    this.cartService.addItem({
       mealId: this.meal._id,
+      name: this.meal.name,
+      img: this.meal.img || this.meal.image || '',
+      price: this.meal.price,
       quantity: this.quantity(),
-      totalPrice: finalPrice,
-      // ... باقي التفاصيل
-    };
+      selectedSizePrice: this.selectedSizePrice(),
+    });
 
-    console.log('Added to cart:', cartItem);
+    this.toastr.success(`${this.meal.name} added to cart!`, 'Cart', {
+      timeOut: 2000,
+      positionClass: 'toast-top-right',
+    });
   }
 
   ngOnInit(): void {

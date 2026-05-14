@@ -1,18 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-// import { NavbarComponent } from '../../shared/navbar/navbar';
-// import { FooterComponent } from '../../shared/footer/footer';
-// import { BrowserStorageService } from '../../shared/browser-storage.service';
-
-interface ContactMessage {
-  name: string;
-  email: string;
-  subject: string;
-  service: string;
-  message: string;
-  createdAt: string;
-}
+import { ComplaintsService } from '../../core/services/complaints';
 
 @Component({
   selector: 'app-contact',
@@ -22,34 +11,60 @@ interface ContactMessage {
   styleUrl: './contact.css',
 })
 export class ContactComponent {
+  private complaintsService = inject(ComplaintsService);
+
   public name = '';
   public email = '';
   public subject = '';
   public service = '';
   public message = '';
   public statusMessage = '';
+  public isLoading = false;
+  public isError = false;
 
-  constructor() {}
+  // الـ options الجاية من الـ schema في الباك اند
+  public serviceOptions: string[] = [
+    'Delivery',
+    'Food Quality',
+    'Payment Issue',
+    'App Bug',
+    'Other',
+  ];
 
   public submitForm(): void {
-    const messageData: ContactMessage = {
+    this.isLoading = true;
+    this.statusMessage = '';
+    this.isError = false;
+
+    const complaintData = {
       name: this.name.trim(),
       email: this.email.trim(),
       subject: this.subject.trim(),
-      service: this.service.trim(),
+      service: this.service,
       message: this.message.trim(),
-      createdAt: new Date().toISOString(),
     };
 
-    // const messages = this.storage.getJson<ContactMessage[]>('messages', []);
+    this.complaintsService.createComplaint(complaintData).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.statusMessage = 'Message sent successfully.';
+        this.isError = false;
+        this.resetForm();
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.statusMessage =
+          err?.error?.message || 'Something went wrong. Please try again.';
+        this.isError = true;
+      },
+    });
+  }
 
-    // this.storage.setJson('messages', [...messages, messageData]);
-
+  private resetForm(): void {
     this.name = '';
     this.email = '';
     this.subject = '';
     this.service = '';
     this.message = '';
-    this.statusMessage = 'Message sent successfully.';
   }
 }

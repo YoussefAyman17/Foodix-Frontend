@@ -2,7 +2,7 @@ import { Component, Inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { User } from '../../core/services/user';
+import { UserService } from '../../core/services/user';
 
 @Component({
   selector: 'app-profile-page',
@@ -31,7 +31,7 @@ export class ProfilePage implements OnInit {
   };
 
   constructor(
-    private User: User,
+    private userService: UserService,
     private router: Router,
     @Inject(PLATFORM_ID) private platformId: object,
   ) {}
@@ -47,7 +47,7 @@ export class ProfilePage implements OnInit {
 
   loadUserData(): void {
     this.isPageLoading.set(true);
-    this.User.getMyProfile().subscribe({
+    this.userService.getMyProfile().subscribe({
       next: (res) => {
         const u = res.user;
         this.user.userName = u.userName || '';
@@ -98,7 +98,7 @@ export class ProfilePage implements OnInit {
       updateData.address = [address];
     }
 
-    this.User.updateMyProfile(updateData).subscribe({
+    this.userService.updateMyProfile(updateData).subscribe({
       next: () => {
         this.isLoading.set(false);
         this.isEditing.set(false);

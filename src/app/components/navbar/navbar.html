@@ -16,7 +16,6 @@
       data-bs-toggle="offcanvas"
       data-bs-target="#offcanvasNav"
     >
-      <i class="fa-solid fa-bars"></i>
       <i class="bi bi-list"></i>
     </button>
 
@@ -32,39 +31,43 @@
             >Home</a
           >
         </li>
-
         <li class="nav-item">
-          <a class="nav-link text-light" routerLink="/menu" routerLinkActive="active-link">Menu</a>
+          <a class="nav-link text-light" routerLink="/menu" routerLinkActive="active-link"
+            >Menu</a
+          >
         </li>
         <li class="nav-item">
-          <a
-            class="nav-link text-light"
-            routerLink="/"
-            routerLinkActive="active-link"
-            [routerLinkActiveOptions]="{ exact: true }"
+          <!-- ✅ تم ربط Contact بالصفحة الصح -->
+          <a class="nav-link text-light" routerLink="/contact" routerLinkActive="active-link"
             >Contact</a
           >
         </li>
         <li class="nav-item">
-          <a
-            class="nav-link text-light"
-            routerLink="/"
-            routerLinkActive="active-link"
-            [routerLinkActiveOptions]="{ exact: true }"
+          <!-- ✅ تم ربط Checkout بالصفحة الصح -->
+          <a class="nav-link text-light" routerLink="/checkout" routerLinkActive="active-link"
             >Checkout</a
           >
         </li>
       </ul>
 
-      <!-- Cart Button -->
+      <!-- Cart Button with Badge -->
       <button
-        style="background-color: green"
+        style="background-color: green; position: relative"
         type="button"
         class="btn text-light fw-bold px-4 py-3 rounded-3"
         data-bs-toggle="offcanvas"
         data-bs-target="#cartOffcanvas"
       >
         <i class="bi bi-cart3"></i>
+        <!-- ✅ Badge عداد الكارت -->
+        @if (cartService.totalItems() > 0) {
+          <span
+            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+            style="font-size: 11px"
+          >
+            {{ cartService.totalItems() }}
+          </span>
+        }
       </button>
 
       <!-- User Avatar Button -->
@@ -123,12 +126,14 @@
             >
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" routerLink="/home" routerLinkActive="active-link"
+            <!-- ✅ Contact مربوط -->
+            <a class="nav-link text-light" routerLink="/contact" routerLinkActive="active-link"
               >Contact</a
             >
           </li>
           <li class="nav-item">
-            <a class="nav-link text-light" routerLink="/home" routerLinkActive="active-link"
+            <!-- ✅ Checkout مربوط -->
+            <a class="nav-link text-light" routerLink="/checkout" routerLinkActive="active-link"
               >Checkout</a
             >
           </li>
@@ -147,14 +152,23 @@
           </li>
         </ul>
 
+        <!-- Mobile Cart Button with badge -->
         <button
-          style="background-color: green"
+          style="background-color: green; position: relative"
           type="button"
           class="btn text-light fw-bold fs-5 px-4 py-3 rounded-3"
           data-bs-toggle="offcanvas"
           data-bs-target="#cartOffcanvas"
         >
           <i class="bi bi-cart3"></i>
+          @if (cartService.totalItems() > 0) {
+            <span
+              class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+              style="font-size: 11px"
+            >
+              {{ cartService.totalItems() }}
+            </span>
+          }
         </button>
 
         <!-- Mobile User Avatar -->
@@ -201,7 +215,6 @@
   </div>
 
   <div class="offcanvas-body d-flex flex-column p-0">
-    <!-- Nav Items -->
     <ul class="list-unstyled mt-2 px-3 flex-grow-1">
       <li>
         <a
@@ -245,7 +258,6 @@
       }
     </ul>
 
-    <!-- User Info + Logout at bottom -->
     <div style="border-top: 1px solid #333; padding: 16px">
       <div class="d-flex align-items-center gap-2 mb-3">
         <div
@@ -295,16 +307,77 @@
 <!-- ====== Cart Offcanvas ====== -->
 <div
   class="offcanvas offcanvas-end"
-  style="background-color: rgb(0, 0, 0)"
+  style="background-color: #111; width: 360px"
   tabindex="-1"
   id="cartOffcanvas"
 >
   <div class="offcanvas-header border-bottom border-secondary justify-content-between">
-    <h5 class="text-light fw-bold m-0">My cart</h5>
+    <h5 class="text-light fw-bold m-0">
+      My Cart
+      @if (cartService.totalItems() > 0) {
+        <span class="badge bg-danger ms-2">{{ cartService.totalItems() }}</span>
+      }
+    </h5>
     <button type="button" class="btn btn-danger btn-sm px-2" data-bs-dismiss="offcanvas">✕</button>
   </div>
-  <div class="offcanvas-body" id="offcanvas-body">
-    <!-- Cart Items will go here -->
+
+  <div class="offcanvas-body d-flex flex-column p-0">
+    <!-- Empty State -->
+    @if (cartService.items().length === 0) {
+      <div class="d-flex flex-column align-items-center justify-content-center h-100 text-center px-4">
+        <i class="bi bi-cart-x text-secondary" style="font-size: 52px"></i>
+        <p class="text-secondary mt-3 fs-6">Your cart is empty.<br />Add something delicious!</p>
+        <a routerLink="/menu" data-bs-dismiss="offcanvas" class="btn btn-danger mt-3 rounded-pill px-4">
+          Browse Menu
+        </a>
+      </div>
+    }
+
+    <!-- Cart Items -->
+    @if (cartService.items().length > 0) {
+      <ul class="list-unstyled px-3 pt-3 flex-grow-1 overflow-auto" style="margin-bottom: 0">
+        @for (item of cartService.items(); track item.mealId + item.selectedSizePrice) {
+          <li class="d-flex align-items-center gap-3 mb-3 pb-3 border-bottom border-secondary">
+            <!-- Meal image -->
+            <img
+              [src]="item.img || 'assets/placeholder.png'"
+              [alt]="item.name"
+              style="width: 56px; height: 56px; border-radius: 10px; object-fit: cover"
+            />
+            <!-- Info -->
+            <div class="flex-grow-1">
+              <div class="text-light fw-semibold" style="font-size: 14px">{{ item.name }}</div>
+              <div class="text-secondary" style="font-size: 12px">
+                {{ item.price + item.selectedSizePrice }} EGP × {{ item.quantity }}
+              </div>
+            </div>
+            <!-- Remove -->
+            <button
+              class="btn btn-sm p-0 text-danger"
+              (click)="cartService.removeItem(item.mealId, item.selectedSizePrice)"
+              title="Remove"
+            >
+              <i class="bi bi-trash3"></i>
+            </button>
+          </li>
+        }
+      </ul>
+
+      <!-- Subtotal + Checkout Button -->
+      <div class="px-3 py-3 border-top border-secondary">
+        <div class="d-flex justify-content-between text-light fw-bold mb-3">
+          <span>Subtotal</span>
+          <span>{{ cartService.subtotal() }} EGP</span>
+        </div>
+        <a
+          routerLink="/checkout"
+          data-bs-dismiss="offcanvas"
+          class="btn btn-danger w-100 fw-bold rounded-pill py-2"
+        >
+          Proceed to Checkout
+        </a>
+      </div>
+    }
   </div>
 </div>
 <!-- ====== End Cart Offcanvas ====== -->

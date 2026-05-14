@@ -1,6 +1,6 @@
-import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { Complaints } from '../../interfaces/complaints';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { TimeagoModule } from 'ngx-timeago';
 import { ComplaintsService } from '../../services/complaints-service';
 import { FormsModule } from '@angular/forms';
@@ -19,6 +19,7 @@ export class ManageComplaints implements OnInit {
   responseText: string = '';
   isLoading: boolean = false;
   cdr = inject(ChangeDetectorRef);
+  private platformId = inject(PLATFORM_ID);
   stats = {
     totalComplaints: 0,
     pendingComplaints: 0,
@@ -27,6 +28,8 @@ export class ManageComplaints implements OnInit {
   };
   constructor(private complaintsService: ComplaintsService) {}
   ngOnInit(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     this.fetchComplaints();
   }
 
@@ -35,7 +38,7 @@ export class ManageComplaints implements OnInit {
     this.complaintsService.getComplaints().subscribe({
       next: (res) => {
         console.log(res);
-        this.complaints = res.complaints;
+        this.complaints = res.complaints || [];
         this.calculateStats();
         this.isLoading = false;
         this.cdr.detectChanges();
@@ -60,7 +63,7 @@ export class ManageComplaints implements OnInit {
   updateStatus(id: number, newStatus: string, adminResponse?: string): void {
     this.complaintsService.changeStatus(id, newStatus, adminResponse).subscribe({
       next: () => {
-        const index = this.complaints.findIndex((c) => c.id === id || c.id === id);
+        const index = this.complaints.findIndex((c) => c.id === id);
         if (index !== -1) {
           this.complaints[index].status = newStatus as any;
           if (adminResponse) this.complaints[index].adminResponse = adminResponse;
@@ -95,7 +98,7 @@ export class ManageComplaints implements OnInit {
   submitResponse(): void {
     if (!this.selectedComplaint || !this.responseText.trim()) return;
 
-    const complaintId = this.selectedComplaint.id || this.selectedComplaint.id;
+    const complaintId = this.selectedComplaint.id;
 
     this.updateStatus(complaintId!, 'in process', this.responseText);
 
@@ -106,7 +109,7 @@ export class ManageComplaints implements OnInit {
   rejectComplaint(): void {
     if (!this.selectedComplaint) return;
 
-    const complaintId = this.selectedComplaint.id || this.selectedComplaint.id;
+    const complaintId = this.selectedComplaint.id;
 
     this.updateStatus(complaintId!, 'rejected');
 

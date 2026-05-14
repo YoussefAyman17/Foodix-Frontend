@@ -5,21 +5,31 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class SocketService {
-  private socket: Socket;
+  private socket?: Socket;
 
   constructor() {
-    this.socket = io('http://localhost:3000');
+    if (typeof window !== 'undefined') {
+      this.socket = io('http://localhost:3000');
+    }
   }
 
-  listen(eventName: string): Observable<any> {
+  listen<T = unknown>(eventName: string): Observable<T> {
     return new Observable((subscriber) => {
-      this.socket.on(eventName, (data) => {
+      if (!this.socket) {
+        subscriber.complete();
+        return undefined;
+      }
+
+      const handler = (data: T) => {
         subscriber.next(data);
-      });
+      };
+
+      this.socket.on(eventName, handler);
+      return () => this.socket?.off(eventName, handler);
     });
   }
 
-  emit(eventName: string, data: any) {
-    this.socket.emit(eventName, data);
+  emit<T = unknown>(eventName: string, data: T): void {
+    this.socket?.emit(eventName, data);
   }
 }

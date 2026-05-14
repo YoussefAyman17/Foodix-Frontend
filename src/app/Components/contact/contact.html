@@ -47,13 +47,17 @@
               </div>
 
               <div class="col-lg-6">
-                <input
-                  type="text"
+                <select
                   class="form-control"
-                  placeholder="Your Service"
                   [(ngModel)]="service"
                   name="service"
-                />
+                  required
+                >
+                  <option value="" disabled selected>Your Service</option>
+                  @for (option of serviceOptions; track option) {
+                    <option [value]="option">{{ option }}</option>
+                  }
+                </select>
               </div>
 
               <div class="col-12">
@@ -68,11 +72,21 @@
               </div>
 
               <div class="col-12 d-flex flex-wrap align-items-center gap-3">
-                <button class="btn submit-btn" type="submit" [disabled]="contactForm.invalid">
-                  Submit Now
+                <button
+                  class="btn submit-btn"
+                  type="submit"
+                  [disabled]="contactForm.invalid || isLoading"
+                >
+                  {{ isLoading ? 'Sending...' : 'Submit Now' }}
                 </button>
                 @if (statusMessage) {
-                  <p class="status-message mb-0">{{ statusMessage }}</p>
+                  <p
+                    class="status-message mb-0"
+                    [class.text-danger]="isError"
+                    [class.status-message]="!isError"
+                  >
+                    {{ statusMessage }}
+                  </p>
                 }
               </div>
             </div>

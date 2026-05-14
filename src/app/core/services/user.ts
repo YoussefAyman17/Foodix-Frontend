@@ -6,7 +6,7 @@ import { environment } from '../../../environments/environment';
 @Injectable({
   providedIn: 'root',
 })
-export class User {
+export class UserService {
   private baseUrl = `${environment.baseURL}`;
   // environment.baseURL = 'http://localhost:3000/api/users/'
 
