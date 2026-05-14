@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ComplaintsService } from '../../core/services/complaints';
@@ -25,7 +25,7 @@ interface ContactMessage {
 })
 export class ContactComponent {
   private complaintsService = inject(ComplaintsService);
-
+  private cdr = inject(ChangeDetectorRef);
   public name = '';
   public email = '';
   public subject = '';
@@ -63,11 +63,13 @@ export class ContactComponent {
         this.statusMessage = 'Message sent successfully.';
         this.isError = false;
         this.resetForm();
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.isLoading = false;
         this.statusMessage = err?.error?.message || 'Something went wrong. Please try again.';
         this.isError = true;
+        this.cdr.detectChanges();
       },
     });
   }
