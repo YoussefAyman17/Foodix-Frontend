@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-// import { NavbarComponent } from '../../shared/navbar/navbar';
+import { Navbar } from '../navbar/navbar';
+import { Footer } from '../footer/footer';
 // import { FooterComponent } from '../../shared/footer/footer';
 // import { BrowserStorageService } from '../../shared/browser-storage.service';
 
@@ -17,7 +18,7 @@ interface ContactMessage {
 @Component({
   selector: 'app-contact',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, Navbar, Footer],
   templateUrl: './contact.html',
   styleUrl: './contact.css',
 })

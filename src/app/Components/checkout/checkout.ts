@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-// import { NavbarComponent } from '../../shared/navbar/navbar';
-// import { FooterComponent } from '../../shared/footer/footer';
+import { Navbar } from '../navbar/navbar';
+import { Footer } from '../footer/footer';
+
 // import { BrowserStorageService } from '../../shared/browser-storage.service';
 
 interface CartItem {
@@ -28,7 +29,7 @@ interface Order {
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, Navbar, Footer],
   templateUrl: './checkout.html',
   styleUrl: './checkout.css',
 })

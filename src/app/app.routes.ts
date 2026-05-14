@@ -14,6 +14,8 @@ import { ProductDetails } from './Components/product-details/product-details';
 import { adminGuard } from './admin/guards/admin-guard';
 import { NotFound } from './Components/not-found/not-found';
 import { DeliveryHome } from './Components/delivery/delivery-home/delivery-home';
+import { ContactComponent } from './Components/contact/contact';
+import { CheckoutComponent } from './Components/checkout/checkout';
 
 export const routes: Routes = [
   // Auth routes
@@ -28,6 +30,8 @@ export const routes: Routes = [
   { path: 'home', component: Home, title: 'Home' },
   { path: 'menu', component: Menu, title: 'Menu' },
   { path: 'product/:slug/:id', component: ProductDetails, title: 'Product Details' },
+  { path: 'complaint', component: ContactComponent, title: 'Complaint' },
+  { path: 'checkout', component: CheckoutComponent, title: 'Checkout' },
   { path: 'profile', component: ProfilePage, title: 'profile' },
   { path: 'my-orders-page', component: MyOrdersPage, title: 'My Orders' },
 
@@ -40,7 +44,6 @@ export const routes: Routes = [
     canActivate: [adminGuard],
     loadChildren: () => import('./admin/admin-module').then((m) => m.AdminModule),
   },
-
 
   { path: '**', component: NotFound, title: 'Page Not Found' },
 ];
