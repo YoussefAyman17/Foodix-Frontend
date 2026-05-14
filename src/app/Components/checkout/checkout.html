@@ -1,136 +1,222 @@
 <app-navbar></app-navbar>
 
-<main class="checkout-page">
-  <section class="checkout-section">
-    <div class="container">
-      <form class="row g-4" #checkoutForm="ngForm" (ngSubmit)="placeOrder()">
-        <div class="col-lg-7">
-          <div class="checkout-panel">
-            <h1 class="section-title">Billing Details</h1>
+<div class="container py-5">
+  <div class="row g-5">
+    <!-- 🟢 القسم الأيسر: الفورم (العنوان وطريقة الدفع) -->
+    <div class="col-lg-8">
+      <h3 class="fw-bold mb-4">Checkout Details</h3>
+
+      <form [formGroup]="checkoutForm" (ngSubmit)="placeOrder()">
+        <!-- 1. Shipping Address Section -->
+        <div class="card border-0 shadow-sm mb-4 rounded-4" formGroupName="shippingAddress">
+          <div class="card-body p-4">
+            <h5 class="fw-bold mb-4">
+              <i class="bi bi-geo-alt-fill text-danger me-2"></i>Shipping Address
+            </h5>
 
             <div class="row g-3">
+              <!-- City -->
               <div class="col-md-6">
-                <label class="form-label" for="fname">First Name <span class="req">*</span></label>
+                <label class="form-label text-muted small fw-bold"
+                  >City <span class="text-danger">*</span></label
+                >
                 <input
-                  id="fname"
                   type="text"
-                  class="form-control"
-                  placeholder="First Name"
-                  [(ngModel)]="fname"
-                  name="fname"
-                  required
+                  class="form-control form-control-lg"
+                  formControlName="city"
+                  placeholder="e.g. Cairo"
                 />
+                @if (address['city'].invalid && address['city'].touched) {
+                  <small class="text-danger">City is required</small>
+                }
               </div>
 
+              <!-- Area -->
               <div class="col-md-6">
-                <label class="form-label" for="lname">Last Name <span class="req">*</span></label>
+                <label class="form-label text-muted small fw-bold"
+                  >Area <span class="text-danger">*</span></label
+                >
                 <input
-                  id="lname"
                   type="text"
-                  class="form-control"
-                  placeholder="Last Name"
-                  [(ngModel)]="lname"
-                  name="lname"
-                  required
+                  class="form-control form-control-lg"
+                  formControlName="area"
+                  placeholder="e.g. Nasr City"
                 />
+                @if (address['area'].invalid && address['area'].touched) {
+                  <small class="text-danger">Area is required</small>
+                }
               </div>
 
-              <div class="col-12">
-                <label class="form-label" for="address">Address <span class="req">*</span></label>
+              <!-- Street -->
+              <div class="col-md-12">
+                <label class="form-label text-muted small fw-bold"
+                  >Street Name <span class="text-danger">*</span></label
+                >
                 <input
-                  id="address"
                   type="text"
-                  class="form-control"
-                  placeholder="Address"
-                  [(ngModel)]="address"
-                  name="address"
-                  required
+                  class="form-control form-control-lg"
+                  formControlName="street"
+                  placeholder="Street Name / No."
+                />
+                @if (address['street'].invalid && address['street'].touched) {
+                  <small class="text-danger">Street is required</small>
+                }
+              </div>
+
+              <!-- Building, Floor, Apartment -->
+              <div class="col-md-4">
+                <label class="form-label text-muted small fw-bold">Building</label>
+                <input
+                  type="text"
+                  class="form-control form-control-lg"
+                  formControlName="building"
+                />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label text-muted small fw-bold">Floor</label>
+                <input type="number" class="form-control form-control-lg" formControlName="floor" />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label text-muted small fw-bold">Apartment</label>
+                <input
+                  type="number"
+                  class="form-control form-control-lg"
+                  formControlName="apartment"
                 />
               </div>
 
-              <div class="col-md-6">
-                <label class="form-label" for="email">Email <span class="req">*</span></label>
+              <!-- Contact Phone -->
+              <div class="col-md-12">
+                <label class="form-label text-muted small fw-bold"
+                  >Contact Phone <span class="text-danger">*</span></label
+                >
                 <input
-                  id="email"
-                  type="email"
-                  class="form-control"
-                  placeholder="Email Address"
-                  [(ngModel)]="email"
-                  name="email"
-                  required
-                  email
-                />
-              </div>
-
-              <div class="col-md-6">
-                <label class="form-label" for="phone">Phone <span class="req">*</span></label>
-                <input
-                  id="phone"
                   type="tel"
-                  class="form-control"
-                  placeholder="Your Phone"
-                  [(ngModel)]="phone"
-                  name="phone"
-                  required
+                  class="form-control form-control-lg"
+                  formControlName="contactPhone"
+                  placeholder="01XXXXXXXXX"
                 />
+                @if (address['contactPhone'].invalid && address['contactPhone'].touched) {
+                  <small class="text-danger">
+                    @if (address['contactPhone'].errors?.['required']) {
+                      Phone is required
+                    }
+                    @if (address['contactPhone'].errors?.['pattern']) {
+                      Invalid Egyptian phone number
+                    }
+                  </small>
+                }
               </div>
 
-              <div class="col-12">
-                <label class="form-label" for="notes">
-                  Order Notes <span class="optional">(optional)</span>
-                </label>
+              <!-- Notes -->
+              <div class="col-md-12">
+                <label class="form-label text-muted small fw-bold">Delivery Notes (Optional)</label>
                 <textarea
-                  id="notes"
                   class="form-control"
-                  placeholder="Notes about your order"
-                  [(ngModel)]="notes"
-                  name="notes"
+                  rows="2"
+                  formControlName="notes"
+                  placeholder="Any special requests?"
                 ></textarea>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="col-lg-5">
-          <aside class="order-sidebar">
-            <h2 class="section-title">Your Order</h2>
+        <!-- 2. Payment Method Section -->
+        <div class="card border-0 shadow-sm rounded-4">
+          <div class="card-body p-4">
+            <h5 class="fw-bold mb-4">
+              <i class="bi bi-wallet2 text-danger me-2"></i>Payment Method
+            </h5>
 
-            @if (cart.length) {
-              <div class="cart-items">
-                @for (item of cart; track $index) {
-                  <div class="cart-item">
-                    <span>{{ item.name || 'Cart item' }} x {{ item.quantity }}</span>
-                    <strong>${{ item.price * item.quantity }}</strong>
-                  </div>
-                }
-              </div>
-            } @else {
-              <p class="empty-cart">Your cart is empty. You can still submit a test order.</p>
-            }
+            <div class="d-flex flex-column gap-3">
+              <!-- Cash Option -->
+              <label
+                class="border rounded-3 p-3 d-flex align-items-center gap-3 cursor-pointer"
+                [class.border-danger]="checkoutForm.get('paymentMethod')?.value === 'Cash'"
+                [class.bg-light]="checkoutForm.get('paymentMethod')?.value === 'Cash'"
+              >
+                <input
+                  type="radio"
+                  class="form-check-input mt-0"
+                  formControlName="paymentMethod"
+                  value="Cash"
+                  style="transform: scale(1.2)"
+                />
+                <div>
+                  <h6 class="mb-0 fw-bold">Cash on Delivery</h6>
+                  <small class="text-muted">Pay when you receive your order</small>
+                </div>
+                <i class="bi bi-cash-stack fs-3 ms-auto text-success"></i>
+              </label>
 
-            <div class="order-row">
-              <span class="label">Cart Subtotal</span>
-              <span class="value">${{ subtotal }}</span>
+              <!-- Stripe Option -->
+              <label
+                class="border rounded-3 p-3 d-flex align-items-center gap-3 cursor-pointer"
+                [class.border-danger]="checkoutForm.get('paymentMethod')?.value === 'Stripe'"
+                [class.bg-light]="checkoutForm.get('paymentMethod')?.value === 'Stripe'"
+              >
+                <input
+                  type="radio"
+                  class="form-check-input mt-0"
+                  formControlName="paymentMethod"
+                  value="Stripe"
+                  style="transform: scale(1.2)"
+                />
+                <div>
+                  <h6 class="mb-0 fw-bold">Credit/Debit Card (Stripe)</h6>
+                  <small class="text-muted">Pay securely online</small>
+                </div>
+                <i class="bi bi-credit-card fs-3 ms-auto text-primary"></i>
+              </label>
             </div>
-
-            <div class="order-row">
-              <span class="label">Shipping Fee</span>
-              <span class="value">${{ shippingFee }}</span>
-            </div>
-
-            <div class="order-row total">
-              <span class="label">Order Total</span>
-              <span class="value">${{ total }}</span>
-            </div>
-
-            <button class="btn-checkout" type="submit" [disabled]="checkoutForm.invalid">
-              Proceed to Checkout
-            </button>
-          </aside>
+          </div>
         </div>
       </form>
     </div>
-  </section>
-</main>
+
+    <!-- 🟢 القسم الأيمن: ملخص الطلب وزر التأكيد -->
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-sm rounded-4 sticky-top" style="top: 110px">
+        <div class="card-body p-4">
+          <h5 class="fw-bold mb-4">Order Summary</h5>
+
+          <div class="d-flex justify-content-between mb-3">
+            <span class="text-muted">Subtotal</span>
+            <!-- 🌟 استخدام Signal الـ subtotal() -->
+            <span class="fw-bold">{{ cartService.subtotal() }} EGP</span>
+          </div>
+          <div class="d-flex justify-content-between mb-3 border-bottom pb-3">
+            <span class="text-muted">Delivery Fee</span>
+            <span class="fw-bold">{{ deliveryPrice }} EGP</span>
+          </div>
+          <div class="d-flex justify-content-between mb-4 mt-2">
+            <span class="fw-bold fs-5">Total</span>
+            <!-- 🌟 استخدام الـ Getter اللي عملناه -->
+            <span class="fw-bold fs-5 text-danger">{{ totalPrice }} EGP</span>
+          </div>
+
+          <button
+            type="button"
+            class="btn btn-danger btn-lg w-100 fw-bold rounded-3"
+            (click)="placeOrder()"
+            [disabled]="isSubmitting"
+          >
+            @if (isSubmitting) {
+              <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+              Processing...
+            } @else {
+              {{
+                checkoutForm.get('paymentMethod')?.value === 'Stripe'
+                  ? 'Proceed to Payment'
+                  : 'Confirm Order'
+              }}
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <app-footer></app-footer>

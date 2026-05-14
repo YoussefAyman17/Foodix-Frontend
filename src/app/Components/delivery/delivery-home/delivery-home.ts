@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { OrderService } from '../../../core/services/order';
+import { OrderService } from '../../../admin/services/order';
 import { SocketService } from '../../../core/services/socket-service';
 import { Auth } from '../../../core/services/auth';
 import { ToastrService } from 'ngx-toastr';

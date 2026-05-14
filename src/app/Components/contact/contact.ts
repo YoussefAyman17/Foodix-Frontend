@@ -1,9 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-<<<<<<< HEAD
 import { ComplaintsService } from '../../core/services/complaints';
-=======
 import { Navbar } from '../navbar/navbar';
 import { Footer } from '../footer/footer';
 // import { FooterComponent } from '../../shared/footer/footer';
@@ -17,7 +15,6 @@ interface ContactMessage {
   message: string;
   createdAt: string;
 }
->>>>>>> c465d766df47f49b29977f8737751e65aabfc9a7
 
 @Component({
   selector: 'app-contact',
@@ -69,8 +66,7 @@ export class ContactComponent {
       },
       error: (err) => {
         this.isLoading = false;
-        this.statusMessage =
-          err?.error?.message || 'Something went wrong. Please try again.';
+        this.statusMessage = err?.error?.message || 'Something went wrong. Please try again.';
         this.isError = true;
       },
     });

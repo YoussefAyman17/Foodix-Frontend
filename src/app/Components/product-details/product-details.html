@@ -20,9 +20,18 @@
   @else if (meal) {
     <!-- 🟢 القسم الأول: تفاصيل المنتج -->
     <div class="row gx-5 mb-5 align-items-center">
-      <!-- الصورة -->
+      <!-- الصورة وعلامة الخصم -->
       <div class="col-lg-6 mb-4 mb-lg-0">
-        <div class="image-wrap shadow-sm rounded-4 overflow-hidden">
+        <div class="image-wrap shadow-sm rounded-4 overflow-hidden position-relative">
+          <!-- عرض علامة الخصم (Discount Tag) لو موجودة -->
+          @if (meal.discount_tag) {
+            <span
+              class="badge bg-danger position-absolute top-0 start-0 m-3 px-3 py-2 fs-6 z-1 shadow-sm"
+            >
+              {{ meal.discount_tag }}
+            </span>
+          }
+
           <img
             [src]="meal.img || meal.image"
             [alt]="meal.name"
@@ -34,21 +43,47 @@
 
       <!-- التفاصيل (المحتوى) -->
       <div class="col-lg-6">
-        <h1 class="text-uppercase fw-bold mb-3 product-title">{{ meal.name }}</h1>
-        <p class="text-muted mb-4 fs-5 description-text">
-          {{ meal.description || meal.short_description }}
+        <!-- التقييم وعدد الطلبات -->
+        <div class="d-flex align-items-center mb-2 gap-2">
+          <div class="text-warning fs-5">
+            <i class="bi bi-star-fill"></i>
+          </div>
+          <span class="fw-bold fs-5">{{ meal.rating || 0 }}</span>
+          <span class="text-muted small">({{ meal.orders_count || 0 }} orders)</span>
+        </div>
+
+        <h1 class="text-uppercase fw-bold mb-2 product-title">{{ meal.name }}</h1>
+
+        <!-- الوصف القصير (كعنوان فرعي) والوصف الكامل -->
+        @if (meal.short_description) {
+          <h6 class="text-muted fw-bold mb-3">{{ meal.short_description }}</h6>
+        }
+        <p class="text-muted mb-4 fs-6 description-text">
+          {{ meal.description }}
         </p>
 
-        <!-- السعر -->
-        <div class="d-flex align-items-center mb-4 gap-3">
+        <!-- السعر وحالة الخصم -->
+        <div class="d-flex align-items-center mb-3 gap-3">
           <span class="fs-2 fw-bold text-danger">{{ meal.price }} EGP</span>
-          <!-- لو عندك سعر قديم متخزن ممكن تفك الكومنت ده -->
-          <!-- <span class="fs-4 text-decoration-line-through text-muted">45.25 EGP</span> -->
+
+          <!-- عرض السعر القديم فقط لو كان on_sale بـ true و old_price موجود -->
+          @if (meal.on_sale && meal.old_price) {
+            <span class="fs-4 text-decoration-line-through text-muted"
+              >{{ meal.old_price }} EGP</span
+            >
+          }
         </div>
+
+        <!-- حالة المخزون (Stock) -->
+        @if (meal.quantity <= 5 && meal.quantity > 0) {
+          <div class="text-danger small fw-bold mb-3">
+            <i class="bi bi-fire"></i> Hurry! Only {{ meal.quantity }} left in stock.
+          </div>
+        }
 
         <!-- أزرار التحكم (الكمية + الحجم) -->
         <div class="d-flex flex-wrap gap-3 mb-4 align-items-end">
-          <!-- عداد الكمية -->
+          <!-- عداد الكمية للطلب -->
           <div class="quantity-selector d-flex align-items-center rounded-2 px-1">
             <button type="button" class="btn border-0 fs-4 text-dark" (click)="decreaseQty()">
               −
@@ -60,7 +95,12 @@
               [value]="quantity()"
               readonly
             />
-            <button type="button" class="btn border-0 fs-4 text-dark" (click)="increaseQty()">
+            <button
+              type="button"
+              class="btn border-0 fs-4 text-dark"
+              (click)="increaseQty()"
+              [disabled]="quantity() >= meal.quantity"
+            >
               +
             </button>
           </div>
@@ -79,28 +119,35 @@
         </div>
 
         <!-- زر الإضافة للسلة -->
+        <!-- يتم تعطيله لو isAvailable بـ false أو لو الـ quantity خلصت -->
         <button
           type="button"
           class="btn btn-danger btn-lg px-5 py-2 fw-bold rounded-2 shadow-sm"
-          [disabled]="!meal.isAvailable"
+          [disabled]="!meal.isAvailable || meal.quantity === 0"
           (click)="addToCart()"
         >
-          {{ meal.isAvailable ? 'Add To Cart' : 'Unavailable' }}
+          @if (!meal.isAvailable || meal.quantity === 0) {
+            Out of Stock
+          } @else {
+            Add To Cart
+          }
         </button>
       </div>
     </div>
 
     <!-- 🟢 القسم الثاني: المنتجات ذات الصلة (Related Items) -->
-    <!-- تأكد إن عندك مصفوفة relatedItems في الـ TS أو اخفي القسم ده لو مش موجود -->
-    @if (relatedItems().length) {
+    @if (relatedItems()?.length) {
       <div class="related-items mt-5 pt-5 border-top">
         <h3 class="fw-bold mb-5 product-title">Related items</h3>
 
         <div class="row g-4 justify-content-center">
           @for (item of relatedItems(); track item._id) {
             <div class="col-md-4 text-center">
-              <!-- صورة المنتج ذات الصلة مع الخلفية المموجة -->
-              <div class="related-img-wrap mx-auto mb-4 position-relative">
+              <div
+                class="related-img-wrap mx-auto mb-4 position-relative"
+                style="cursor: pointer"
+                [routerLink]="['/meal', item.slug]"
+              >
                 <div class="blob-bg position-absolute w-100 h-100"></div>
                 <img
                   [src]="item.img || item.image"
@@ -109,11 +156,11 @@
                 />
               </div>
 
-              <!-- اسم ووصف المنتج -->
               <h5 class="text-uppercase fw-bold mb-2 product-title">{{ item.name }}</h5>
               <p class="text-muted small px-3">
-                {{ item.description || item.short_description }}
+                {{ item.short_description || item.description | slice: 0 : 60 }}...
               </p>
+              <span class="fw-bold text-danger">{{ item.price }} EGP</span>
             </div>
           }
         </div>

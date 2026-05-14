@@ -1,11 +1,10 @@
 import { Component, Inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { OrderService } from '../../core/services/order';
-import { Navbar } from "../navbar/navbar";
-import { Footer } from "../footer/footer";
+import { Navbar } from '../navbar/navbar';
+import { Footer } from '../footer/footer';
 
 @Component({
-  
   standalone: true,
   imports: [CommonModule, Navbar, Footer],
   templateUrl: './my-orders-page.html',
