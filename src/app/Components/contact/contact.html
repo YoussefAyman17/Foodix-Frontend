@@ -47,12 +47,7 @@
               </div>
 
               <div class="col-lg-6">
-                <select
-                  class="form-control"
-                  [(ngModel)]="service"
-                  name="service"
-                  required
-                >
+                <select class="form-control" [(ngModel)]="service" name="service" required>
                   <option value="" disabled selected>Your Service</option>
                   @for (option of serviceOptions; track option) {
                     <option [value]="option">{{ option }}</option>

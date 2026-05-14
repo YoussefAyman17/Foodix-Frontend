@@ -25,7 +25,7 @@ export class OrderService {
     return this.http.patch(`${this.apiUrl}/${id}/assign`, { deliveryPersonId });
   }
 
-  getUserOrders(): Observable<any> {
+  getMyOrders(): Observable<any> {
     return this.http.get(`${this.apiUrl}/myorders`);
   }
 

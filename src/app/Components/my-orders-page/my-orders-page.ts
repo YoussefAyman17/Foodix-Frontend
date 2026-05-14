@@ -1,6 +1,14 @@
-import { Component, Inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  inject,
+  Inject,
+  OnInit,
+  PLATFORM_ID,
+  signal,
+} from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { OrderService } from '../../core/services/order';
+import { OrderService } from '../../admin/services/order';
 import { Navbar } from '../navbar/navbar';
 import { Footer } from '../footer/footer';
 
@@ -17,6 +25,10 @@ export class MyOrdersPage implements OnInit {
   activeFilter = signal<string>('All');
   searchQuery = signal<string>('');
 
+  selectedOrder = signal<any>(null);
+  activeModal = signal<'details' | 'track' | null>(null);
+
+  cdr = inject(ChangeDetectorRef);
   filters = ['All', 'Preparing', 'On the way', 'Delivered', 'Pending', 'Cancelled'];
 
   constructor(
@@ -29,23 +41,41 @@ export class MyOrdersPage implements OnInit {
       this.isLoading.set(false);
       return;
     }
-
     this.loadOrders();
   }
 
+  openDetailsModal(order: any) {
+    this.selectedOrder.set(order);
+    this.activeModal.set('details');
+    document.body.style.overflow = 'hidden';
+  }
+
+  openTrackModal(order: any) {
+    this.selectedOrder.set(order);
+    this.activeModal.set('track');
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeModal() {
+    this.selectedOrder.set(null);
+    this.activeModal.set(null);
+    document.body.style.overflow = 'auto';
+  }
   loadOrders(): void {
     this.isLoading.set(true);
     this.orderService.getMyOrders().subscribe({
       next: (res) => {
-        // الباكند بيرجع { success, count, orders: [...] }
+        console.log(res.orders);
         const data = res.orders || [];
         this.orders.set(data);
         this.filteredOrders.set(data);
         this.isLoading.set(false);
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error loading orders:', err);
         this.isLoading.set(false);
+        this.cdr.detectChanges();
       },
     });
   }

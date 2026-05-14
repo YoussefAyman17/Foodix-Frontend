@@ -106,16 +106,159 @@
           </div>
         </div>
 
-        <!-- Buttons -->
         <div class="card-actions">
-          <button class="btn-details">View Details</button>
+          <button class="btn-details" (click)="openDetailsModal(order)">View Details</button>
           @if (order.status === 'On the way') {
-            <button class="btn-track">🚴 Track Order</button>
+            <button class="btn-track" (click)="openTrackModal(order)">🚴 Track Order</button>
           }
         </div>
       </div>
     }
   }
 </div>
+
+@if (activeModal() !== null && selectedOrder()) {
+  <div
+    class="modal-backdrop fade show"
+    style="background-color: rgba(0, 0, 0, 0.6); z-index: 1040"
+  ></div>
+
+  @if (activeModal() === 'details') {
+    <div class="modal fade show d-block" tabindex="-1" style="z-index: 1050" (click)="closeModal()">
+      <div
+        class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable"
+        (click)="$event.stopPropagation()"
+      >
+        <div class="modal-content border-0 shadow-lg rounded-4">
+          <!-- Header -->
+          <div class="modal-header border-bottom-0 bg-light rounded-top-4 py-3">
+            <div>
+              <h4 class="modal-title fw-bold mb-1">Order #FDX-{{ selectedOrder().orderId }}</h4>
+              <p class="text-muted small mb-0">{{ formatDate(selectedOrder().createdAt) }}</p>
+            </div>
+            <button type="button" class="btn-close shadow-none" (click)="closeModal()"></button>
+          </div>
+
+          <!-- Body -->
+          <div class="modal-body p-4">
+            <!-- Shipping Info -->
+            <div class="bg-light p-3 rounded-3 mb-4">
+              <h6 class="fw-bold mb-2">
+                <i class="bi bi-geo-alt-fill text-danger me-2"></i>Delivery Address
+              </h6>
+              <p class="mb-1 text-muted">
+                {{ selectedOrder().shippingAddress?.street }},
+                {{ selectedOrder().shippingAddress?.area }},
+                {{ selectedOrder().shippingAddress?.city }}
+              </p>
+              <p class="mb-0 text-muted small">
+                Phone: {{ selectedOrder().shippingAddress?.contactPhone }}
+              </p>
+            </div>
+
+            <!-- Items List -->
+            <h6 class="fw-bold mb-3">Order Items</h6>
+            <div class="list-group mb-4">
+              @for (item of selectedOrder().orderItems; track item._id) {
+                <div
+                  class="list-group-item border-0 px-0 py-2 d-flex justify-content-between align-items-center"
+                >
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="bg-light rounded p-2 text-center" style="width: 45px">
+                      <span class="fw-bold text-dark">{{ item.quantity }}x</span>
+                    </div>
+                    <div>
+                      <h6 class="mb-0 fw-bold">{{ item.foodItem?.name || 'Meal Item' }}</h6>
+                      <small class="text-muted">Size: {{ item.size || 'Regular' }}</small>
+                    </div>
+                  </div>
+                  <span class="fw-bold">{{ item.priceAtPurchase * item.quantity }} EGP</span>
+                </div>
+              }
+            </div>
+
+            <hr class="text-muted" />
+
+            <!-- Summary -->
+            <div class="d-flex justify-content-between mb-2">
+              <span class="text-muted">Subtotal</span>
+              <span>{{ selectedOrder().itemsPrice }} EGP</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span class="text-muted">Delivery Fee</span>
+              <span>{{ selectedOrder().deliveryPrice }} EGP</span>
+            </div>
+            <div class="d-flex justify-content-between mt-3 pt-3 border-top">
+              <span class="fw-bold fs-5">Total Amount</span>
+              <span class="fw-bold fs-5 text-danger">{{ selectedOrder().totalPrice }} EGP</span>
+            </div>
+            <div class="d-flex justify-content-between mt-2">
+              <span class="text-muted small">Payment Method</span>
+              <span class="badge bg-secondary">{{ selectedOrder().paymentMethod }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (activeModal() === 'track') {
+    <div class="modal fade show d-block" tabindex="-1" style="z-index: 1050" (click)="closeModal()">
+      <div class="modal-dialog modal-dialog-centered" (click)="$event.stopPropagation()">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+          <div
+            class="map-placeholder position-relative bg-light d-flex justify-content-center align-items-center"
+            style="height: 250px"
+          >
+            <button
+              type="button"
+              class="btn-close position-absolute top-0 end-0 m-3 bg-white rounded-circle p-2 shadow-sm"
+              (click)="closeModal()"
+            ></button>
+            <div class="text-center text-muted">
+              <i class="bi bi-geo-alt fs-1 text-primary mb-2 d-block"></i>
+              <p class="mb-0 fw-bold">Live Tracking Map</p>
+              <small>(Connecting to driver...)</small>
+            </div>
+          </div>
+
+          <div class="modal-body p-4 text-center">
+            <h5 class="fw-bold mb-3">Order is on the way! 🚀</h5>
+
+            <div
+              class="d-flex align-items-center justify-content-center gap-3 p-3 bg-light rounded-3 mb-3"
+            >
+              <div
+                class="driver-avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold"
+                style="width: 50px; height: 50px; font-size: 20px"
+              >
+                {{ selectedOrder().deliveryPerson?.userName?.charAt(0) || 'D' }}
+              </div>
+              <div class="text-start">
+                <h6 class="fw-bold mb-0">
+                  {{ selectedOrder().deliveryPerson?.userName || 'Delivery Captain' }}
+                </h6>
+                <small class="text-muted">{{
+                  selectedOrder().deliveryPerson?.phone || 'Assigning...'
+                }}</small>
+              </div>
+              <button
+                class="btn btn-outline-success rounded-circle p-2 ms-auto"
+                [disabled]="!selectedOrder().deliveryPerson?.phone"
+              >
+                <i class="bi bi-telephone-fill"></i>
+              </button>
+            </div>
+
+            <div class="alert alert-warning mb-0 border-0" role="alert">
+              <i class="bi bi-clock-history me-2"></i> Expected arrival in
+              <strong>15-20 mins</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+}
 
 <app-footer></app-footer>

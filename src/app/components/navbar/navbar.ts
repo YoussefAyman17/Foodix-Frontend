@@ -36,6 +36,8 @@ export class Navbar implements OnInit {
 
   logout(): void {
     localStorage.removeItem('userToken');
+    localStorage.removeItem('UserEmail');
+    localStorage.removeItem('foodix_cart');
     this.auth.decodedUserData.set(null);
     this.router.navigate(['/login']);
   }
