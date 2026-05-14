@@ -587,4 +587,26 @@ style
 
 
 
-      
+
+
+.seemorebtn{
+  background-color: rgb(238, 8, 8);
+  color: white !important;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.seemorebtn:hover{
+  background-color: #00ff15;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+
+
+.seemorebtn:hover{
+  box-shadow: 0 0 15px #000000;
+}
