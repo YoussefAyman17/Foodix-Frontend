@@ -1,12 +1,28 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+<<<<<<< HEAD
 import { ComplaintsService } from '../../core/services/complaints';
+=======
+import { Navbar } from '../navbar/navbar';
+import { Footer } from '../footer/footer';
+// import { FooterComponent } from '../../shared/footer/footer';
+// import { BrowserStorageService } from '../../shared/browser-storage.service';
+
+interface ContactMessage {
+  name: string;
+  email: string;
+  subject: string;
+  service: string;
+  message: string;
+  createdAt: string;
+}
+>>>>>>> c465d766df47f49b29977f8737751e65aabfc9a7
 
 @Component({
   selector: 'app-contact',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, Navbar, Footer],
   templateUrl: './contact.html',
   styleUrl: './contact.css',
 })

@@ -14,6 +14,8 @@ import { ProductDetails } from './Components/product-details/product-details';
 import { adminGuard } from './admin/guards/admin-guard';
 import { NotFound } from './Components/not-found/not-found';
 import { DeliveryHome } from './Components/delivery/delivery-home/delivery-home';
+import { ContactComponent } from './Components/contact/contact';
+import { CheckoutComponent } from './Components/checkout/checkout';
 
 // ✅ إضافة Contact و Checkout
 import { ContactComponent } from './Components/contact/contact';
@@ -29,6 +31,7 @@ export const routes: Routes = [
   { path: 'resetPassword',  component: ResetPasswordPage,   title: 'Reset Password Page' },
 
   // App routes
+<<<<<<< HEAD
   { path: 'home',                component: Home,           title: 'Home' },
   { path: 'menu',                component: Menu,           title: 'Menu' },
   { path: 'product/:slug/:id',   component: ProductDetails, title: 'Product Details' },
@@ -38,6 +41,15 @@ export const routes: Routes = [
   // ✅ Routes مضافة
   { path: 'contact',             component: ContactComponent,  title: 'Contact Us' },
   { path: 'checkout',            component: CheckoutComponent, title: 'Checkout' },
+=======
+  { path: 'home', component: Home, title: 'Home' },
+  { path: 'menu', component: Menu, title: 'Menu' },
+  { path: 'product/:slug/:id', component: ProductDetails, title: 'Product Details' },
+  { path: 'complaint', component: ContactComponent, title: 'Complaint' },
+  { path: 'checkout', component: CheckoutComponent, title: 'Checkout' },
+  { path: 'profile', component: ProfilePage, title: 'profile' },
+  { path: 'my-orders-page', component: MyOrdersPage, title: 'My Orders' },
+>>>>>>> c465d766df47f49b29977f8737751e65aabfc9a7
 
   // Delivery routes
   { path: 'delivery-home', component: DeliveryHome },
@@ -49,6 +61,9 @@ export const routes: Routes = [
     loadChildren: () => import('./admin/admin-module').then((m) => m.AdminModule),
   },
 
+<<<<<<< HEAD
   // ✅ 404 — لازم تكون آخر route دايمًا
+=======
+>>>>>>> c465d766df47f49b29977f8737751e65aabfc9a7
   { path: '**', component: NotFound, title: 'Page Not Found' },
 ];
