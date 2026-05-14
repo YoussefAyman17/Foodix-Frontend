@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CategoryService } from '../../core/services/category';
@@ -19,7 +19,7 @@ import { Footer } from "../footer/footer";
 export class Home implements OnInit {
   categories: any[] = [];
   topMeals: any[] = [];
-
+  cdr = inject(ChangeDetectorRef);
   constructor(
     private categoryService: CategoryService,
     private mealService: MealService,
@@ -32,7 +32,7 @@ export class Home implements OnInit {
     this.categoryService.getAllCategories().subscribe({
       next: (res) => {
         this.categories = Array.isArray(res?.data) ? res.data : [];
-
+        this.cdr.detectChanges();
         if (!this.categories.length) {
           this.topMeals = [];
           return;
@@ -68,6 +68,7 @@ export class Home implements OnInit {
             this.topMeals = allTopMeals.sort(
               (a, b) => Number(b.rating ?? 0) - Number(a.rating ?? 0),
             );
+            this.cdr.detectChanges();
           },
           error: (err) => console.error(err),
         });

@@ -1,0 +1,147 @@
+<!-- <app-navbar></app-navbar> -->
+
+<main>
+  <section class="contact-hero">
+    <div class="container">
+      <div class="row align-items-center g-5">
+        <div class="col-xl-6">
+          <div class="title">
+            <span>Get in touch</span>
+            <h1>Have questions? Get in touch.</h1>
+          </div>
+
+          <form class="contact-form mt-4" #contactForm="ngForm" (ngSubmit)="submitForm()">
+            <div class="row g-3">
+              <div class="col-lg-6">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Your Name"
+                  [(ngModel)]="name"
+                  name="name"
+                  required
+                />
+              </div>
+
+              <div class="col-lg-6">
+                <input
+                  type="email"
+                  class="form-control"
+                  placeholder="Your Email"
+                  [(ngModel)]="email"
+                  name="email"
+                  required
+                  email
+                />
+              </div>
+
+              <div class="col-lg-6">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Your Subject"
+                  [(ngModel)]="subject"
+                  name="subject"
+                  required
+                />
+              </div>
+
+              <div class="col-lg-6">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Your Service"
+                  [(ngModel)]="service"
+                  name="service"
+                />
+              </div>
+
+              <div class="col-12">
+                <textarea
+                  class="form-control"
+                  rows="5"
+                  placeholder="Write message"
+                  [(ngModel)]="message"
+                  name="message"
+                  required
+                ></textarea>
+              </div>
+
+              <div class="col-12 d-flex flex-wrap align-items-center gap-3">
+                <button class="btn submit-btn" type="submit" [disabled]="contactForm.invalid">
+                  Submit Now
+                </button>
+                @if (statusMessage) {
+                  <p class="status-message mb-0">{{ statusMessage }}</p>
+                }
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="col-xl-6">
+          <div class="contact-visual">
+            <img
+              src="assets/contact section/contact-1.png"
+              class="img-fluid"
+              alt="Foodix contact"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact-cards">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4 col-md-6">
+          <div class="card h-100 text-center shadow-sm border-0 p-4">
+            <div class="icon"><i class="bi bi-geo-alt-fill"></i></div>
+            <div class="content">
+              <h4>Address</h4>
+              <p>4140 Parker Rd. Allentown, New Mexico 31134</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+          <div class="card h-100 text-center shadow-sm border-0 p-4">
+            <div class="icon"><i class="bi bi-envelope-fill"></i></div>
+            <div class="content">
+              <h4>Email</h4>
+              <p>
+                <a href="mailto:foodixsupport@gmail.com">foodixsupport@gmail.com</a><br />
+                <a href="mailto:foodixinfo@gmail.com">foodixinfo@gmail.com</a>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+          <div class="card h-100 text-center shadow-sm border-0 p-4">
+            <div class="icon"><i class="bi bi-telephone-fill"></i></div>
+            <div class="content">
+              <h4>Phone</h4>
+              <p>
+                <a href="tel:+5551234567890">+555-123 456 7890</a><br />
+                <a href="tel:+5551237768875">+555-123 776 8875</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="location">
+    <iframe
+      title="Foodix location map"
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d387193.0506281771!2d-73.64984136700188!3d40.697193346601814!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2z2YbZitmI2YrZiNix2YPYjCDYp9mE2YjZhNin2YrYp9iqINin2YTZhdiq2K3Yr9ip!5e0!3m2!1sar!2seg!4v1773431317736!5m2!1sar!2seg"
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+    ></iframe>
+  </section>
+</main>
+
+<!-- <app-footer></app-footer> -->

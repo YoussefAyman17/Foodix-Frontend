@@ -17,7 +17,9 @@ export class Auth {
   constructor(
     private httpClient: HttpClient,
     @Inject(PLATFORM_ID) private platformId: object,
-  ) {}
+  ) {
+    this.userData();
+  }
 
   registerApi(data: object): Observable<any> {
     return this.httpClient.post(`${environment.baseURL}signUp`, data);
@@ -51,13 +53,7 @@ export class Auth {
   private getHeaders() {
     const token = this.getToken();
 
-<<<<<<< HEAD
     return { headers: { authorization: token ? `${token}` : '' } };
-=======
-    return { headers: { authorization: token ? `${token}` : '' }};
-    // return { headers: { authorization: token ? token : '' } };
-
->>>>>>> 41c3cc56f0e7245c070d472cd6782bd148f13963
   }
 
   userData() {
@@ -85,6 +81,6 @@ export class Auth {
   }
 
   getMyOrdersApi(): Observable<any> {
-return this.httpClient.get(`${environment.apiURL}/orders/myorders`, this.getHeaders());
+    return this.httpClient.get(`${environment.apiURL}/orders/myorders`, this.getHeaders());
   }
 }

@@ -5,7 +5,7 @@ import { Navbar } from "../navbar/navbar";
 import { Footer } from "../footer/footer";
 
 @Component({
-  selector: 'app-my-orders-page',
+  
   standalone: true,
   imports: [CommonModule, Navbar, Footer],
   templateUrl: './my-orders-page.html',

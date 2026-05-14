@@ -1,0 +1,87 @@
+.avatar-circle {
+  width: 45px;
+  height: 45px;
+  background-color: #00c07f;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.map-placeholder {
+  height: 180px;
+  background: #cce5ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.distance-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: white;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+
+.pin-icon {
+  font-size: 3rem;
+  opacity: 0.5;
+}
+
+.bg-soft-blue {
+  background-color: #f8fbff;
+}
+.bg-soft-orange {
+  background-color: #fffaf2;
+}
+.text-orange {
+  color: #f57c00;
+}
+
+.btn-success-custom {
+  background-color: #00c07f;
+  color: white;
+  border: none;
+  border-radius: 12px;
+}
+
+.btn-success-custom:hover {
+  background-color: #00a06a;
+}
+
+.btn-light-success {
+  background-color: #e6f9f2;
+  color: #00c07f;
+  border: none;
+  width: 45px;
+  height: 45px;
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  z-index: 1000;
+}
+
+.nav-item.active {
+  color: #00c07f;
+}
+.nav-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.custom-switch {
+  width: 50px !important;
+  height: 25px !important;
+  cursor: pointer;
+}

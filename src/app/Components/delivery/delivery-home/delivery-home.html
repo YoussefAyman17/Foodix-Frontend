@@ -1,0 +1,122 @@
+<div class="delivery-container bg-light min-vh-100 pb-5">
+  <!-- Header مع زر الـ Online -->
+  <header class="d-flex justify-content-between align-items-center p-3 bg-white shadow-sm">
+    <div class="d-flex align-items-center gap-2">
+      <div class="avatar-circle">MC</div>
+      <div>
+        <small class="text-muted d-block">Hello, Captain!</small>
+        <span class="fw-bold">{{ authService.decodedUserData()?.userName }}</span>
+      </div>
+    </div>
+    <div class="form-check form-switch">
+      <input
+        class="form-check-input custom-switch"
+        type="checkbox"
+        [ngModel]="isOnline()"
+        (ngModelChange)="isOnline.set($event)"
+      />
+    </div>
+  </header>
+
+  <main class="p-3">
+    <div class="orders-container d-flex flex-column gap-3 p-3" *ngIf="isOnline()">
+      <!-- بداية الـ Loop -->
+      @for (order of incomingOrders(); track order._id) {
+        <div
+          class="card order-request-card border-0 shadow-sm"
+          style="border-radius: 16px; overflow: hidden"
+        >
+          <!-- منطقة الخريطة العلوية -->
+          <div
+            class="map-placeholder position-relative d-flex justify-content-center align-items-center"
+            style="height: 120px; background-color: #cde0ff"
+          >
+            <div
+              class="distance-badge bg-white px-3 py-1 fw-bold rounded-pill shadow-sm position-absolute"
+              style="top: 10px; right: 10px; font-size: 0.85rem"
+            >
+              2.3 km
+            </div>
+            <i class="bi bi-geo-alt-fill" style="font-size: 3.5rem; color: #a1c4fd"></i>
+          </div>
+
+          <div class="card-body p-4">
+            <!-- اسم العميل ورقم الأوردر وزرار الاتصال -->
+            <div class="d-flex justify-content-between align-items-start mb-4">
+              <div>
+                <h5 class="fw-bold mb-1" style="color: #0b1c3c">
+                  {{ order.userId?.userName || 'Customer Name' }}
+                </h5>
+                <p class="text-muted small mb-0">Order #{{ order?.orderId }}</p>
+              </div>
+              <button
+                class="btn btn-light rounded-circle d-flex justify-content-center align-items-center"
+                style="width: 45px; height: 45px; background-color: #eafaf1; color: #00b873"
+              >
+                <i class="bi bi-telephone fs-5"></i>
+              </button>
+            </div>
+
+            <!-- تفاصيل العنوان -->
+            <div
+              class="info-box p-3 rounded-3 mb-3 d-flex align-items-start"
+              style="background-color: #f8f9fa"
+            >
+              <i class="bi bi-geo-alt fs-5 me-3" style="color: #9ba4b5; margin-top: 2px"></i>
+              <div>
+                <h6 class="fw-bold mb-1" style="color: #0b1c3c">
+                  {{ order.shippingAddress?.street || 'Street Name' }},
+                  {{ order.shippingAddress?.area || 'Area' }}
+                </h6>
+                <p class="text-muted small mb-0">
+                  Apartment {{ order.shippingAddress?.apartment || 'N/A' }}
+                </p>
+              </div>
+            </div>
+
+            <!-- تفاصيل الدفع (المبلغ) -->
+            <div
+              class="info-box p-3 rounded-3 mb-4 d-flex justify-content-between align-items-center"
+              style="background-color: #fff8f0"
+            >
+              <span class="d-flex align-items-center" style="color: #3b4b6b">
+                <i class="bi bi-currency-dollar fs-5 me-2" style="color: #f26622"></i>
+                Cash to Collect
+              </span>
+              <span class="fw-bold fs-4" style="color: #f26622">{{ order.totalPrice }} EGP</span>
+            </div>
+
+            <!-- أزرار التحكم -->
+            <button
+              class="btn w-100 py-3 fw-bold mb-2 shadow-sm"
+              style="
+                background-color: #00b873;
+                color: white;
+                border-radius: 12px;
+                font-size: 1.1rem;
+              "
+              (click)="acceptOrder(order.orderId)"
+            >
+              Accept Order
+            </button>
+            <button
+              class="btn btn-outline-secondary w-100 py-3 fw-bold border-1"
+              style="border-radius: 12px; color: #3b4b6b; font-size: 1.1rem"
+              (click)="rejectOrder(order.orderId)"
+            >
+              Reject
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- رسالة لو مفيش أوردرات -->
+      @if (incomingOrders().length === 0) {
+        <div class="text-center text-muted mt-5">
+          <i class="bi bi-inbox fs-1 mb-2 d-block text-light"></i>
+          <p>Waiting for new orders...</p>
+        </div>
+      }
+    </div>
+  </main>
+</div>

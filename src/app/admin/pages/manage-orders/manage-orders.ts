@@ -3,6 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { Order } from '../../interfaces/order';
 import { OrderService } from '../../services/order';
+import { SocketService } from '../../../core/services/socket-service';
 
 @Component({
   selector: 'app-manage-orders',
@@ -15,6 +16,7 @@ export class ManageOrders implements OnInit {
   private platformId = inject(PLATFORM_ID);
   private orderService = inject(OrderService);
   private cdr = inject(ChangeDetectorRef);
+  private socketService = inject(SocketService);
 
   orders: Order[] = [];
   deliveryPersons: any[] = [];
@@ -22,23 +24,32 @@ export class ManageOrders implements OnInit {
 
   activeModal: 'view' | 'assignDelivery' | null = null;
   selectedOrder: Order | null = null;
-
   ngOnInit(): void {
-    if (!isPlatformBrowser(this.platformId)) {
-      this.isLoading = false;
-      return;
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadOrders();
+      this.listenToStatusUpdates();
     }
-
-    this.loadOrders();
   }
 
+  listenToStatusUpdates() {
+    this.socketService.listen('orderStatusChanged').subscribe({
+      next: (data: any) => {
+        const updatedOrder = data.order;
+
+        this.orders = this.orders.map((o) =>
+          o.orderId === updatedOrder.orderId ? updatedOrder : o,
+        );
+
+        this.toastr.info(`Order #${updatedOrder.orderId} status changed to ${updatedOrder.status}`);
+        this.cdr.detectChanges();
+      },
+    });
+  }
   loadOrders() {
     this.isLoading = true;
 
     this.orderService.getAllOrders().subscribe({
       next: (response: any) => {
-        console.log('API Response:', response);
-
         let fetchedOrders = response.orders || response;
 
         if (!Array.isArray(fetchedOrders)) {
@@ -125,7 +136,8 @@ export class ManageOrders implements OnInit {
 
     this.orderService.getAllDeliveryPersons().subscribe({
       next: (res: any) => {
-        this.deliveryPersons = res.deliveryWorkers || res.OnlineDeliveryWorkers || res.data || [];
+        this.deliveryPersons = res.OnlineDeliveryWorkers || res;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error(err);

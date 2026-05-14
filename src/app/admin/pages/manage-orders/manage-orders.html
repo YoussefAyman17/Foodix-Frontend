@@ -215,15 +215,15 @@
         (click)="assignDriver(driver)"
       >
         <div class="driver-info">
-          <h5>{{ driver.userId?.userName }}</h5>
-          <p>{{ driver.userId?.phone || driver.userId?.email }}</p>
+          <h5>{{ driver.userId.userName }}</h5>
+          <p>{{ driver.userId.phone }}</p>
         </div>
 
-        <div>
+        <!-- <div>
           <span class="status-badge" [ngClass]="driver.isBusy ? 'busy' : 'available'">
             {{ driver.isBusy ? 'Busy' : 'Available' }}
           </span>
-        </div>
+        </div> -->
       </div>
     </div>
 

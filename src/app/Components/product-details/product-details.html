@@ -1,39 +1,124 @@
-<section class="product-details">
+<app-navbar></app-navbar>
+<section class="product-details-container container py-5">
+  <!-- حالة التحميل -->
   @if (isLoading()) {
-    <div class="state">Loading...</div>
-  } @else if (errorMessage()) {
-    <div class="state">
-      <p>{{ errorMessage() }}</p>
-      <a routerLink="/menu">Back to menu</a>
+    <div class="text-center py-5">
+      <div class="spinner-border text-danger" role="status"></div>
+      <p class="mt-3 text-muted fw-bold">Loading masterpiece...</p>
     </div>
-  } @else if (meal) {
-    <div class="product-layout">
-      <div class="image-wrap">
-        <img [src]="meal.img || meal.image" [alt]="meal.name" />
+  }
+
+  <!-- حالة الخطأ -->
+  @else if (errorMessage()) {
+    <div class="alert alert-danger text-center shadow-sm w-50 mx-auto mt-5">
+      <p class="mb-3">{{ errorMessage() }}</p>
+      <a routerLink="/menu" class="btn btn-outline-danger">Back to menu</a>
+    </div>
+  }
+
+  <!-- عرض المنتج -->
+  @else if (meal) {
+    <!-- 🟢 القسم الأول: تفاصيل المنتج -->
+    <div class="row gx-5 mb-5 align-items-center">
+      <!-- الصورة -->
+      <div class="col-lg-6 mb-4 mb-lg-0">
+        <div class="image-wrap shadow-sm rounded-4 overflow-hidden">
+          <img
+            [src]="meal.img || meal.image"
+            [alt]="meal.name"
+            class="img-fluid w-100 object-fit-cover"
+            style="max-height: 450px"
+          />
+        </div>
       </div>
 
-      <div class="content">
-        <a routerLink="/menu" class="back-link">Back to menu</a>
-        <h1>{{ meal.name }}</h1>
-        <p class="description">{{ meal.description || meal.short_description }}</p>
+      <!-- التفاصيل (المحتوى) -->
+      <div class="col-lg-6">
+        <h1 class="text-uppercase fw-bold mb-3 product-title">{{ meal.name }}</h1>
+        <p class="text-muted mb-4 fs-5 description-text">
+          {{ meal.description || meal.short_description }}
+        </p>
 
-        <div class="meta">
-          <span>{{ meal.price }} EGP</span>
-          <span>{{ meal.rating || 0 }} / 5</span>
+        <!-- السعر -->
+        <div class="d-flex align-items-center mb-4 gap-3">
+          <span class="fs-2 fw-bold text-danger">{{ meal.price }} EGP</span>
+          <!-- لو عندك سعر قديم متخزن ممكن تفك الكومنت ده -->
+          <!-- <span class="fs-4 text-decoration-line-through text-muted">45.25 EGP</span> -->
         </div>
 
-        @if (meal.sizes?.length) {
-          <div class="sizes">
-            @for (size of meal.sizes; track size.size) {
-              <span>{{ size.size }} +{{ size.extraPrice }} EGP</span>
-            }
+        <!-- أزرار التحكم (الكمية + الحجم) -->
+        <div class="d-flex flex-wrap gap-3 mb-4 align-items-end">
+          <!-- عداد الكمية -->
+          <div class="quantity-selector d-flex align-items-center rounded-2 px-1">
+            <button type="button" class="btn border-0 fs-4 text-dark" (click)="decreaseQty()">
+              −
+            </button>
+            <input
+              type="text"
+              class="form-control border-0 text-center fw-bold px-0 shadow-none bg-transparent"
+              style="width: 40px"
+              [value]="quantity()"
+              readonly
+            />
+            <button type="button" class="btn border-0 fs-4 text-dark" (click)="increaseQty()">
+              +
+            </button>
           </div>
-        }
 
-        <button type="button" class="cart-btn" [disabled]="!meal.isAvailable">
-          {{ meal.isAvailable ? 'Add to Cart' : 'Unavailable' }}
+          <!-- قائمة الأحجام -->
+          @if (meal.sizes?.length) {
+            <div class="size-selector">
+              <select class="form-select border-0 shadow-none px-3" (change)="selectSize($event)">
+                <option selected disabled>Variation Size</option>
+                @for (size of meal.sizes; track size.size) {
+                  <option [value]="size.size">{{ size.size }} (+{{ size.extraPrice }} EGP)</option>
+                }
+              </select>
+            </div>
+          }
+        </div>
+
+        <!-- زر الإضافة للسلة -->
+        <button
+          type="button"
+          class="btn btn-danger btn-lg px-5 py-2 fw-bold rounded-2 shadow-sm"
+          [disabled]="!meal.isAvailable"
+          (click)="addToCart()"
+        >
+          {{ meal.isAvailable ? 'Add To Cart' : 'Unavailable' }}
         </button>
       </div>
     </div>
+
+    <!-- 🟢 القسم الثاني: المنتجات ذات الصلة (Related Items) -->
+    <!-- تأكد إن عندك مصفوفة relatedItems في الـ TS أو اخفي القسم ده لو مش موجود -->
+    @if (relatedItems()?.length) {
+      <div class="related-items mt-5 pt-5 border-top">
+        <h3 class="fw-bold mb-5 product-title">Related items</h3>
+
+        <div class="row g-4 justify-content-center">
+          @for (item of relatedItems(); track item._id) {
+            <div class="col-md-4 text-center">
+              <!-- صورة المنتج ذات الصلة مع الخلفية المموجة -->
+              <div class="related-img-wrap mx-auto mb-4 position-relative">
+                <div class="blob-bg position-absolute w-100 h-100"></div>
+                <img
+                  [src]="item.img || item.image"
+                  [alt]="item.name"
+                  class="img-fluid position-relative z-1 rounded-circle p-2 object-fit-cover shadow-sm w-100 h-100"
+                />
+              </div>
+
+              <!-- اسم ووصف المنتج -->
+              <h5 class="text-uppercase fw-bold mb-2 product-title">{{ item.name }}</h5>
+              <p class="text-muted small px-3">
+                {{ item.description || item.short_description }}
+              </p>
+            </div>
+          }
+        </div>
+      </div>
+    }
   }
 </section>
+<app-footer></app-footer>

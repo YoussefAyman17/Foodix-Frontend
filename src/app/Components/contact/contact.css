@@ -1,0 +1,127 @@
+.contact-hero {
+  background:
+    linear-gradient(rgba(247, 241, 225, 0.94), rgba(247, 241, 225, 0.94)),
+    url("/assets/contact section/backgroung.png") center / cover;
+  padding: 96px 0;
+}
+
+.title span {
+  text-transform: uppercase;
+  font-weight: 800;
+  color: var(--red);
+}
+
+.title h1 {
+  max-width: 620px;
+  margin: 10px 0 0;
+  color: #111;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  font-weight: 900;
+  line-height: 1.12;
+  text-transform: uppercase;
+}
+
+.contact-form .form-control {
+  min-height: 58px;
+  border: 1px solid #e3dcc9;
+  border-radius: var(--radius);
+  padding: 15px 16px;
+}
+
+.contact-form textarea.form-control {
+  min-height: 170px;
+}
+
+.submit-btn {
+  min-height: 54px;
+  padding: 0 30px;
+  background: var(--red);
+  border: 0;
+  border-radius: var(--radius);
+  color: #fff;
+  font-weight: 700;
+}
+
+.submit-btn:hover {
+  background: var(--green);
+  color: #fff;
+}
+
+.submit-btn:disabled {
+  background: #b9b0a0;
+}
+
+.status-message {
+  color: var(--green);
+  font-weight: 700;
+}
+
+.contact-visual {
+  display: flex;
+  min-height: 430px;
+  align-items: center;
+  justify-content: center;
+}
+
+.contact-visual img {
+  width: min(100%, 520px);
+  max-height: 480px;
+  object-fit: contain;
+  filter: drop-shadow(0 22px 36px rgba(0, 0, 0, 0.15));
+}
+
+.contact-cards {
+  padding: 72px 0;
+  background: #fff;
+}
+
+.card {
+  border-radius: var(--radius);
+}
+
+.icon i {
+  display: inline-flex;
+  width: 76px;
+  height: 76px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  border-radius: 50%;
+  background: #fcf3f3;
+  color: var(--red);
+  font-size: 1.7rem;
+}
+
+.content h4 {
+  color: #111;
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.content p,
+.content a {
+  color: #555;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.content a:hover {
+  color: var(--red);
+}
+
+.location iframe {
+  display: block;
+  width: 100%;
+  height: min(600px, 70vh);
+  border: 0;
+}
+
+@media (max-width: 767.98px) {
+  .contact-hero {
+    padding: 64px 0;
+  }
+
+  .contact-visual {
+    min-height: 280px;
+  }
+}

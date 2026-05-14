@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { CategoryService } from '../../core/services/category';
 import { MealService } from '../../core/services/meal';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
@@ -17,7 +17,7 @@ export class Menu implements OnInit {
   categories: any[] = [];
   meals: any[] = [];
   activeCategory: string = ''; // زي الـ active class القديم
-
+  cdr = inject(ChangeDetectorRef);
   constructor(
     private categoryService: CategoryService,
     private mealService: MealService,
@@ -29,12 +29,13 @@ export class Menu implements OnInit {
 
     this.categoryService.getAllCategories().subscribe({
       next: (res) => {
-        console.log(res);
+        // console.log(res);
         this.categories = res.data;
 
         if (this.categories.length > 0) {
           this.getProducts(this.categories[0].slug);
           this.activeCategory = this.categories[0].slug;
+          this.cdr.detectChanges();
         }
       },
       error: (err) => console.error(err),
@@ -45,9 +46,8 @@ export class Menu implements OnInit {
     this.activeCategory = slug;
     this.mealService.getMealsByCategory(slug).subscribe({
       next: (res) => {
-        console.log(res);
         this.meals = res.data;
-        console.log(this.meals);
+        this.cdr.detectChanges();
       },
       error: (err) => console.error(err),
     });

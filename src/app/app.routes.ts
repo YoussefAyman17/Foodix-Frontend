@@ -13,6 +13,7 @@ import { MyOrdersPage } from './Components/my-orders-page/my-orders-page';
 import { ProductDetails } from './Components/product-details/product-details';
 import { adminGuard } from './admin/guards/admin-guard';
 import { NotFound } from './Components/not-found/not-found';
+import { DeliveryHome } from './Components/delivery/delivery-home/delivery-home';
 
 export const routes: Routes = [
   // Auth routes
@@ -30,6 +31,8 @@ export const routes: Routes = [
   { path: 'profile', component: ProfilePage, title: 'profile' },
   { path: 'my-orders-page', component: MyOrdersPage, title: 'My Orders' },
 
+  // Delivery routes
+  { path: 'delivery-home', component: DeliveryHome },
 
   // Admin routes
   {
