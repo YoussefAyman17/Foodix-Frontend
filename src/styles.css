@@ -1,4 +1,10 @@
 @import 'ngx-toastr/toastr';
+:root {
+  --bg-color: #f7f1e1;
+  --bg-second-color: #ffffff;
+  --form-border-color: #999;
+  --form-border-focus-color: #1a1a1a;
+}
 .foodix-footer {
   background-color: #0f1214;
   color: #a5a5a5;

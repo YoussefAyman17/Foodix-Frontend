@@ -25,6 +25,14 @@ export class ManageCategories implements OnInit {
   totalCategories: number = 0;
   totalMenuItems: number = 0;
   averageItems: number = 0;
+  selectedFile: File | null = null;
+
+  onFileSelected(event: Event) {
+    const target = event.target as HTMLInputElement;
+    if (target.files && target.files.length > 0) {
+      this.selectedFile = target.files[0]; // Store the binary File object
+    }
+  }
 
   activeModal: 'add' | 'edit' | 'delete' | null = null;
   selectedCategory: Category | null = null;
@@ -47,8 +55,7 @@ export class ManageCategories implements OnInit {
     this.categoryForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(15)]],
       description: ['', [Validators.maxLength(200)]],
-      icon: ['bi-heart-fill', Validators.required],
-      color: ['bg-orange', Validators.required],
+      image: ['', [Validators.required]],
     });
   }
 
@@ -71,7 +78,7 @@ export class ManageCategories implements OnInit {
 
   calculateStats() {
     this.totalCategories = this.categories.length;
-    this.totalMenuItems = this.categories.reduce((sum, cat) => sum + (cat.itemsCount || 0), 0);
+    this.totalMenuItems = this.categories.reduce((sum, cat) => sum + (cat.mealsCount || 0), 0);
     this.averageItems =
       this.totalCategories > 0 ? Math.round(this.totalMenuItems / this.totalCategories) : 0;
   }
@@ -81,71 +88,90 @@ export class ManageCategories implements OnInit {
     this.selectedCategory = category;
 
     if (modalType === 'add') {
-      this.categoryForm.reset({ icon: 'bi-heart-fill', color: 'bg-orange' });
+      this.categoryForm.reset();
+      this.categoryForm.get('image')?.setValidators([Validators.required]);
     }
     if (modalType === 'edit' && category) {
+      this.categoryForm.get('image')?.clearValidators();
       this.categoryForm.patchValue({
         name: category.name,
         description: category.description,
-        icon: category.icon,
       });
     }
+    this.categoryForm.get('image')?.updateValueAndValidity();
   }
 
   closeModal() {
     this.activeModal = null;
     this.selectedCategory = null;
+    this.selectedFile = null;
   }
 
   onSubmitAdd() {
-    if (this.categoryForm.invalid) return;
+    if (this.categoryForm.invalid || !this.selectedFile) return;
 
-    const newCategory: Category = this.categoryForm.value;
+    const formData = new FormData();
+    formData.append('name', this.categoryForm.get('name')?.value);
+    formData.append('description', this.categoryForm.get('description')?.value);
+    formData.append('image', this.selectedFile);
 
-    this.categoryService.addCategory(newCategory).subscribe({
+    this.categoryService.addCategory(formData).subscribe({
       next: (res) => {
-        console.log('Category added successfully', res);
+        this.toastr.success('Category updated successfully!', 'Success');
         this.closeModal();
         this.loadCategories();
+        this.selectedFile = null;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error adding category:', err);
         const errorMessage = err.error?.message || 'Something went wrong, please try again.';
         this.toastr.error(errorMessage, 'Error');
+        this.cdr.detectChanges();
       },
     });
   }
   onSubmitEdit() {
-    if (this.categoryForm.invalid || !this.selectedCategory?.categoryId) return;
+    if (this.categoryForm.invalid || !this.selectedCategory?._id) return;
 
-    const updatedData: Category = this.categoryForm.value;
+    const formData = new FormData();
+    formData.append('name', this.categoryForm.get('name')?.value);
+    formData.append('description', this.categoryForm.get('description')?.value || '');
+    if (this.selectedFile) {
+      formData.append('image', this.selectedFile);
+    }
 
-    this.categoryService.updateCategory(this.selectedCategory.categoryId, updatedData).subscribe({
+    this.categoryService.updateCategory(this.selectedCategory._id, formData).subscribe({
       next: (res) => {
         this.toastr.success('Category updated successfully!', 'Success');
         this.closeModal();
         this.loadCategories();
+        this.selectedFile = null;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error updating category:', err);
         const errorMessage = err.error?.message || 'Failed to update category.';
         this.toastr.error(errorMessage, 'Error');
+        this.cdr.detectChanges();
       },
     });
   }
 
   onSubmitDelete() {
-    if (!this.selectedCategory?.categoryId) return;
-    this.categoryService.deleteCategory(this.selectedCategory.categoryId).subscribe({
+    if (!this.selectedCategory?._id) return;
+    this.categoryService.deleteCategory(this.selectedCategory._id).subscribe({
       next: (res) => {
         this.toastr.success('Category Deleted successfully!', 'Success');
         this.closeModal();
         this.loadCategories();
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error Deleting category:', err);
         const errorMessage = err.error?.message || 'Failed to Delete category.';
         this.toastr.error(errorMessage, 'Error');
+        this.cdr.detectChanges();
       },
     });
   }

@@ -1,4 +1,4 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit, inject } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 // import { email } from '@angular/forms/signals';
 import { Router, RouterLink, RouterModule } from '@angular/router';
-
+import { ToastrService } from 'ngx-toastr';
 import { Auth } from '../../core/services/auth';
 declare var google: any;
 @Component({
@@ -23,6 +23,7 @@ export class LoginPage {
     private auth: Auth,
     private router: Router,
   ) {}
+  private toastr = inject(ToastrService);
   errorMessage = signal<string>('');
   isLoading = signal<boolean>(false);
 
@@ -59,9 +60,9 @@ export class LoginPage {
     const idToken = res.credential;
     this.auth.loginWithGoogleApi({ idToken }).subscribe({
       next: (resp) => {
-        localStorage.setItem('userToken', resp.token);
-        this.auth.userData();
-        // this.router.navigate(['/home']);
+        this.auth.saveToken(resp.data?.token);
+        this.toastr.success('Welcome back!');
+        this.router.navigate(['/']);
       },
       error: (err) => {
         this.errorMessage.set(err.error.message);
@@ -79,12 +80,13 @@ export class LoginPage {
       this.auth.loginApi(userData).subscribe({
         next: (res) => {
           this.isLoading.set(false);
-          localStorage.setItem('userToken', res.token);
-          this.auth.userData();
-          this.router.navigate(['/home']);
+          this.auth.saveToken(res.data?.token);
+          this.toastr.success('Welcome back!');
+          this.router.navigate(['/']);
         },
         error: (err) => {
           this.errorMessage.set(err.error.message);
+          this.toastr.error(err.error?.message || 'Login failed');
           this.isLoading.set(false);
         },
       });

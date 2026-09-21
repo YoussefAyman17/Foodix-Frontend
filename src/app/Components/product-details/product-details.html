@@ -1,29 +1,18 @@
-<app-navbar></app-navbar>
 <section class="product-details-container container py-5">
-  <!-- حالة التحميل -->
   @if (isLoading()) {
     <div class="text-center py-5">
       <div class="spinner-border text-danger" role="status"></div>
       <p class="mt-3 text-muted fw-bold">Loading masterpiece...</p>
     </div>
-  }
-
-  <!-- حالة الخطأ -->
-  @else if (errorMessage()) {
+  } @else if (errorMessage()) {
     <div class="alert alert-danger text-center shadow-sm w-50 mx-auto mt-5">
       <p class="mb-3">{{ errorMessage() }}</p>
       <a routerLink="/menu" class="btn btn-outline-danger">Back to menu</a>
     </div>
-  }
-
-  <!-- عرض المنتج -->
-  @else if (meal) {
-    <!-- 🟢 القسم الأول: تفاصيل المنتج -->
+  } @else if (meal) {
     <div class="row gx-5 mb-5 align-items-center">
-      <!-- الصورة وعلامة الخصم -->
       <div class="col-lg-6 mb-4 mb-lg-0">
         <div class="image-wrap shadow-sm rounded-4 overflow-hidden position-relative">
-          <!-- عرض علامة الخصم (Discount Tag) لو موجودة -->
           @if (meal.discount_tag) {
             <span
               class="badge bg-danger position-absolute top-0 start-0 m-3 px-3 py-2 fs-6 z-1 shadow-sm"
@@ -41,9 +30,7 @@
         </div>
       </div>
 
-      <!-- التفاصيل (المحتوى) -->
       <div class="col-lg-6">
-        <!-- التقييم وعدد الطلبات -->
         <div class="d-flex align-items-center mb-2 gap-2">
           <div class="text-warning fs-5">
             <i class="bi bi-star-fill"></i>
@@ -54,7 +41,6 @@
 
         <h1 class="text-uppercase fw-bold mb-2 product-title">{{ meal.name }}</h1>
 
-        <!-- الوصف القصير (كعنوان فرعي) والوصف الكامل -->
         @if (meal.short_description) {
           <h6 class="text-muted fw-bold mb-3">{{ meal.short_description }}</h6>
         }
@@ -62,11 +48,9 @@
           {{ meal.description }}
         </p>
 
-        <!-- السعر وحالة الخصم -->
         <div class="d-flex align-items-center mb-3 gap-3">
           <span class="fs-2 fw-bold text-danger">{{ meal.price }} EGP</span>
 
-          <!-- عرض السعر القديم فقط لو كان on_sale بـ true و old_price موجود -->
           @if (meal.on_sale && meal.old_price) {
             <span class="fs-4 text-decoration-line-through text-muted"
               >{{ meal.old_price }} EGP</span
@@ -74,16 +58,13 @@
           }
         </div>
 
-        <!-- حالة المخزون (Stock) -->
         @if (meal.quantity <= 5 && meal.quantity > 0) {
           <div class="text-danger small fw-bold mb-3">
             <i class="bi bi-fire"></i> Hurry! Only {{ meal.quantity }} left in stock.
           </div>
         }
 
-        <!-- أزرار التحكم (الكمية + الحجم) -->
         <div class="d-flex flex-wrap gap-3 mb-4 align-items-end">
-          <!-- عداد الكمية للطلب -->
           <div class="quantity-selector d-flex align-items-center rounded-2 px-1">
             <button type="button" class="btn border-0 fs-4 text-dark" (click)="decreaseQty()">
               −
@@ -105,7 +86,6 @@
             </button>
           </div>
 
-          <!-- قائمة الأحجام -->
           @if (meal.sizes?.length) {
             <div class="size-selector">
               <select class="form-select border-0 shadow-none px-3" (change)="selectSize($event)">
@@ -118,8 +98,6 @@
           }
         </div>
 
-        <!-- زر الإضافة للسلة -->
-        <!-- يتم تعطيله لو isAvailable بـ false أو لو الـ quantity خلصت -->
         <button
           type="button"
           class="btn btn-danger btn-lg px-5 py-2 fw-bold rounded-2 shadow-sm"
@@ -135,7 +113,6 @@
       </div>
     </div>
 
-    <!-- 🟢 القسم الثاني: المنتجات ذات الصلة (Related Items) -->
     @if (relatedItems()?.length) {
       <div class="related-items mt-5 pt-5 border-top">
         <h3 class="fw-bold mb-5 product-title">Related items</h3>
@@ -168,4 +145,3 @@
     }
   }
 </section>
-<app-footer></app-footer>

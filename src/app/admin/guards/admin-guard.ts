@@ -14,13 +14,19 @@ export const adminGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  authService.userData();
+  const token = authService.getToken();
+
+  if (!token) {
+    toastr.error('Please login first to access this page.', 'Unauthorized');
+    router.navigate(['/login']);
+    return false;
+  }
 
   if (authService.isAdmin()) {
     return true;
   }
 
   toastr.error('Access Denied! You must be an admin to view this page.', 'Unauthorized');
-  router.navigate(['/home']);
+  router.navigate(['/']);
   return false;
 };

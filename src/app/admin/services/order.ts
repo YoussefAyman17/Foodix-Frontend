@@ -43,7 +43,8 @@ export class OrderService {
   }
 
   getDeliveryOrders(): Observable<any> {
-    const deliveryId = this.auth.decodedUserData()?.workerId;
+    // const deliveryId = this.auth.decodedUserData()?.workerId;
+    const deliveryId = 1;
     if (!deliveryId) return this.http.get(`${this.apiUrl}/delivery-orders`);
     return this.http.get(`${this.apiUrl}/delivery-orders?workerId=${deliveryId}`);
   }

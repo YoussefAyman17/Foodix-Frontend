@@ -1,6 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, computed } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { Auth } from '../../core/services/auth';
+import { Auth, UserPayload } from '../../core/services/auth';
 import { CommonModule } from '@angular/common';
 import { CartService } from '../../core/services/cart';
 
@@ -11,34 +11,22 @@ import { CartService } from '../../core/services/cart';
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
-export class Navbar implements OnInit {
-  userName: string = '';
-  userEmail: string = '';
-  userInitial: string = '';
-
-  // ✅ CartService متاح في الـ template عشان نعرض الـ badge
+export class Navbar {
   public cartService = inject(CartService);
+  authService = inject(Auth);
 
+  currentUser = this.authService.decodedUserData;
+  userInitial = computed(() => {
+    const name = this.currentUser()?.name;
+    return name ? name.charAt(0).toUpperCase() : '?';
+  });
   constructor(
     public auth: Auth,
     private router: Router,
   ) {}
 
-  ngOnInit(): void {
-    this.auth.userData();
-    const decoded = this.auth.decodedUserData();
-    if (decoded) {
-      this.userName = decoded.name || decoded.userName || 'User';
-      this.userEmail = decoded.email || '';
-      this.userInitial = this.userName.charAt(0).toUpperCase();
-    }
-  }
-
-  logout(): void {
-    localStorage.removeItem('userToken');
-    localStorage.removeItem('UserEmail');
-    localStorage.removeItem('foodix_cart');
-    this.auth.decodedUserData.set(null);
+  logout() {
+    this.authService.logout();
     this.router.navigate(['/login']);
   }
 }

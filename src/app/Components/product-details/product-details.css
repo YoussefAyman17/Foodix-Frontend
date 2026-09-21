@@ -45,13 +45,11 @@
   background-color: #a61717;
 }
 
-/* تنسيقات المنتجات ذات الصلة (الخلفية المموجة) */
 .related-img-wrap {
   width: 230px;
   height: 230px;
 }
 
-/* الشكل العشوائي (Blob) خلف الصور */
 .blob-bg {
   background-color: #f4f5f7;
   border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;

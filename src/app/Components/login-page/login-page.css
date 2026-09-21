@@ -1,72 +1,68 @@
- :host {
-   position: fixed;
-   inset: 0;
-   background-color: #000000;
-   /* background: linear-gradient(135deg, #ffffff, #fff5ec); */
- }
+:host {
+  /* position: fixed; */
+  inset: 0;
+  background-color: var(--bg-color);
+  width: 100%;
+  /* background: linear-gradient(135deg, #ffffff, #fff5ec); */
+}
 
- .card {
-   min-height: 560px;
-   background-color: #F5EADA;
-   /* background: #fffaf3; */
-   border: none;
-   color: #1a1a1a;
+.card {
+  min-height: 560px;
+  background-color: var(--bg-second-color);
+  /* background: #fffaf3; */
+  border: none;
+  color: #1a1a1a;
+}
 
- }
+.form-control {
+  background-color: #ffffff;
+  border: 1px solid var(--form-border-color);
+  color: #222;
+}
 
- .form-control {
-   background-color: #fff;
-   border: 1px solid rgba(255, 255, 255, 0.2);
-   color: #222;
+.form-control::placeholder {
+  color: #999;
+}
 
- }
+.form-control:focus {
+  border-color: var(--form-border-focus-color);
+  box-shadow: none;
+  color: #222;
+}
 
- .form-control::placeholder {
-   color: #999;
- }
+.btn-dark {
+  background: black;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+}
 
- .form-control:focus {
-   background-color: rgba(255, 255, 255, 0.15);
-   border-color: #999;
-   box-shadow: none;
-   color: #222;
- }
+.btn-dark:hover {
+  background: #222;
+}
 
- .btn-dark {
-   background: black;
-   border: none;
-   border-radius: 8px;
-   padding: 10px;
- }
+.text-muted {
+  color: #6e6e6e !important;
+}
 
- .btn-dark:hover {
-   background: #222;
- }
+a {
+  cursor: pointer;
+}
 
- .text-muted {
-   color: #6e6e6e !important;
- }
+.google-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
 
- a {
-   cursor: pointer;
- }
+.error-text {
+  color: #dc3545;
+  font-size: 13px;
+  margin-top: 5px;
+}
 
-
- .google-btn {
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   gap: 10px;
- }
-
- .error-text {
-   color: #dc3545;
-   font-size: 13px;
-   margin-top: 5px;
- }
-
-
- /* .card {
+/* .card {
   min-height: 560px;
   background: linear-gradient(135deg, #050505 0%, #111111 50%, #2a2a2a 100%);
   border: none;

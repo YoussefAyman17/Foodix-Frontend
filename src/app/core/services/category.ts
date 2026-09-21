@@ -7,31 +7,31 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root',
 })
 export class CategoryService {
-  private baseUrl = `${environment.apiURL}/categories`;
+  private baseUrl = `${environment.apiURL}categories`;
 
   constructor(private http: HttpClient) {}
 
-  // GET /api/categories
+  // GET /api/v1/categories
   getAllCategories(): Observable<any> {
     return this.http.get(this.baseUrl);
   }
 
-  // GET /api/categories/:id
+  // GET /api/v1/categories/:id
   getCategoryById(id: number): Observable<any> {
     return this.http.get(`${this.baseUrl}/${id}`);
   }
 
-  // POST /api/categories
+  // POST /api/v1/categories
   createCategory(data: any): Observable<any> {
     return this.http.post(this.baseUrl, data);
   }
 
-  // PATCH /api/categories/:id
+  // PATCH /api/v1/categories/:id
   updateCategory(id: number, data: any): Observable<any> {
     return this.http.patch(`${this.baseUrl}/${id}`, data);
   }
 
-  // DELETE /api/categories/:id
+  // DELETE /api/v1/categories/:id
   deleteCategory(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/${id}`);
   }

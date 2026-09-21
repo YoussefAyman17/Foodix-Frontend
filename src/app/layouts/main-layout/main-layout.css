@@ -1,0 +1,4 @@
+.main-content {
+  min-height: calc(100vh - 120px); /* Keep footer at bottom */
+  /* padding: 16px; */
+}

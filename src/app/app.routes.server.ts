@@ -2,7 +2,7 @@ import { RenderMode, ServerRoute } from '@angular/ssr';
 
 export const serverRoutes: ServerRoute[] = [
   {
-    path: 'product/:slug/:id',
+    path: 'meal/:slug/:id',
     renderMode: RenderMode.Server,
   },
   {

@@ -5,7 +5,7 @@
 >
   <div class="container d-flex align-items-center h-100">
     <!-- Logo -->
-    <a class="navbar-brand" routerLink="/home" routerLinkActive="active-link">
+    <a class="navbar-brand" routerLink="/" routerLinkActive="active-link">
       <img src="/Assets/Logo/logo-white.png" alt="logo" />
     </a>
 
@@ -25,7 +25,7 @@
         <li class="nav-item">
           <a
             class="nav-link text-light"
-            routerLink="/home"
+            routerLink="/"
             routerLinkActive="active-link"
             [routerLinkActiveOptions]="{ exact: true }"
             >Home</a
@@ -35,20 +35,17 @@
           <a class="nav-link text-light" routerLink="/menu" routerLinkActive="active-link">Menu</a>
         </li>
         <li class="nav-item">
-          <!-- ✅ تم ربط Contact بالصفحة الصح -->
           <a class="nav-link text-light" routerLink="/complaint" routerLinkActive="active-link"
             >Contact</a
           >
         </li>
         <li class="nav-item">
-          <!-- ✅ تم ربط Checkout بالصفحة الصح -->
           <a class="nav-link text-light" routerLink="/checkout" routerLinkActive="active-link"
             >Checkout</a
           >
         </li>
       </ul>
 
-      <!-- Cart Button with Badge -->
       <button
         style="background-color: green; position: relative"
         type="button"
@@ -57,7 +54,6 @@
         data-bs-target="#cartOffcanvas"
       >
         <i class="bi bi-cart3"></i>
-        <!-- ✅ Badge عداد الكارت -->
         @if (cartService.totalItems() > 0) {
           <span
             class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
@@ -68,7 +64,6 @@
         }
       </button>
 
-      <!-- User Avatar Button -->
       <button
         type="button"
         class="btn p-0 border-0"
@@ -91,7 +86,7 @@
             cursor: pointer;
           "
         >
-          {{ userInitial || '?' }}
+          {{ userInitial() }}
         </div>
       </button>
     </div>
@@ -114,9 +109,7 @@
       <div class="offcanvas-body d-flex flex-column align-items-center gap-3">
         <ul class="navbar-nav text-center fs-5 fw-bold flex-column">
           <li class="nav-item">
-            <a class="nav-link text-light" routerLink="/home" routerLinkActive="active-link"
-              >Home</a
-            >
+            <a class="nav-link text-light" routerLink="/" routerLinkActive="active-link">Home</a>
           </li>
           <li class="nav-item">
             <a class="nav-link text-light" routerLink="/menu" routerLinkActive="active-link"
@@ -124,13 +117,11 @@
             >
           </li>
           <li class="nav-item">
-            <!-- ✅ Contact مربوط -->
             <a class="nav-link text-light" routerLink="/contact" routerLinkActive="active-link"
               >Contact</a
             >
           </li>
           <li class="nav-item">
-            <!-- ✅ Checkout مربوط -->
             <a class="nav-link text-light" routerLink="/checkout" routerLinkActive="active-link"
               >Checkout</a
             >
@@ -150,7 +141,6 @@
           </li>
         </ul>
 
-        <!-- Mobile Cart Button with badge -->
         <button
           style="background-color: green; position: relative"
           type="button"
@@ -169,7 +159,6 @@
           }
         </button>
 
-        <!-- Mobile User Avatar -->
         <button
           type="button"
           class="btn p-0 border-0 mt-2"
@@ -192,7 +181,7 @@
               cursor: pointer;
             "
           >
-            {{ userInitial || '?' }}
+            {{ userInitial() }}
           </div>
         </button>
       </div>
@@ -273,11 +262,13 @@
             flex-shrink: 0;
           "
         >
-          {{ userInitial || '?' }}
+          {{ userInitial() }}
         </div>
         <div>
-          <div style="color: #fff; font-size: 14px; font-weight: 700">{{ userName }}</div>
-          <div style="color: #888; font-size: 12px">{{ userEmail }}</div>
+          <div style="color: #fff; font-size: 14px; font-weight: 700">
+            {{ currentUser()?.name }}
+          </div>
+          <div style="color: #888; font-size: 12px">{{ currentUser()?.email }}</div>
         </div>
       </div>
 
@@ -320,7 +311,6 @@
   </div>
 
   <div class="offcanvas-body d-flex flex-column p-0">
-    <!-- Empty State -->
     @if (cartService.items().length === 0) {
       <div
         class="d-flex flex-column align-items-center justify-content-center h-100 text-center px-4"
