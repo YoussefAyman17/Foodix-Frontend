@@ -34,7 +34,7 @@
         Savor the taste of our delicious, expertly crafted dishes made with the finest ingredients,
         offering a perfect blend of flavors.
       </p>
-      <button onclick="window.open('menu.html', '_self')" class="btn1 px-5 py-3">Order Now</button>
+      <button routerLink="/menu" class="btn1 px-5 py-3">Order Now</button>
     </div>
   </div>
 </div>
@@ -491,7 +491,7 @@
 
     <div class="row">
       <div class="col-lg-6" *ngFor="let meal of topMeals">
-        <a routerLink="/menu" style="text-decoration: none; color: black">
+        <a [routerLink]="['/meal', meal._id]" style="text-decoration: none; color: black">
           <div class="menu-item p-4" style="height: 200px">
             <div class="thumb-img">
               <img

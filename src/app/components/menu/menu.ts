@@ -44,6 +44,7 @@ export class Menu implements OnInit {
     this.mealService.getMealsByCategory(slug).subscribe({
       next: (res) => {
         this.meals = res.data;
+        console.log(this.meals);
         this.cdr.detectChanges();
       },
       error: (err) => console.error(err),

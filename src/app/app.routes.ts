@@ -20,7 +20,7 @@ export const routes: Routes = [
         title: 'Menu Page',
       },
       {
-        path: 'meal/:slug/:id',
+        path: 'meal/:id',
         loadComponent: () =>
           import('./Components/product-details/product-details').then((m) => m.ProductDetails),
         title: 'Meal Details Page',

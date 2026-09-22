@@ -6,8 +6,7 @@ export interface MealSize {
 }
 
 export interface Meal {
-  _id?: string;
-  itemId?: number;
+  _id: string;
 
   category: Category;
   name: string;
@@ -15,7 +14,8 @@ export interface Meal {
   on_sale?: boolean;
   old_price?: number | null;
   price: number;
-  rating?: number;
+  ratingsAverage?: number;
+  ratingsQuantity?: number;
   discount_tag?: string | null;
 
   short_description?: string;
@@ -27,7 +27,7 @@ export interface Meal {
 
   sizes?: MealSize[];
 
-  quantity?: number;
+  // quantity?: number;
 
   slug?: string;
 

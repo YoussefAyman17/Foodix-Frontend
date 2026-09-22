@@ -1,5 +1,4 @@
-import { CommonModule } from '@angular/common';
-import { isPlatformBrowser } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Component, Inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MealService } from '../../core/services/meal';
@@ -65,30 +64,59 @@ export class ProductDetails implements OnInit {
     });
   }
 
+  fetchRelatedItems(categorySlug: string, currentMealId: string): void {
+    this.mealService.getMeals({ categorySlug, limit: 10 }).subscribe({
+      next: (res: any) => {
+        const items = res?.data || res?.data?.meals || [];
+
+        const filtered = items.filter((item: any) => item._id !== currentMealId).slice(0, 3);
+
+        this.relatedItems.set(filtered);
+      },
+      error: (err) => {
+        console.error('Error fetching related items by slug:', err);
+      },
+    });
+  }
+
   ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) {
       this.isLoading.set(false);
       return;
     }
 
-    const slug = this.route.snapshot.paramMap.get('slug') || '';
-    const id = Number(this.route.snapshot.paramMap.get('id'));
+    this.route.paramMap.subscribe((params) => {
+      const id = params.get('id');
 
-    if (!slug || Number.isNaN(id)) {
-      this.isLoading.set(false);
-      this.errorMessage.set('Invalid product link');
-      return;
-    }
+      if (!id) {
+        this.isLoading.set(false);
+        this.errorMessage.set('Invalid product link');
+        return;
+      }
 
-    this.mealService.getMealById(slug, id).subscribe({
-      next: (res) => {
-        this.meal = res?.data || null;
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        this.errorMessage.set(err.error?.message || 'Product not found');
-        this.isLoading.set(false);
-      },
+      this.isLoading.set(true);
+      this.quantity.set(1);
+      this.selectedSizePrice.set(0);
+
+      this.mealService.getMealById(id).subscribe({
+        next: (res) => {
+          this.meal = res?.data || null;
+          this.isLoading.set(false);
+
+          const categorySlug =
+            typeof this.meal?.category === 'object'
+              ? this.meal?.category?.slug
+              : this.meal?.categorySlug || this.meal?.category;
+
+          if (categorySlug) {
+            this.fetchRelatedItems(categorySlug, this.meal._id);
+          }
+        },
+        error: (err) => {
+          this.errorMessage.set(err.error?.message || 'Product not found');
+          this.isLoading.set(false);
+        },
+      });
     });
   }
 }

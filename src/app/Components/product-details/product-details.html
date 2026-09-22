@@ -10,7 +10,7 @@
       <a routerLink="/menu" class="btn btn-outline-danger">Back to menu</a>
     </div>
   } @else if (meal) {
-    <div class="row gx-5 mb-5 align-items-center">
+    <div class="row gx-5 mb-5 align-items-center" style="height: 75vh">
       <div class="col-lg-6 mb-4 mb-lg-0">
         <div class="image-wrap shadow-sm rounded-4 overflow-hidden position-relative">
           @if (meal.discount_tag) {
@@ -35,7 +35,7 @@
           <div class="text-warning fs-5">
             <i class="bi bi-star-fill"></i>
           </div>
-          <span class="fw-bold fs-5">{{ meal.rating || 0 }}</span>
+          <span class="fw-bold fs-5">{{ meal.ratingsAverage || 0 }}</span>
           <span class="text-muted small">({{ meal.orders_count || 0 }} orders)</span>
         </div>
 
@@ -58,11 +58,11 @@
           }
         </div>
 
-        @if (meal.quantity <= 5 && meal.quantity > 0) {
+        <!-- @if (meal.quantity <= 5 && meal.quantity > 0) {
           <div class="text-danger small fw-bold mb-3">
             <i class="bi bi-fire"></i> Hurry! Only {{ meal.quantity }} left in stock.
           </div>
-        }
+        } -->
 
         <div class="d-flex flex-wrap gap-3 mb-4 align-items-end">
           <div class="quantity-selector d-flex align-items-center rounded-2 px-1">
@@ -101,10 +101,10 @@
         <button
           type="button"
           class="btn btn-danger btn-lg px-5 py-2 fw-bold rounded-2 shadow-sm"
-          [disabled]="!meal.isAvailable || meal.quantity === 0"
+          [disabled]="!meal.isAvailable"
           (click)="addToCart()"
         >
-          @if (!meal.isAvailable || meal.quantity === 0) {
+          @if (!meal.isAvailable) {
             Out of Stock
           } @else {
             Add To Cart
@@ -113,35 +113,33 @@
       </div>
     </div>
 
-    @if (relatedItems()?.length) {
-      <div class="related-items mt-5 pt-5 border-top">
-        <h3 class="fw-bold mb-5 product-title">Related items</h3>
-
-        <div class="row g-4 justify-content-center">
-          @for (item of relatedItems(); track item._id) {
-            <div class="col-md-4 text-center">
-              <div
-                class="related-img-wrap mx-auto mb-4 position-relative"
-                style="cursor: pointer"
-                [routerLink]="['/meal', item.slug]"
-              >
-                <div class="blob-bg position-absolute w-100 h-100"></div>
-                <img
-                  [src]="item.img || item.image"
-                  [alt]="item.name"
-                  class="img-fluid position-relative z-1 rounded-circle p-2 object-fit-cover shadow-sm w-100 h-100"
-                />
-              </div>
-
-              <h5 class="text-uppercase fw-bold mb-2 product-title">{{ item.name }}</h5>
-              <p class="text-muted small px-3">
-                {{ item.short_description || item.description | slice: 0 : 60 }}...
+    <!-- Related Items Section -->
+    <div *ngIf="relatedItems().length > 0" class="container my-5">
+      <h3 class="fw-bold mb-4">You Might Also Like</h3>
+      <div class="row g-4">
+        <div *ngFor="let item of relatedItems()" class="col-md-4">
+          <div class="card h-100 shadow-sm border-0">
+            <img
+              [src]="item.img || item.image"
+              class="card-img-top object-fit-cover"
+              style="height: 200px"
+              [alt]="item.name"
+            />
+            <div class="card-body d-flex flex-column justify-content-between">
+              <h5 class="card-title fw-semibold">{{ item.name }}</h5>
+              <p class="card-text text-muted small text-truncate">
+                {{ item.short_description || item.description }}
               </p>
-              <span class="fw-bold text-danger">{{ item.price }} EGP</span>
+              <div class="d-flex justify-content-between align-items-center mt-3">
+                <span class="fw-bold text-danger fs-5">${{ item.price }}</span>
+                <a [routerLink]="['/meal', item._id]" class="btn btn-outline-danger btn-sm">
+                  View Details
+                </a>
+              </div>
             </div>
-          }
+          </div>
         </div>
       </div>
-    }
+    </div>
   }
 </section>

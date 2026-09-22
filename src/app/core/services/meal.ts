@@ -7,17 +7,25 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root',
 })
 export class MealService {
-  private baseUrl = `${environment.apiURL}/categories`;
+  private baseUrl = `${environment.apiURL}categories`;
+  private baseUrl2 = `${environment.apiURL}meals`;
   constructor(private http: HttpClient) {}
 
+  getMeals(params?: { categorySlug?: string; limit?: number; page?: number }): Observable<any> {
+    let queryParams: any = {};
+    if (params?.limit) queryParams.limit = params.limit;
+    if (params?.page) queryParams.page = params.page;
+
+    return this.http.get(`${this.baseUrl}/${params?.categorySlug}/meals`, { params: queryParams });
+  }
   // GET /api/categories/:slug/meals
   getMealsByCategory(slug: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/${slug}/meals`);
   }
 
-  // GET /api/categories/:slug/meals/:id
-  getMealById(slug: string, id: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}/${slug}/meals/${id}`);
+  // GET /api/meals/:id
+  getMealById(id: string): Observable<any> {
+    return this.http.get(`${this.baseUrl2}/${id}`);
   }
 
   // POST /api/categories/:slug/meals

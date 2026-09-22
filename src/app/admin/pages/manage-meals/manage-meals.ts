@@ -1,12 +1,13 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { PLATFORM_ID } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
+import { forkJoin } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
+
 import { MealService } from '../../services/meal';
 import { CategoryService } from '../../services/category';
 import { Meal } from '../../interfaces/meal';
 import { Category } from '../../interfaces/category';
-import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-manage-meals',
@@ -19,78 +20,71 @@ export class ManageMeals implements OnInit {
   private mealService = inject(MealService);
   private categoryService = inject(CategoryService);
   private fb = inject(FormBuilder);
-  private cdr = inject(ChangeDetectorRef);
   private toastr = inject(ToastrService);
   private platformId = inject(PLATFORM_ID);
 
-  meals: Meal[] = [];
-  categories: Category[] = [];
-  isLoading: boolean = true;
+  meals = signal<Meal[]>([]);
+  categories = signal<Category[]>([]);
+  selectedCategoryIds = signal<string[]>([]);
+  isLoading = signal<boolean>(true);
 
-  selectedCategoryIds: string[] = [];
+  activeModal = signal<'add' | 'edit' | 'delete' | 'view' | null>(null);
+  selectedMeal = signal<Meal | null>(null);
 
-  activeModal: 'add' | 'edit' | 'delete' | 'view' | null = null;
-  selectedMeal: Meal | null = null;
+  selectedFile = signal<File | null>(null);
+  imagePreview = signal<string | null>(null);
+
   mealForm!: FormGroup;
+  isSubmitting = signal<boolean>(false);
+
+  filteredMeals = computed(() => {
+    const activeIds = this.selectedCategoryIds();
+    const allMeals = this.meals();
+
+    if (activeIds.length === 0) return allMeals;
+
+    return allMeals.filter((meal) => {
+      const mealCatId = typeof meal.category === 'object' ? meal.category?._id : meal.category;
+      return activeIds.includes(mealCatId as string);
+    });
+  });
+
+  totalMealsCount = computed(() => this.meals().length);
+  availableMealsCount = computed(() => this.meals().filter((m) => m.isAvailable).length);
+  outOfStockMealsCount = computed(() => this.meals().filter((m) => !m.isAvailable).length);
+
+  averageRating = computed(() => {
+    const currentMeals = this.meals();
+    if (!currentMeals || currentMeals.length === 0) return 0;
+
+    const ratedMeals = currentMeals.filter((m) => m.ratingsAverage != null && m.ratingsAverage > 0);
+    if (ratedMeals.length === 0) return 0;
+
+    const totalSum = ratedMeals.reduce((sum, meal) => sum + (meal.ratingsAverage || 0), 0);
+    return Number((totalSum / ratedMeals.length).toFixed(1));
+  });
 
   ngOnInit() {
     this.initForm();
+
     if (!isPlatformBrowser(this.platformId)) {
-      this.isLoading = false;
+      this.isLoading.set(false);
       return;
     }
 
-    this.loadCategories();
-    this.loadMeals();
-  }
-
-  get filteredMeals(): Meal[] {
-    if (this.selectedCategoryIds.length === 0) {
-      return this.meals;
-    }
-
-    return this.meals.filter((meal) => {
-      const mealCatId = typeof meal.category === 'object' ? meal.category?._id : meal.category;
-      return this.selectedCategoryIds.includes(mealCatId as string);
-    });
-  }
-  get totalMealsCount(): number {
-    return this.meals.length;
-  }
-
-  get availableMealsCount(): number {
-    return this.meals.filter((m) => m.isAvailable).length;
-  }
-
-  get outOfStockMealsCount(): number {
-    return this.meals.filter((m) => !m.isAvailable).length;
-  }
-
-  get averageRating(): number {
-    return 4.7;
-  }
-
-  onCategoryFilterChange(categoryId: string, event: Event) {
-    const isChecked = (event.target as HTMLInputElement).checked;
-    if (isChecked) {
-      this.selectedCategoryIds.push(categoryId);
-    } else {
-      this.selectedCategoryIds = this.selectedCategoryIds.filter((id) => id !== categoryId);
-    }
+    this.loadInitialData();
   }
 
   initForm() {
     this.mealForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       category: ['', Validators.required],
-      img: ['', Validators.required],
       price: [0, [Validators.required, Validators.min(0)]],
       old_price: [null],
       on_sale: [false],
       discount_tag: [null],
       short_description: ['', Validators.maxLength(150)],
       description: ['', Validators.maxLength(1000)],
-      quantity: [0, [Validators.min(0)]],
       isAvailable: [true],
       sizes: this.fb.array([]),
     });
@@ -104,7 +98,7 @@ export class ManageMeals implements OnInit {
     this.sizesArray.push(
       this.fb.group({
         size: ['M', Validators.required],
-        extraPrice: [0, Validators.min(0)],
+        extraPrice: [0, [Validators.min(0)]],
       }),
     );
   }
@@ -113,48 +107,82 @@ export class ManageMeals implements OnInit {
     this.sizesArray.removeAt(index);
   }
 
-  loadCategories() {
-    this.categoryService.getAllCategories().subscribe({
-      next: (res: any) => {
-        this.categories = res.data || res;
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      this.selectedFile.set(file);
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreview.set(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  onCategoryFilterChange(categoryId: string, event: Event) {
+    const isChecked = (event.target as HTMLInputElement).checked;
+
+    this.selectedCategoryIds.update((ids) =>
+      isChecked ? [...ids, categoryId] : ids.filter((id) => id !== categoryId),
+    );
+  }
+
+  loadInitialData() {
+    this.isLoading.set(true);
+
+    forkJoin({
+      categoriesRes: this.categoryService.getAllCategories(),
+      mealsRes: this.mealService.getAllMeals(),
+    }).subscribe({
+      next: ({ categoriesRes, mealsRes }) => {
+        this.categories.set(categoriesRes.data || categoriesRes);
+        this.meals.set(mealsRes.data || mealsRes);
+        this.isLoading.set(false);
       },
-      error: (err) => console.error('Error fetching categories:', err),
+      error: (err) => {
+        console.error('Error fetching initial data:', err);
+        if (isPlatformBrowser(this.platformId)) {
+          this.toastr.error('Failed to load dashboard data', 'Error');
+        }
+        this.isLoading.set(false);
+      },
     });
   }
 
   loadMeals() {
-    this.isLoading = true;
+    this.isLoading.set(true);
     this.mealService.getAllMeals().subscribe({
       next: (response: any) => {
-        this.meals = response.data || response;
-        this.isLoading = false;
-        this.cdr.detectChanges();
+        this.meals.set(response.data || response);
+        this.isLoading.set(false);
       },
       error: (err) => {
         console.error('Error fetching meals:', err);
         if (isPlatformBrowser(this.platformId)) {
           this.toastr.error('Failed to load meals', 'Error');
         }
-        this.isLoading = false;
-        this.cdr.detectChanges();
+        this.isLoading.set(false);
       },
     });
   }
 
   openModal(modalType: 'add' | 'edit' | 'delete' | 'view', meal: Meal | null = null) {
-    this.activeModal = modalType;
-    this.selectedMeal = meal;
+    this.activeModal.set(modalType);
+    this.selectedMeal.set(meal);
     this.sizesArray.clear();
+    this.selectedFile.set(null);
+    this.imagePreview.set(null);
 
     if (modalType === 'add') {
       this.mealForm.reset({
         price: 0,
-        quantity: 0,
         isAvailable: true,
         on_sale: false,
       });
     } else if (modalType === 'edit' && meal) {
-      if (meal.sizes && meal.sizes.length > 0) {
+      if (meal.sizes?.length) {
         meal.sizes.forEach((sizeObj) => {
           this.sizesArray.push(
             this.fb.group({
@@ -165,70 +193,114 @@ export class ManageMeals implements OnInit {
         });
       }
 
+      this.imagePreview.set(meal.img || null);
+
       this.mealForm.patchValue({
         name: meal.name,
         category: typeof meal.category === 'object' ? meal.category?._id : meal.category,
         price: meal.price,
         old_price: meal.old_price,
         on_sale: meal.on_sale,
-        img: meal.img,
         discount_tag: meal.discount_tag,
         short_description: meal.short_description,
         description: meal.description,
-        quantity: meal.quantity,
         isAvailable: meal.isAvailable,
       });
     }
   }
 
   closeModal() {
-    this.activeModal = null;
-    this.selectedMeal = null;
+    this.activeModal.set(null);
+    this.selectedMeal.set(null);
+    this.selectedFile.set(null);
+    this.imagePreview.set(null);
+  }
+
+  private buildFormData(): FormData {
+    const formData = new FormData();
+    const formValues = this.mealForm.value;
+
+    Object.keys(formValues).forEach((key) => {
+      if (key === 'sizes') {
+        formData.append('sizes', JSON.stringify(formValues.sizes));
+      } else if (formValues[key] !== null && formValues[key] !== undefined) {
+        formData.append(key, formValues[key]);
+      }
+    });
+
+    const file = this.selectedFile();
+    if (file) {
+      formData.append('img', file, file.name);
+    }
+
+    return formData;
   }
 
   onSubmitMeal() {
+    if (this.isSubmitting()) {
+      return;
+    }
     if (this.mealForm.invalid) {
       this.toastr.warning('Please fill all required fields correctly');
       return;
     }
 
-    const mealData: Meal = this.mealForm.value;
+    this.isSubmitting.set(true);
+    const currentModal = this.activeModal();
 
-    if (this.activeModal === 'add') {
-      this.mealService.addMeal(mealData).subscribe({
+    if (currentModal === 'add' && !this.selectedFile()) {
+      this.toastr.warning('Please select an image for the meal');
+      return;
+    }
+
+    const formData = this.buildFormData();
+
+    if (currentModal === 'add') {
+      this.mealService.addMeal(formData).subscribe({
         next: () => {
+          this.isSubmitting.set(false);
           this.toastr.success('Meal added successfully');
           this.closeModal();
           this.loadMeals();
         },
-        error: (err) => this.toastr.error(err.error?.message || 'Error adding meal'),
+        error: (err) => {
+          this.isSubmitting.set(false);
+          console.error(err.error?.message);
+          this.toastr.error(err.error?.message || 'Error adding meal');
+        },
       });
-    } else if (this.activeModal === 'edit' && this.selectedMeal) {
-      const updateId = this.selectedMeal.itemId;
+    } else if (currentModal === 'edit') {
+      const updateId = this.selectedMeal()?._id;
+      if (!updateId) return;
 
-      this.mealService.updateMeal(updateId as number, mealData).subscribe({
+      this.mealService.updateMeal(updateId, formData).subscribe({
         next: () => {
+          this.isSubmitting.set(false);
           this.toastr.success('Meal updated successfully');
           this.closeModal();
           this.loadMeals();
         },
-        error: (err) => this.toastr.error(err.error?.message || 'Error updating meal'),
+        error: (err) => {
+          this.isSubmitting.set(false);
+          this.toastr.error(err.error?.message || 'Error updating meal');
+        },
       });
     }
   }
 
   onSubmitDelete() {
-    if (!this.selectedMeal?.itemId) return;
-    this.mealService.deleteMeal(this.selectedMeal.itemId).subscribe({
-      next: (res) => {
-        this.toastr.success('Meal Deleted successfully!', 'Success');
+    const mealId = this.selectedMeal()?._id;
+    if (!mealId) return;
+
+    this.mealService.deleteMeal(mealId).subscribe({
+      next: () => {
+        this.toastr.success('Meal deleted successfully!', 'Success');
         this.closeModal();
         this.loadMeals();
       },
       error: (err) => {
-        console.error('Error Deleting Meal:', err);
-        const errorMessage = err.error?.message || 'Failed to Delete meal.';
-        this.toastr.error(errorMessage, 'Error');
+        console.error('Error deleting meal:', err);
+        this.toastr.error(err.error?.message || 'Failed to delete meal.', 'Error');
       },
     });
   }

@@ -22,9 +22,9 @@
       <div
         class="avatar rounded-circle d-flex align-items-center justify-content-center text-white"
       >
-        A
+        {{ userInitial() }}
       </div>
-      <span class="text-dark fw-medium">Admin</span>
+      <span class="text-dark fw-medium">{{ currentUser()?.name }} (Admin)</span>
     </div>
   </div>
 </header>
