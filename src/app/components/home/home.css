@@ -538,6 +538,7 @@ body {
 
     .price {
       font-weight: 800;
+      text-overflow: none;
     }
   }
 }
@@ -554,76 +555,9 @@ body {
   }
 }
 
-<<<<<<< Updated upstream
-          .content {
-            display: flex;
-            flex-direction: column;
-            align-items: space-between;
-            padding-block: 5px;
-            p {
-              color: rgb(80, 80, 80);
-            }
-            .title {
-              font-weight: 800;
-              font-size: 20px;
-            }
-          }
-
-          .price {
-            font-weight: 800;
-          }
-        }
-      }
-
-      .menu-item:hover {
-        background-color: #14a83a;
-        border: 1px solid #14a83a;
-        .title,
-        .price {
-          color: white !important;
-        }
-        .content p {
-          color: rgb(232, 232, 232);
-        }
-      }
-
-      .sec-heading {
-        font-size: 50px;
-        font-weight: 900;
-        color: #0f1214;
-        margin-top: 10px;
-      }
-
-
-
-
-
-.seemorebtn{
-  background-color: rgb(238, 8, 8);
-  color: white !important;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.seemorebtn:hover{
-  background-color: #00ff15;
-  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.4);
-  transform: translateY(-2px);
-}
-
-
-
-.seemorebtn:hover{
-  box-shadow: 0 0 15px #000000;
-}
-=======
 .sec-heading {
   font-size: 50px;
   font-weight: 900;
   color: #0f1214;
   margin-top: 10px;
 }
->>>>>>> Stashed changes

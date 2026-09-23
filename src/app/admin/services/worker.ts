@@ -1,18 +1,22 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Worker } from '../interfaces/worker';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class WorkerService {
+  private http = inject(HttpClient);
+  private baseUrl = `${environment.apiURL}workers`;
+  private userBaseUrl = `${environment.baseURL}`;
 
-  private baseUrl = `${environment.apiURL}/workers`;
-
-  constructor(private http: HttpClient) {}
-
+  getAllUsers(query: any): Observable<any> {
+    const users = this.http.get(this.userBaseUrl, { params: query });
+    console.log(users, query);
+    return users;
+  }
   getAllWorkers(): Observable<any> {
     return this.http.get(this.baseUrl);
   }
@@ -33,16 +37,9 @@ export class WorkerService {
     return this.http.get(`${this.baseUrl}/delivery`);
   }
 
-assignDeliveryToOrder(
-  orderId: string,
-  deliveryPersonId: string
-) {
-
-  return this.http.patch(
-    `${environment.apiURL}/orders/${orderId}/assign`,
-    {
-      deliveryPersonId
-    }
-  );
-}
+  assignDeliveryToOrder(orderId: string, deliveryPersonId: string) {
+    return this.http.patch(`${environment.apiURL}/orders/${orderId}/assign`, {
+      deliveryPersonId,
+    });
+  }
 }

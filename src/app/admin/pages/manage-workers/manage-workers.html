@@ -1,108 +1,195 @@
 <div class="worker-container">
+  <!-- Header Title -->
+  <div class="dashboard-header">
+    <h1>Staff & Worker Management</h1>
+    <p>Register new team members, manage active roles, and configure delivery parameters.</p>
+  </div>
 
-  <form [formGroup]="workerForm" (ngSubmit)="submitWorker()">
+  <!-- Mode Selector Segmented Tabs -->
+  <div class="mode-selector" *ngIf="!isEditMode">
+    <label [class.active-mode]="userMode === 'existing'">
+      <input
+        type="radio"
+        name="userMode"
+        value="existing"
+        [checked]="userMode === 'existing'"
+        (change)="setUserMode('existing')"
+      />
+      🔍 Existing User
+    </label>
 
-    <input
-      type="text"
-      placeholder="Name"
-      formControlName="name"
-    />
+    <label [class.active-mode]="userMode === 'new'">
+      <input
+        type="radio"
+        name="userMode"
+        value="new"
+        [checked]="userMode === 'new'"
+        (change)="setUserMode('new')"
+      />
+      ✨ Create New Account
+    </label>
+  </div>
 
-    <input
-      type="email"
-      placeholder="Email"
-      formControlName="email"
-    />
+  <!-- Form Panel -->
+  <form [formGroup]="workerForm" (ngSubmit)="submitWorker()" class="glass-panel">
+    <div class="form-grid">
+      <!-- MODE A: Live Search -->
+      <div *ngIf="userMode === 'existing' && !isEditMode" class="full-width search-box form-group">
+        <label>Find Existing Account</label>
+        <input
+          type="text"
+          placeholder="Type email or username..."
+          [formControl]="searchControl"
+          autocomplete="off"
+        />
 
-    <input
-      type="text"
-      placeholder="Phone"
-      formControlName="phone"
-    />
+        <ul *ngIf="searchResults && searchResults.length > 0" class="search-results-dropdown">
+          <li *ngFor="let user of searchResults" (click)="selectExistingUser(user)">
+            <span class="user-name">{{ user.userName || user.name }}</span>
+            <span class="user-email">{{ user.email }}</span>
+          </li>
+        </ul>
 
-    <input
-      type="number"
-      placeholder="Salary"
-      formControlName="salary"
-    />
+        <div *ngIf="selectedUser" class="mt-2 text-success font-weight-bold">
+          ✓ Selected: {{ selectedUser.userName || selectedUser.name }} ({{ selectedUser.email }})
+        </div>
+      </div>
 
-    <select formControlName="shift">
-      <option value="Morning">Morning</option>
-      <option value="Evening">Evening</option>
-    </select>
+      <!-- MODE B: New / Edit User Fields -->
+      <ng-container *ngIf="userMode === 'new' || isEditMode">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" placeholder="John Doe" formControlName="name" />
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" placeholder="john@example.com" formControlName="email" />
+        </div>
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="text" placeholder="+123456789" formControlName="phone" />
+        </div>
+      </ng-container>
 
-    <select formControlName="status">
-      <option value="Active">Active</option>
-      <option value="On Leave">On Leave</option>
-      <option value="Terminated">Terminated</option>
-    </select>
+      <!-- Worker Specs -->
+      <div class="form-group">
+        <label>Staff Role</label>
+        <select formControlName="role">
+          <option value="Chef">Chef</option>
+          <option value="Waiter">Waiter</option>
+          <option value="Cashier">Cashier</option>
+          <option value="Delivery">Delivery</option>
+          <option value="Manager">Manager</option>
+        </select>
+      </div>
 
-    <select formControlName="vehicleType">
-      <option value="Motorcycle">Motorcycle</option>
-      <option value="Bicycle">Bicycle</option>
-    </select>
+      <div class="form-group">
+        <label>Base Salary (EGP)</label>
+        <input type="number" placeholder="2500" formControlName="salary" />
+      </div>
 
-    <input
-      type="text"
-      placeholder="Plate Number"
-      formControlName="plateNumber"
-    />
+      <div class="form-group">
+        <label>Work Shift</label>
+        <select formControlName="shift">
+          <option value="Morning">Morning</option>
+          <option value="Evening">Evening</option>
+          <option value="Night">Night</option>
+        </select>
+      </div>
 
-    <button type="submit">
-      {{ isEditMode ? 'Update Worker' : 'Add Worker' }}
-    </button>
+      <div class="form-group">
+        <label>Employment Status</label>
+        <select formControlName="status">
+          <option value="Active">Active</option>
+          <option value="On Leave">On Leave</option>
+          <option value="InActive">InActive</option>
+        </select>
+      </div>
 
+      <!-- Conditional Delivery Fields -->
+      <ng-container *ngIf="workerForm.get('role')?.value === 'Delivery'">
+        <div class="form-group">
+          <label>Vehicle Type</label>
+          <select formControlName="vehicleType">
+            <option value="" disabled>Select vehicle</option>
+            <option value="Motorcycle">Motorcycle</option>
+            <option value="Bicycle">Bicycle</option>
+            <option value="Car">Car</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>License Plate</label>
+          <input type="text" placeholder="ABC-1234" formControlName="plateNumber" />
+        </div>
+      </ng-container>
+
+      <!-- Buttons -->
+      <div class="full-width d-flex gap-3 align-items-center mt-2">
+        <button type="submit" class="btn-primary-action" [disabled]="workerForm.invalid">
+          {{ isEditMode ? 'Update Worker Record' : 'Register Worker' }}
+        </button>
+
+        <button type="button" class="btn-cancel" *ngIf="isEditMode" (click)="cancelEdit()">
+          Cancel
+        </button>
+      </div>
+    </div>
   </form>
 
-  <table>
-
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Salary</th>
-        <th>Shift</th>
-        <th>Status</th>
-        <th>Vehicle</th>
-        <th>Plate</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-
-    <tbody>
-
-      <tr *ngFor="let worker of workers">
-
-        <td>{{ worker.userId.userName }}</td>
-
-        <td>{{ worker.userId.email }}</td>
-
-        <td>{{ worker.salary }}</td>
-
-        <td>{{ worker.shift }}</td>
-
-        <td>{{ worker.status }}</td>
-
-        <td>{{ worker.deliveryDetails?.vehicleType }}</td>
-
-        <td>{{ worker.deliveryDetails?.plateNumber }}</td>
-
-        <td>
-
-          <button (click)="editWorker(worker)">
-            Edit
-          </button>
-
-          <button (click)="deleteWorker(worker._id!)">
-            Delete
-          </button>
-
-        </td>
-
-      </tr>
-
-    </tbody>
-
-  </table>
-
+  <!-- Workers Table Panel -->
+  <div class="glass-panel table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Worker</th>
+          <th>Contact</th>
+          <th>Role</th>
+          <th>Salary(EGP)</th>
+          <th>Shift</th>
+          <th>Status</th>
+          <th>Vehicle</th>
+          <th>Plate</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let worker of workers">
+          <td class="worker-name">{{ worker.userId?.userName || worker.userId?.name || 'N/A' }}</td>
+          <td>{{ worker.userId?.email || 'N/A' }}</td>
+          <td>
+            <strong>{{ worker.role }}</strong>
+          </td>
+          <td>{{ worker.salary }}</td>
+          <td>{{ worker.shift }}</td>
+          <td>
+            <span
+              class="status-pill"
+              [ngClass]="{
+                'status-active': worker.status === 'Active',
+                'status-leave': worker.status === 'On Leave',
+                'status-inactive': worker.status === 'InActive',
+              }"
+            >
+              {{ worker.status }}
+            </span>
+          </td>
+          <td>{{ worker.deliveryDetails?.vehicleType || '-' }}</td>
+          <td>
+            {{ worker.deliveryDetails?.plateNumber || '-' }}
+          </td>
+          <td>
+            <div class="action-btn-group d-flex flex-column">
+              <button type="button" class="btn-table-edit" (click)="editWorker(worker)">
+                Edit
+              </button>
+              <button type="button" class="btn-table-delete" (click)="deleteWorker(worker._id)">
+                Delete
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
