@@ -1,7 +1,7 @@
 export interface Complaints {
   _id: string;
 
-  id: number;
+  // id: number;
 
   name: string;
 
@@ -11,7 +11,7 @@ export interface Complaints {
 
   service: string;
 
-  message: string;
+  description: string;
 
   status: 'pending' | 'in process' | 'resolved' | 'rejected';
 

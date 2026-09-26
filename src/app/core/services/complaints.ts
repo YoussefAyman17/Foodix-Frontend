@@ -10,22 +10,16 @@ import { Complaints } from '../../admin/interfaces/complaints';
 export class ComplaintsService {
   constructor(private httpClient: HttpClient) {}
 
-  createComplaint(data: {
-    name: string;
-    email: string;
-    subject: string;
-    service: string;
-    message: string;
-  }): Observable<any> {
-    return this.httpClient.post<any>(`${environment.apiURL}/complaints`, data);
+  createComplaint(data: any): Observable<any> {
+    return this.httpClient.post<any>(`${environment.apiURL}complaints`, data);
   }
 
   getComplaints(): Observable<any> {
-    return this.httpClient.get<any>(`${environment.apiURL}/complaints`);
+    return this.httpClient.get<any>(`${environment.apiURL}complaints`);
   }
 
   changeStatus(id: number, status: string, adminResponse?: string): Observable<any> {
-    return this.httpClient.patch(`${environment.apiURL}/complaints/${id}/status`, {
+    return this.httpClient.patch(`${environment.apiURL}complaints/${id}/status`, {
       status,
       adminResponse,
     });

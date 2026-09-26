@@ -4,6 +4,8 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { TimeagoModule } from 'ngx-timeago';
 import { ComplaintsService } from '../../services/complaints-service';
 import { FormsModule } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
+
 @Component({
   selector: 'app-manage-complaints',
   imports: [CommonModule, TimeagoModule, FormsModule],
@@ -20,6 +22,7 @@ export class ManageComplaints implements OnInit {
   isLoading: boolean = false;
   cdr = inject(ChangeDetectorRef);
   private platformId = inject(PLATFORM_ID);
+  private toastr = inject(ToastrService);
   stats = {
     totalComplaints: 0,
     pendingComplaints: 0,
@@ -37,14 +40,14 @@ export class ManageComplaints implements OnInit {
     this.isLoading = true;
     this.complaintsService.getComplaints().subscribe({
       next: (res) => {
-        console.log(res);
-        this.complaints = res.complaints || [];
+        // console.log(res);
+        this.complaints = res.data || [];
         this.calculateStats();
         this.isLoading = false;
         this.cdr.detectChanges();
       },
       error: (err) => {
-        console.log('Fetch error:', err);
+        this.toastr.error('Failed to load complaints');
         this.isLoading = false;
         this.cdr.detectChanges();
       },
@@ -60,10 +63,11 @@ export class ManageComplaints implements OnInit {
     };
   }
 
-  updateStatus(id: number, newStatus: string, adminResponse?: string): void {
+  updateStatus(id: string, newStatus: string, adminResponse?: string): void {
     this.complaintsService.changeStatus(id, newStatus, adminResponse).subscribe({
       next: () => {
-        const index = this.complaints.findIndex((c) => c.id === id);
+        this.toastr.success('Complaint status updated successfully');
+        const index = this.complaints.findIndex((c) => c._id === id);
         if (index !== -1) {
           this.complaints[index].status = newStatus as any;
           if (adminResponse) this.complaints[index].adminResponse = adminResponse;
@@ -71,7 +75,7 @@ export class ManageComplaints implements OnInit {
           this.cdr.detectChanges();
         }
       },
-      error: (err) => console.error('Update failed:', err),
+      error: (err) => this.toastr.error('Failed to update complaint'),
     });
   }
 
@@ -98,7 +102,7 @@ export class ManageComplaints implements OnInit {
   submitResponse(): void {
     if (!this.selectedComplaint || !this.responseText.trim()) return;
 
-    const complaintId = this.selectedComplaint.id;
+    const complaintId = this.selectedComplaint._id;
 
     this.updateStatus(complaintId!, 'in process', this.responseText);
 
@@ -109,7 +113,7 @@ export class ManageComplaints implements OnInit {
   rejectComplaint(): void {
     if (!this.selectedComplaint) return;
 
-    const complaintId = this.selectedComplaint.id;
+    const complaintId = this.selectedComplaint._id;
 
     this.updateStatus(complaintId!, 'rejected');
 

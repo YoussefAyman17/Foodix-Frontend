@@ -1,84 +1,132 @@
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ComplaintsService } from '../../core/services/complaints';
-import { Navbar } from '../navbar/navbar';
-import { Footer } from '../footer/footer';
-// import { FooterComponent } from '../../shared/footer/footer';
-// import { BrowserStorageService } from '../../shared/browser-storage.service';
-
-interface ContactMessage {
-  name: string;
-  email: string;
-  subject: string;
-  service: string;
-  message: string;
-  createdAt: string;
-}
+import { Auth } from '../../core/services/auth';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-contact',
   standalone: true,
-  imports: [CommonModule, FormsModule, Navbar, Footer],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './contact.html',
   styleUrl: './contact.css',
 })
-export class ContactComponent {
-  private complaintsService = inject(ComplaintsService);
+export class Complaints implements OnInit {
+  private fb = inject(FormBuilder);
+  private complaintService = inject(ComplaintsService);
+  private authService = inject(Auth);
+  private toastr = inject(ToastrService);
   private cdr = inject(ChangeDetectorRef);
-  public name = '';
-  public email = '';
-  public subject = '';
-  public service = '';
-  public message = '';
-  public statusMessage = '';
-  public isLoading = false;
-  public isError = false;
 
-  // الـ options الجاية من الـ schema في الباك اند
-  public serviceOptions: string[] = [
-    'Delivery',
-    'Food Quality',
-    'Payment Issue',
-    'App Bug',
-    'Other',
-  ];
+  complaintForm!: FormGroup;
+  isLoggedIn: boolean = false;
+  isSubmitting: boolean = false;
+  // userComplaints: any[] = [];
+  isLoadingHistory: boolean = false;
 
-  public submitForm(): void {
-    this.isLoading = true;
-    this.statusMessage = '';
-    this.isError = false;
+  services: string[] = ['Delivery', 'Food Quality', 'Payment Issue', 'App Bug', 'Other'];
 
-    const complaintData = {
-      name: this.name.trim(),
-      email: this.email.trim(),
-      subject: this.subject.trim(),
-      service: this.service,
-      message: this.message.trim(),
+  ngOnInit(): void {
+    this.isLoggedIn = this.authService.decodedUserData() ? true : false;
+    this.initForm();
+
+    // if (this.isLoggedIn) {
+    //   this.fetchUserComplaints();
+    // }
+  }
+
+  private initForm(): void {
+    const currentUser = this.authService.decodedUserData();
+
+    this.complaintForm = this.fb.group({
+      service: ['', Validators.required],
+      subject: ['', [Validators.required, Validators.maxLength(100)]],
+      orderId: [''],
+      description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
+      email: [
+        { value: currentUser?.email || '', disabled: this.isLoggedIn },
+        [Validators.required, Validators.email],
+      ],
+      name: [
+        { value: currentUser?.name || '', disabled: this.isLoggedIn },
+        [Validators.required, Validators.maxLength(30)],
+      ],
+    });
+  }
+
+  submitComplaint(): void {
+    if (this.complaintForm.invalid) {
+      this.complaintForm.markAllAsTouched();
+      this.toastr.error('Please fill in all required fields properly.');
+      return;
+    }
+
+    this.isSubmitting = true;
+    const rawValues = this.complaintForm.getRawValue();
+
+    const payload = {
+      ...rawValues,
+      orderId: rawValues.orderId?.trim() ? rawValues.orderId.trim() : null,
     };
 
-    this.complaintsService.createComplaint(complaintData).subscribe({
-      next: () => {
-        this.isLoading = false;
-        this.statusMessage = 'Message sent successfully.';
-        this.isError = false;
+    this.complaintService.createComplaint(payload).subscribe({
+      next: (res) => {
+        this.toastr.success(
+          'Your complaint has been submitted successfully. We will review it shortly!',
+        );
         this.resetForm();
-        this.cdr.detectChanges();
+        // if (this.isLoggedIn) {
+        //   this.fetchUserComplaints();
+        // }
       },
       error: (err) => {
-        this.isLoading = false;
-        this.statusMessage = err?.error?.message || 'Something went wrong. Please try again.';
-        this.isError = true;
-        this.cdr.detectChanges();
+        this.toastr.error(err.error?.message || 'Failed to submit complaint. Please try again.');
+        this.isSubmitting = false;
+        this.cdr.markForCheck();
+      },
+      complete: () => {
+        this.isSubmitting = false;
+        this.cdr.markForCheck();
       },
     });
   }
 
+  // fetchUserComplaints(): void {
+  //   this.isLoadingHistory = true;
+  //   this.complaintService.getUserComplaints().subscribe({
+  //     next: (res) => {
+  //       this.userComplaints = res?.data || res?.complaints || [];
+  //       this.isLoadingHistory = false;
+  //       this.cdr.markForCheck();
+  //     },
+  //     error: () => {
+  //       this.isLoadingHistory = false;
+  //       this.cdr.markForCheck();
+  //     },
+  //   });
+  // }
+
   private resetForm(): void {
-    this.name = '';
-    this.email = '';
-    this.subject = '';
-    this.service = '';
-    this.message = '';
+    const currentUser = this.authService.decodedUserData();
+    this.complaintForm.reset({
+      service: '',
+      subject: '',
+      orderId: '',
+      description: '',
+      email: currentUser?.email || '',
+      name: currentUser?.name || '',
+    });
+
+    if (this.isLoggedIn) {
+      this.complaintForm.get('email')?.disable();
+    }
+    if (this.isLoggedIn) {
+      this.complaintForm.get('name')?.disable();
+    }
+  }
+
+  get f() {
+    return this.complaintForm.controls;
   }
 }

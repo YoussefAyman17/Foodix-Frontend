@@ -27,7 +27,7 @@ export const routes: Routes = [
       },
       {
         path: 'complaint',
-        loadComponent: () => import('./Components/contact/contact').then((m) => m.ContactComponent),
+        loadComponent: () => import('./Components/contact/contact').then((m) => m.Complaints),
         title: 'Complaint Page',
       },
       {

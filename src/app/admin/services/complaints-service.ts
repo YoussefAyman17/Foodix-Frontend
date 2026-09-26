@@ -11,11 +11,11 @@ export class ComplaintsService {
   constructor(private httpClient: HttpClient) {}
 
   getComplaints(): Observable<any> {
-    return this.httpClient.get<any>(`${environment.apiURL}/complaints`);
+    return this.httpClient.get<any>(`${environment.apiURL}complaints`);
   }
 
-  changeStatus(id: number, status: string, adminResponse?: string): Observable<any> {
-    return this.httpClient.patch(`${environment.apiURL}/complaints/${id}/status`, {
+  changeStatus(id: string, status: string, adminResponse?: string): Observable<any> {
+    return this.httpClient.patch(`${environment.apiURL}complaints/${id}/status`, {
       status,
       adminResponse,
     });

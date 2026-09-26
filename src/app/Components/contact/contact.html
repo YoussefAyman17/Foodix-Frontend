@@ -8,79 +8,123 @@
             <h1>Have questions? Get in touch.</h1>
           </div>
 
-          <form class="contact-form mt-4" #contactForm="ngForm" (ngSubmit)="submitForm()">
+          <form
+            class="contact-form mt-4"
+            [formGroup]="complaintForm"
+            (ngSubmit)="submitComplaint()"
+          >
             <div class="row g-3">
-              <div class="col-lg-6">
-                <input
-                  type="text"
-                  class="form-control"
-                  placeholder="Your Name"
-                  [(ngModel)]="name"
-                  name="name"
-                  required
-                />
-              </div>
-
+              <!-- Email Input (Disabled when user is logged in) -->
               <div class="col-lg-6">
                 <input
                   type="email"
                   class="form-control"
                   placeholder="Your Email"
-                  [(ngModel)]="email"
-                  name="email"
-                  required
-                  email
+                  formControlName="email"
+                  [class.is-invalid]="f['email'].touched && f['email'].invalid"
                 />
+                @if (f['email'].touched && f['email'].errors?.['required']) {
+                  <small class="text-danger mt-1 d-block">Email is required.</small>
+                }
+                @if (f['email'].touched && f['email'].errors?.['email']) {
+                  <small class="text-danger mt-1 d-block">Invalid email format.</small>
+                }
               </div>
 
+              <!-- Name Input (Disabled when user is logged in) -->
               <div class="col-lg-6">
                 <input
                   type="text"
                   class="form-control"
-                  placeholder="Your Subject"
-                  [(ngModel)]="subject"
-                  name="subject"
-                  required
+                  placeholder="Your Name"
+                  formControlName="name"
+                  [class.is-invalid]="f['name'].touched && f['name'].invalid"
                 />
+                @if (f['name'].touched && f['name'].errors?.['required']) {
+                  <small class="text-danger mt-1 d-block">Name is required.</small>
+                }
+                <!-- @if (f['name'].touched && f['name'].errors?.['name']) {
+                  <small class="text-danger mt-1 d-block">Invalid name format.</small>
+                } -->
               </div>
 
+              <!-- Service / Category Select -->
               <div class="col-lg-6">
-                <select class="form-control" [(ngModel)]="service" name="service" required>
-                  <option value="" disabled selected>Your Service</option>
-                  @for (option of serviceOptions; track option) {
+                <select
+                  class="form-control"
+                  formControlName="service"
+                  [class.is-invalid]="f['service'].touched && f['service'].invalid"
+                >
+                  <option value="" disabled selected>Select Serivce</option>
+                  @for (option of services; track option) {
                     <option [value]="option">{{ option }}</option>
                   }
                 </select>
+                @if (f['service'].touched && f['service'].errors?.['required']) {
+                  <small class="text-danger mt-1 d-block">Please select a service.</small>
+                }
               </div>
 
+              <!-- Subject Input  -->
+              <div class="col-lg-6">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Subject"
+                  formControlName="subject"
+                  [class.is-invalid]="f['subject'].touched && f['subject'].invalid"
+                />
+                @if (f['subject'].touched && f['subject'].errors?.['required']) {
+                  <small class="text-danger mt-1 d-block">subject is required.</small>
+                }
+                @if (f['subject'].touched && f['subject'].errors?.['subject']) {
+                  <small class="text-danger mt-1 d-block">Invalid subject format.</small>
+                }
+              </div>
+
+              <!-- Order ID (Optional) -->
+              <div class="col-12">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Order ID (Optional)"
+                  formControlName="orderId"
+                />
+              </div>
+
+              <!-- Description Field -->
               <div class="col-12">
                 <textarea
                   class="form-control"
                   rows="5"
-                  placeholder="Write message"
-                  [(ngModel)]="message"
-                  name="message"
-                  required
+                  placeholder="Write message / complaint details..."
+                  formControlName="description"
+                  [class.is-invalid]="f['description'].touched && f['description'].invalid"
                 ></textarea>
+                <div class="d-flex justify-content-between align-items-center mt-1">
+                  <div>
+                    @if (f['description'].touched && f['description'].errors?.['required']) {
+                      <small class="text-danger d-block">Description is required.</small>
+                    }
+                    @if (f['description'].touched && f['description'].errors?.['minlength']) {
+                      <small class="text-danger d-block"
+                        >Description must be at least 10 characters.</small
+                      >
+                    }
+                  </div>
+                  <small class="text-muted"> {{ f['description'].value?.length || 0 }}/500 </small>
+                </div>
               </div>
 
+              <!-- Submit Button -->
               <div class="col-12 d-flex flex-wrap align-items-center gap-3">
                 <button
-                  class="btn sumbmitbtn submit-btn bg-dark"
+                  class="btn submit-btn bg-dark text-white fw-bold px-4 py-2"
                   type="submit"
-                  [disabled]="contactForm.invalid || isLoading"
+                  [disabled]="complaintForm.invalid || isSubmitting"
                 >
-                  {{ isLoading ? 'Sending...' : 'Submit Now' }}
+                  {{ isSubmitting ? 'Submitting...' : 'Submit Now' }}
                 </button>
-                @if (statusMessage) {
-                  <p
-                    class="status-message mb-0"
-                    [class.text-danger]="isError"
-                    [class.status-message]="!isError"
-                  >
-                    {{ statusMessage }}
-                  </p>
-                }
               </div>
             </div>
           </form>
@@ -90,7 +134,7 @@
           <div class="contact-visual">
             <img
               src="Assets/contact section/contact-1.png"
-              class="img-fluid"
+              class="img-fluid rounded-4"
               alt="Foodix contact"
             />
           </div>
@@ -99,14 +143,17 @@
     </div>
   </section>
 
+  <!-- Contact Cards Section -->
   <section class="contact-cards">
     <div class="container">
       <div class="row g-4">
         <div class="col-lg-4 col-md-6">
           <div class="card h-100 text-center shadow-sm border-0 p-4">
             <div class="icon"><i class="bi bi-geo-alt-fill"></i></div>
+
             <div class="content">
               <h4>Address</h4>
+
               <p>4140 Parker Rd. Allentown, New Mexico 31134</p>
             </div>
           </div>
@@ -115,10 +162,13 @@
         <div class="col-lg-4 col-md-6">
           <div class="card h-100 text-center shadow-sm border-0 p-4">
             <div class="icon"><i class="bi bi-envelope-fill"></i></div>
+
             <div class="content">
               <h4>Email</h4>
+
               <p>
                 <a href="mailto:foodixsupport@gmail.com">foodixsupport@gmail.com</a><br />
+
                 <a href="mailto:foodixinfo@gmail.com">foodixinfo@gmail.com</a>
               </p>
             </div>
@@ -128,10 +178,13 @@
         <div class="col-lg-4 col-md-6">
           <div class="card h-100 text-center shadow-sm border-0 p-4">
             <div class="icon"><i class="bi bi-telephone-fill"></i></div>
+
             <div class="content">
               <h4>Phone</h4>
+
               <p>
                 <a href="tel:+5551234567890">+555-123 456 7890</a><br />
+
                 <a href="tel:+5551237768875">+555-123 776 8875</a>
               </p>
             </div>
