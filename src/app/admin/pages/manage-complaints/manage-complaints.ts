@@ -31,6 +31,7 @@ export class ManageComplaints implements OnInit {
     pendingComplaints: 0,
     inProgressComplaints: 0,
     resolvedComplaints: 0,
+    rejectedComplaints: 0,
   };
   constructor(private complaintsService: ComplaintsService) {}
   ngOnInit(): void {
@@ -79,6 +80,7 @@ export class ManageComplaints implements OnInit {
       pendingComplaints: this.complaints.filter((c) => c.status === 'pending').length,
       inProgressComplaints: this.complaints.filter((c) => c.status === 'in process').length,
       resolvedComplaints: this.complaints.filter((c) => c.status === 'resolved').length,
+      rejectedComplaints: this.complaints.filter((c) => c.status === 'rejected').length,
     };
   }
 
