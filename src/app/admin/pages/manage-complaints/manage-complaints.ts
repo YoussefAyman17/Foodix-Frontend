@@ -20,6 +20,9 @@ export class ManageComplaints implements OnInit {
   activeModal: string = '';
   responseText: string = '';
   isLoading: boolean = false;
+  searchTerm: string = '';
+  selectedStatus: string = 'all';
+
   cdr = inject(ChangeDetectorRef);
   private platformId = inject(PLATFORM_ID);
   private toastr = inject(ToastrService);
@@ -35,7 +38,23 @@ export class ManageComplaints implements OnInit {
 
     this.fetchComplaints();
   }
+  get filteredComplaints(): any[] {
+    return this.complaints.filter((complaint) => {
+      const query = this.searchTerm.trim().toLowerCase();
 
+      // Check search match (by email or complaint ID)
+      const matchesEmail = complaint.email?.toLowerCase().includes(query);
+      const matchesId = complaint._id?.toLowerCase().includes(query);
+      const matchesSearch = !query || matchesEmail || matchesId;
+
+      // Check status match
+      const matchesStatus =
+        this.selectedStatus === 'all' ||
+        complaint.status?.toLowerCase() === this.selectedStatus.toLowerCase();
+
+      return matchesSearch && matchesStatus;
+    });
+  }
   fetchComplaints(): void {
     this.isLoading = true;
     this.complaintsService.getComplaints().subscribe({
