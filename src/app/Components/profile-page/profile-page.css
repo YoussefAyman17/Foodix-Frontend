@@ -1,8 +1,12 @@
 /* ===== WRAPPER ===== */
+.profilePage {
+  width: 100%;
+  background-color: #f4f4f4 !important;
+}
 .profile-wrapper {
   background-color: #f4f4f4;
   min-height: 100vh;
-  padding: 40px 20px;
+  padding: 40px 0px;
   font-family: 'Hanken Grotesk', sans-serif;
 }
 
@@ -288,4 +292,199 @@
   font-weight: 600;
   margin-bottom: 16px;
   border-left: 3px solid #bf1109;
+}
+
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-wrapper input {
+  padding-right: 42px;
+}
+
+.eye-toggle-btn {
+  position: absolute;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.eye-toggle-btn:hover {
+  color: #ff6b00;
+}
+
+/* Modal overlay styling */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+}
+
+.custom-modal {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  width: 90%;
+  max-width: 550px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.empty-complaints {
+  text-align: center;
+  padding: 40px 0;
+  color: #94a3b8;
+}
+
+.service-badge {
+  background: #f1f5f9;
+  color: #475569;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.825rem;
+}
+
+/* ================= SKELETON BASE & SHIMMER ANIMATION ================= */
+.skeleton {
+  background: #e2e8f0;
+  background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+  background-size: 200% 100%;
+  border-radius: 8px;
+  animation: shimmer 1.5s infinite linear;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Skeleton Elements Dimensions */
+.skeleton-title {
+  height: 28px;
+  width: 240px;
+  margin-bottom: 8px;
+}
+
+.skeleton-subtitle {
+  height: 16px;
+  width: 360px;
+  margin-bottom: 24px;
+}
+
+.skeleton-card-title {
+  height: 22px;
+  width: 180px;
+  margin-bottom: 6px;
+}
+
+.skeleton-card-sub {
+  height: 14px;
+  width: 140px;
+}
+
+.skeleton-btn {
+  height: 36px;
+  width: 80px;
+  border-radius: 8px;
+}
+
+.skeleton-avatar {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+}
+
+.skeleton-label {
+  height: 14px;
+  width: 100px;
+  margin-bottom: 8px;
+}
+
+.skeleton-input {
+  height: 42px;
+  width: 100%;
+  border-radius: 8px;
+}
+
+.skeleton-save-btn {
+  height: 44px;
+  width: 100%;
+  border-radius: 8px;
+}
+
+.skeleton-table-row {
+  height: 48px;
+  width: 100%;
+  margin-bottom: 12px;
+  border-radius: 6px;
+}
+
+.status-pending {
+  background-color: #fef3c7;
+  color: #b45309;
+  font-weight: 600;
+}
+
+.status-progress {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+.status-resolved {
+  background-color: #dcfce7;
+  color: #15803d;
+  font-weight: 600;
+}
+
+.status-rejected {
+  background-color: #c12828;
+  color: #fffdfd;
+  font-weight: 600;
+}
+
+.modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1040;
+}
+
+.modal {
+  z-index: 1050;
+}
+
+.uppercase-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.body-text {
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+.bg-primary-subtle {
+  background-color: #e7f1ff !important;
 }

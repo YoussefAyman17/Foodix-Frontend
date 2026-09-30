@@ -105,19 +105,7 @@ export class Auth {
   // ================= Profile & User Endpoints =================
 
   getMyProfileApi(): Observable<any> {
-    return this.httpClient.get(`${environment.baseURL}me`).pipe(
-      tap((res: any) => {
-        // If backend sends updated user data, keep signal synced
-        if (res.data) {
-          this.decodedUserData.set({
-            id: res.data._id || res.data.id,
-            name: res.data.name,
-            email: res.data.email,
-            role: res.data.role,
-          });
-        }
-      }),
-    );
+    return this.httpClient.get(`${environment.baseURL}me`);
   }
 
   updateMyProfileApi(data: object): Observable<any> {
@@ -126,7 +114,22 @@ export class Auth {
         if (res.data) {
           this.decodedUserData.set({
             id: res.data._id || res.data.id,
-            name: res.data.name,
+            name: res.data.userName,
+            email: res.data.email,
+            role: res.data.role,
+          });
+        }
+      }),
+    );
+  }
+
+  updateMyPasswordApi(data: object): Observable<any> {
+    return this.httpClient.patch(`${environment.baseURL}updatePassword`, data).pipe(
+      tap((res: any) => {
+        if (res.data) {
+          this.decodedUserData.set({
+            id: res.data._id || res.data.id,
+            name: res.data.userName,
             email: res.data.email,
             role: res.data.role,
           });

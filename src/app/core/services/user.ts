@@ -15,23 +15,23 @@ export class UserService {
     @Inject(PLATFORM_ID) private platformId: object,
   ) {}
 
-  private getHeaders() {
-    const token = isPlatformBrowser(this.platformId) ? localStorage.getItem('userToken') || '' : '';
-    return { headers: { authorization: token } };
-  }
+  // private getHeaders() {
+  //   const token = isPlatformBrowser(this.platformId) ? localStorage.getItem('userToken') || '' : '';
+  //   return { headers: { authorization: token } };
+  // }
 
   // GET /api/users/me
   getMyProfile(): Observable<any> {
-    return this.http.get(`${this.baseUrl}me`, this.getHeaders());
+    return this.http.get(`${this.baseUrl}me`);
   }
 
   // PATCH /api/users/updateMe
   updateMyProfile(data: object): Observable<any> {
-    return this.http.patch(`${this.baseUrl}updateMe`, data, this.getHeaders());
+    return this.http.patch(`${this.baseUrl}updateMe`, data);
   }
 
   // PATCH /api/users/updatePassword
   updatePassword(data: object): Observable<any> {
-    return this.http.patch(`${this.baseUrl}updatePassword`, data, this.getHeaders());
+    return this.http.patch(`${this.baseUrl}updatePassword`, data);
   }
 }

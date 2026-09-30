@@ -7,7 +7,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(Auth);
 
   const token = authService.getToken();
-
   if (token) {
     const clonedReq = req.clone({
       setHeaders: {

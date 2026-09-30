@@ -14,6 +14,12 @@ export class ComplaintsService {
     return this.httpClient.get<any>(`${environment.apiURL}complaints`);
   }
 
+  updateComplaint(id: string, status: string): Observable<any> {
+    return this.httpClient.patch(`${environment.apiURL}complaints/${id}`, {
+      status,
+    });
+  }
+
   changeStatus(id: string, status: string, adminResponse?: string): Observable<any> {
     return this.httpClient.patch(`${environment.apiURL}complaints/${id}/status`, {
       status,

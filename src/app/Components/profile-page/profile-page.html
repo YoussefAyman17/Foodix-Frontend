@@ -1,90 +1,453 @@
-@if (isPageLoading()) {
-<div class="loading-state">
-    <div class="spinner"></div>
-    <p>Loading your profile...</p>
-</div>
-} @else {
-<div class="profile-wrapper">
-    <div class="page-header">
-        <h1>Account Settings</h1>
-        <p>Manage your personal information and security settings</p>
-    </div>
+<div class="profilePage">
+  <div class="container">
+    @if (isPageLoading() || !user || !myComplaints) {
+      <!-- ================= SKELETON LOADING STATE ================= -->
+      <div class="profile-wrapper">
+        <!-- Header Skeleton -->
+        <div class="page-header">
+          <div class="skeleton skeleton-title"></div>
+          <div class="skeleton skeleton-subtitle"></div>
+        </div>
 
-    <div class="cards-grid">
-        <div class="card">
+        <div class="cards-grid">
+          <!-- Personal Information Card Skeleton -->
+          <div class="card">
             <div class="card-head">
-                <div>
-                    <h2>Personal Information</h2>
-                    <p>Update your account details</p>
-                </div>
-                <button class="edit-btn" (click)="toggleEdit()">
-                    ✏️ {{ isEditing() ? 'Cancel' : 'Edit' }}
-                </button>
+              <div>
+                <div class="skeleton skeleton-card-title"></div>
+                <div class="skeleton skeleton-card-sub"></div>
+              </div>
+              <div class="skeleton skeleton-btn"></div>
             </div>
 
-            @if (user.profilePic) {
-            <img class="avatar-img" [src]="user.profilePic" alt="profile" />
-            } @else {
-            <div class="avatar">{{ getUserInitial() }}</div>
-            }
-
-            @if (successMessage()) {
-            <div class="success-msg">✅ {{ successMessage() }}</div>
-            }
-            @if (errorMessage()) {
-            <div class="error-msg">❌ {{ errorMessage() }}</div>
-            }
-
-            <div class="field">
-                <label>Full Name</label>
-                <input type="text" [(ngModel)]="user.userName" [readonly]="!isEditing()" />
+            <div class="d-flex justify-content-center my-3">
+              <div class="skeleton skeleton-avatar"></div>
             </div>
 
-            <div class="field">
-                <label>Email Address</label>
-                <input type="email" [value]="user.email" readonly />
-                <small>Email cannot be changed</small>
-            </div>
-
-            <div class="field">
-                <label>Phone Number</label>
-                <div class="phone-row">
-                    <span class="flag">🇪🇬 EG</span>
-                    <input type="tel" [(ngModel)]="user.phone" [readonly]="!isEditing()" />
-                </div>
+            <div class="field" *ngFor="let item of [1, 2, 3]">
+              <div class="skeleton skeleton-label"></div>
+              <div class="skeleton skeleton-input"></div>
             </div>
 
             <div class="two-col">
-                <div class="field">
-                    <label>Governorate</label>
-                    <input type="text" [(ngModel)]="user.address.governorate" [readonly]="!isEditing()" />
-                </div>
-                <div class="field">
-                    <label>City</label>
-                    <input type="text" [(ngModel)]="user.address.city" [readonly]="!isEditing()" />
-                </div>
+              <div class="field">
+                <div class="skeleton skeleton-label"></div>
+                <div class="skeleton skeleton-input"></div>
+              </div>
+              <div class="field">
+                <div class="skeleton skeleton-label"></div>
+                <div class="skeleton skeleton-input"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Security Settings Card Skeleton -->
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="skeleton skeleton-card-title"></div>
+                <div class="skeleton skeleton-card-sub"></div>
+              </div>
+            </div>
+
+            <div class="field" *ngFor="let item of [1, 2, 3]">
+              <div class="skeleton skeleton-label"></div>
+              <div class="skeleton skeleton-input"></div>
+            </div>
+
+            <div class="skeleton skeleton-save-btn mt-4"></div>
+          </div>
+        </div>
+
+        <!-- Complaints Section Skeleton -->
+        <div class="card mt-4">
+          <div class="card-head mb-4">
+            <div>
+              <div class="skeleton skeleton-card-title"></div>
+              <div class="skeleton skeleton-card-sub"></div>
+            </div>
+          </div>
+
+          <!-- Table Skeleton Rows -->
+          <div class="table-responsive">
+            <div class="skeleton skeleton-table-row" *ngFor="let item of [1, 2, 3, 4]"></div>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <!-- ================= ACTUAL PROFILE PAGE ================= -->
+      <div class="profile-wrapper">
+        <div class="page-header">
+          <h1>Account Settings</h1>
+          <p>Manage your personal information, security settings, and complaints</p>
+        </div>
+
+        <div class="cards-grid">
+          <!-- PERSONAL INFORMATION CARD -->
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h2>Personal Information</h2>
+                <p>Update your account details</p>
+              </div>
+              <button class="edit-btn" (click)="toggleEdit()">
+                ✏️ {{ isEditing() ? 'Cancel' : 'Edit' }}
+              </button>
+            </div>
+
+            @if (user?.profilePic) {
+              <img class="avatar-img" [src]="user.profilePic" alt="profile" />
+            } @else {
+              <div class="avatar">{{ getUserInitial() }}</div>
+            }
+
+            @if (successMessage()) {
+              <div class="success-msg">✅ {{ successMessage() }}</div>
+            }
+            @if (errorMessage()) {
+              <div class="error-msg">❌ {{ errorMessage() }}</div>
+            }
+
+            <div class="field">
+              <label>Full Name</label>
+              <input type="text" [(ngModel)]="user.userName" [readonly]="!isEditing()" />
             </div>
 
             <div class="field">
-                <label>Street Address</label>
-                <input type="text" [(ngModel)]="user.address.street" [readonly]="!isEditing()" />
+              <label>Email Address</label>
+              <input type="email" [value]="user.email" readonly />
+              <small>Email cannot be changed</small>
+            </div>
+
+            <div class="field">
+              <label>Phone Number</label>
+              <div class="phone-row">
+                <span class="flag">🇪🇬 EG</span>
+                <input type="tel" [(ngModel)]="user.phone" [readonly]="!isEditing()" />
+              </div>
+            </div>
+
+            <div class="two-col">
+              <div class="field">
+                <label>Governorate</label>
+                <input
+                  type="text"
+                  [(ngModel)]="user.address[0].governorate"
+                  [readonly]="!isEditing()"
+                />
+              </div>
+              <div class="field">
+                <label>City</label>
+                <input type="text" [(ngModel)]="user.address[0].city" [readonly]="!isEditing()" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Street Address</label>
+              <input type="text" [(ngModel)]="user.address[0].street" [readonly]="!isEditing()" />
             </div>
 
             @if (isEditing()) {
-            <button class="save-btn" (click)="saveChanges()" [disabled]="isLoading()">
+              <button class="save-btn" (click)="saveChanges()" [disabled]="isLoading()">
                 {{ isLoading() ? 'Saving...' : 'Save Changes' }}
-            </button>
+              </button>
             }
+          </div>
+
+          <!-- CHANGE PASSWORD CARD -->
+          <div class="card security-card">
+            <div class="card-head">
+              <div>
+                <h2>Security Settings</h2>
+                <p>Change and update your password</p>
+              </div>
+            </div>
+
+            @if (passSuccessMsg()) {
+              <div class="success-msg">✅ {{ passSuccessMsg() }}</div>
+            }
+            @if (passErrorMsg()) {
+              <div class="error-msg">❌ {{ passErrorMsg() }}</div>
+            }
+            <form [formGroup]="changePasswordForm" (ngSubmit)="updatePassword()">
+              <!-- Current Password -->
+              <div class="field">
+                <label for="currentPassword">Current Password</label>
+                <div class="password-input-wrapper">
+                  <input
+                    id="currentPassword"
+                    formControlName="currentPassword"
+                    [type]="showCurrentPassword ? 'text' : 'password'"
+                    placeholder="Enter current password"
+                  />
+                  <button
+                    type="button"
+                    class="eye-toggle-btn"
+                    (click)="showCurrentPassword = !showCurrentPassword"
+                  >
+                    <i
+                      class="bi"
+                      [ngClass]="showCurrentPassword ? 'bi-eye-slash-fill' : 'bi-eye-fill'"
+                    ></i>
+                  </button>
+                </div>
+                <!-- @if (
+                  changePasswordForm.get('currentPassword')?.touched &&
+                  changePasswordForm.get('currentPassword')?.invalid
+                ) {
+                  <small class="text-danger">Current password is required.</small>
+                } -->
+              </div>
+
+              <!-- New Password -->
+              <div class="field">
+                <label for="newPassword">New Password</label>
+                <div class="password-input-wrapper">
+                  <input
+                    id="newPassword"
+                    formControlName="newPassword"
+                    [type]="showNewPassword ? 'text' : 'password'"
+                    placeholder="Enter new password"
+                  />
+                  <button
+                    type="button"
+                    class="eye-toggle-btn"
+                    (click)="showNewPassword = !showNewPassword"
+                  >
+                    <i
+                      class="bi"
+                      [ngClass]="showNewPassword ? 'bi-eye-slash-fill' : 'bi-eye-fill'"
+                    ></i>
+                  </button>
+                </div>
+                <!-- @if (
+                  changePasswordForm.get('newPassword')?.touched &&
+                  changePasswordForm.get('newPassword')?.invalid
+                ) {
+                  <small class="text-danger">New password must be at least 8 characters.</small>
+                } -->
+              </div>
+
+              <!-- Confirm New Password -->
+              <div class="field">
+                <label for="repeatPassword">Confirm New Password</label>
+                <div class="password-input-wrapper">
+                  <input
+                    id="repeatPassword"
+                    formControlName="repeatPassword"
+                    [type]="showConfirmPassword ? 'text' : 'password'"
+                    placeholder="Re-enter new password"
+                  />
+                  <button
+                    type="button"
+                    class="eye-toggle-btn"
+                    (click)="showConfirmPassword = !showConfirmPassword"
+                  >
+                    <i
+                      class="bi"
+                      [ngClass]="showConfirmPassword ? 'bi-eye-slash-fill' : 'bi-eye-fill'"
+                    ></i>
+                  </button>
+                </div>
+                <!-- @if (
+                  changePasswordForm.hasError('mismatch') &&
+                  changePasswordForm.get('repeatPassword')?.touched
+                ) {
+                  <small class="text-danger">Passwords do not match.</small>
+                } -->
+              </div>
+
+              <!-- Submit Button -->
+              <button
+                type="submit"
+                class="save-btn mt-3"
+                [disabled]="changePasswordForm.invalid || isUpdatingPassword()"
+              >
+                {{ isUpdatingPassword() ? 'Updating Password...' : 'Update Password' }}
+              </button>
+            </form>
+          </div>
         </div>
 
-        <div class="card security-card">
-            <h2>Security Settings</h2>
-            <p>Manage your password and security</p>
-            <div class="lock-icon">🔒</div>
-            <h3>Password Protected</h3>
-            <p>Your account is secured with a strong password</p>
-            <button class="change-pass-btn" (click)="changePassword()">Change Password</button>
+        <!-- MY COMPLAINTS SECTION -->
+        <div class="card mt-4">
+          <div class="card-head">
+            <div>
+              <h2>My Complaints</h2>
+              <p>Track the status of your submitted support requests and complaints</p>
+            </div>
+          </div>
+
+          @if (myComplaints.length === 0) {
+            <div class="empty-complaints">
+              <i class="bi bi-inbox fs-2"></i>
+              <p>You haven't submitted any complaints yet.</p>
+            </div>
+          } @else {
+            <div class="table-responsive mt-3">
+              <table class="table align-middle custom-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>SUBJECT</th>
+                    <th>SERVICE</th>
+                    <th>STATUS</th>
+                    <th>DATE</th>
+                    <th class="text-center">RESPONSE</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (complaint of myComplaints ?? []; track complaint._id) {
+                    <tr>
+                      <td class="fw-bold">#CMP-{{ complaint._id }}</td>
+                      <td class="fw-semibold">{{ complaint.subject }}</td>
+                      <td>
+                        <span class="service-badge">{{ complaint.service }}</span>
+                      </td>
+                      <td>
+                        <span
+                          class="badge rounded-pill px-3 py-2"
+                          [ngClass]="{
+                            'status-pending': complaint.status === 'pending',
+                            'status-progress': complaint.status === 'in process',
+                            'status-resolved': complaint.status === 'resolved',
+                            'status-rejected': complaint.status === 'rejected',
+                          }"
+                        >
+                          {{ complaint.status }}
+                        </span>
+                      </td>
+                      <td class="text-muted small">{{ complaint.createdAt }}</td>
+                      <td class="text-center">
+                        <button
+                          class="btn btn-sm btn-light text-primary"
+                          (click)="selectedComplaint = complaint"
+                        >
+                          <i class="bi bi-eye"></i> View Response
+                        </button>
+                      </td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td colspan="6" class="text-center text-muted py-3">No complaints found.</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
         </div>
-    </div>
+      </div>
+    }
+    <!-- ================= COMPLAINT RESPONSE MODAL ================= -->
+    @if (selectedComplaint) {
+      <div class="modal-backdrop fade show" (click)="closeComplaintModal()"></div>
+
+      <div class="modal d-block fade show" tabindex="-1" role="dialog" aria-modal="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content shadow-lg border-0 rounded-4">
+            <!-- Modal Header -->
+            <div class="modal-header border-bottom-0 pb-0">
+              <div>
+                <span class="badge bg-light text-dark border mb-1">
+                  #CMP-{{ selectedComplaint._id }}
+                </span>
+                <h5 class="modal-title fw-bold text-dark">{{ selectedComplaint.subject }}</h5>
+              </div>
+              <button
+                type="button"
+                class="btn-close"
+                aria-label="Close"
+                (click)="closeComplaintModal()"
+              ></button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body py-4">
+              <!-- Meta Details Row -->
+              <div class="row g-3 mb-4 bg-light p-3 rounded-3 mx-0">
+                <div class="col-sm-4">
+                  <small class="text-muted d-block uppercase-label">Service</small>
+                  <span class="fw-semibold text-dark">{{ selectedComplaint.service }}</span>
+                </div>
+                <div class="col-sm-4">
+                  <small class="text-muted d-block uppercase-label">Status</small>
+                  <span
+                    class="badge rounded-pill px-3 py-1 mt-1"
+                    [ngClass]="{
+                      'status-pending': selectedComplaint.status === 'pending',
+                      'status-progress': selectedComplaint.status === 'in process',
+                      'status-resolved': selectedComplaint.status === 'resolved',
+                      'status-rejected': selectedComplaint.status === 'rejected',
+                    }"
+                  >
+                    {{ selectedComplaint.status }}
+                  </span>
+                </div>
+                <div class="col-sm-4">
+                  <small class="text-muted d-block uppercase-label">Submitted On</small>
+                  <span class="fw-semibold text-dark">{{ selectedComplaint.createdAt }}</span>
+                </div>
+              </div>
+
+              <!-- Original Complaint Message -->
+              <div class="mb-4">
+                <h6 class="fw-bold text-secondary mb-2">Your Original Description</h6>
+                <div class="p-3 rounded-3 border bg-white text-dark body-text">
+                  {{ selectedComplaint.description || 'No detailed description provided.' }}
+                </div>
+              </div>
+
+              <!-- Support Response Section -->
+              <div class="mb-3">
+                <h6 class="fw-bold text-primary mb-2 d-flex align-items-center gap-2">
+                  <i class="bi bi-chat-left-text-fill"></i> Support Team Response
+                </h6>
+                @if (selectedComplaint.adminResponse) {
+                  <div
+                    class="p-3 rounded-3 bg-primary-subtle text-dark border border-primary-subtle body-text"
+                  >
+                    {{ selectedComplaint.adminResponse }}
+                  </div>
+                } @else {
+                  <div class="p-3 rounded-3 bg-light text-muted border text-center">
+                    <i class="bi bi-clock me-1"></i> Our support team has not responded to this
+                    complaint yet.
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Modal Footer: Resolution Status Toggle -->
+            <div
+              class="modal-footer bg-light border-top-0 rounded-bottom-4 d-flex justify-content-between align-items-center"
+            >
+              <small class="text-muted">Is your issue resolved?</small>
+
+              <div class="d-flex gap-2">
+                <button
+                  type="button"
+                  class="btn btn-outline-danger btn-sm px-3"
+                  [disabled]="isUpdatingComplaintStatus() || selectedComplaint.status === 'pending'"
+                  (click)="updateComplaintStatus(selectedComplaint._id, 'in process')"
+                >
+                  <i class="bi bi-x-circle me-1"></i> Not Resolved
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-success btn-sm px-3"
+                  [disabled]="
+                    isUpdatingComplaintStatus() || selectedComplaint.status === 'resolved'
+                  "
+                  (click)="updateComplaintStatus(selectedComplaint._id, 'resolved')"
+                >
+                  <i class="bi bi-check-circle me-1"></i> Mark as Resolved
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
 </div>
-}
