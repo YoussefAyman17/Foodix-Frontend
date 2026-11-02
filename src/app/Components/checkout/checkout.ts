@@ -1,41 +1,48 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
-// استدعاء الخدمات
 import { CartService } from '../../core/services/cart';
 import { OrderService } from '../../admin/services/order';
-import { Footer } from '../footer/footer';
-import { Navbar } from '../navbar/navbar';
 
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, Footer, Navbar],
-  templateUrl: './checkout.html', // تأكد من مسار الـ HTML
+  imports: [CommonModule, ReactiveFormsModule],
+  templateUrl: './checkout.html',
   styleUrls: ['./checkout.css'],
 })
 export class CheckoutComponent implements OnInit {
   checkoutForm!: FormGroup;
   isSubmitting = false;
 
-  // حقن الخدمات (Injection)
+  private route = inject(ActivatedRoute);
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private toastr = inject(ToastrService);
-  public cartService = inject(CartService); // خليناها public عشان نقرأ السجنالز في الـ HTML
+  public cartService = inject(CartService);
   private orderService = inject(OrderService);
 
-  // سعر التوصيل (ممكن تخليه ديناميكي لو تحب)
   deliveryPrice: number = 30;
 
   ngOnInit(): void {
     this.initForm();
+    const params = this.route.snapshot.queryParamMap;
+    if (params.get('payment') === 'cancelled') {
+      const orderCode = params.get('orderId');
+      if (orderCode) {
+        this.orderService.cancelUnpaidOrder(orderCode).subscribe({ error: () => {} });
+      }
+      this.toastr.info(
+        'Payment was cancelled. Your cart is still here, so you can try again.',
+        'Payment',
+      );
+      this.router.navigate([], { queryParams: {} });
+    }
   }
 
-  // 1. تهيئة الفورم
   initForm() {
     this.checkoutForm = this.fb.group({
       shippingAddress: this.fb.group({
@@ -52,17 +59,14 @@ export class CheckoutComponent implements OnInit {
     });
   }
 
-  // لسهولة الوصول للحقول في الـ HTML
   get address() {
     return (this.checkoutForm.get('shippingAddress') as FormGroup).controls;
   }
 
-  // حساب الإجمالي الكلي باستخدام الـ Signal بتاع الـ subtotal
   get totalPrice() {
     return this.cartService.subtotal() + this.deliveryPrice;
   }
 
-  // 2. إرسال الطلب للباك إند
   placeOrder() {
     if (this.checkoutForm.invalid) {
       this.checkoutForm.markAllAsTouched();
@@ -80,16 +84,13 @@ export class CheckoutComponent implements OnInit {
     this.isSubmitting = true;
     const formValues = this.checkoutForm.value;
 
-    // 🌟 تجميع عناصر الطلب (Mapping) لتطابق الـ Order Schema
     const formattedOrderItems = currentItems.map((item) => ({
       foodItem: item.mealId,
-      // الـ Schema تتطلب Size، لو مش متخزن الاسم في الـ CartItem هنبعت قيمة افتراضية مقبولة في الـ Enum
-      size: item.selectedSizePrice > 0 ? 'Single' : 'Single',
+      size: item.selectedSize || 'Single', // Dynamic size mapping
       quantity: item.quantity,
-      priceAtPurchase: item.price + item.selectedSizePrice,
+      priceAtPurchase: item.price + (item.selectedSizePrice || 0),
     }));
 
-    // 🌟 تجهيز الـ Payload النهائي
     const orderPayload = {
       shippingAddress: formValues.shippingAddress,
       paymentMethod: formValues.paymentMethod,
@@ -98,23 +99,15 @@ export class CheckoutComponent implements OnInit {
       deliveryPrice: this.deliveryPrice,
     };
 
-    // 🌟 إرسال الريكويست باستخدام دالة checkout
     this.orderService.checkout(orderPayload).subscribe({
       next: (res: any) => {
         this.isSubmitting = false;
 
-        // لو الدفع أونلاين عن طريق Stripe والباك إند رجع رابط الدفع
-        if (formValues.paymentMethod === 'Stripe' && res.url) {
-          window.location.href = res.url;
-        }
-        // لو الدفع كاش (Cash on Delivery)
-        else {
+        if (formValues.paymentMethod === 'Stripe' && res.data?.url) {
+          window.location.href = res.data.url;
+        } else {
           this.toastr.success('Order placed successfully!');
-
-          // 🌟 تفريغ السلة بعد نجاح الطلب باستخدام دالة السيرفيس
           this.cartService.clearCart();
-
-          // التوجيه لصفحة طلباتي
           this.router.navigate(['/my-orders-page']);
         }
       },

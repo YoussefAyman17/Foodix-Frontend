@@ -1,261 +1,143 @@
-<div class="orders-wrapper">
-  <div class="page-header">
-    <h1>My Orders</h1>
-    <p>Track and manage your food delivery orders</p>
-  </div>
-
-  <!-- Search + Filters -->
-  <div class="controls">
-    <div class="search-box">
-      <span class="search-icon">🔍</span>
-      <input type="text" placeholder="Search orders..." (input)="onSearch($event)" />
+<div class="orders-wrapper py-4">
+  <div class="container">
+    <div class="page-header mb-4">
+      <h1 class="fw-bold">My Orders</h1>
+      <p class="text-muted">Track active orders and view past history</p>
     </div>
 
-    <div class="filters">
-      @for (f of filters; track f) {
-        <button class="filter-btn" [class.active]="activeFilter() === f" (click)="setFilter(f)">
-          {{ f }}
-        </button>
-      }
+    <!-- Search + Filters -->
+    <div class="controls d-flex flex-column flex-md-row gap-3 mb-4">
+      <div class="search-box flex-grow-1 position-relative">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search orders..."
+          (input)="onSearch($event)"
+        />
+      </div>
+
+      <div class="filters d-flex gap-2">
+        @for (f of filters; track f) {
+          <button
+            class="btn filter-btn"
+            [class.active]="activeFilter() === f"
+            (click)="setFilter(f)"
+          >
+            {{ f }}
+          </button>
+        }
+      </div>
     </div>
-  </div>
 
-  <!-- Loading -->
-  @if (isLoading()) {
-    <div class="loading-state">
-      <div class="spinner"></div>
-      <p>Loading your orders...</p>
-    </div>
-  }
+    <!-- Loading State -->
+    @if (isLoading()) {
+      <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status"></div>
+        <p class="mt-2 text-muted">Loading your orders...</p>
+      </div>
+    }
 
-  <!-- Empty -->
-  @else if (filteredOrders().length === 0) {
-    <div class="empty-state">
-      <div class="empty-icon">📦</div>
-      <h3>No orders found</h3>
-      <p>You haven't placed any orders yet</p>
-    </div>
-  }
+    <!-- Empty State -->
+    @else if (filteredOrders().length === 0) {
+      <div class="text-center py-5 border rounded-4 bg-light">
+        <div class="fs-1 mb-2">📦</div>
+        <h3>No orders found</h3>
+        <p class="text-muted">You haven't placed any orders matching this criteria.</p>
+      </div>
+    }
 
-  <!-- Orders List -->
-  @else {
-    @for (order of filteredOrders(); track order._id) {
-      <div class="order-card">
-        <!-- Card Header -->
-        <div class="order-header">
-          <div>
-            <h2>Order FDX-{{ order.orderId }}</h2>
-            <p>{{ formatDate(order.createdAt) }}</p>
-          </div>
-          <span class="status-badge" [ngClass]="getStatusClass(order.status)">
-            {{ order.status }}
-          </span>
-        </div>
-
-        <!-- Progress Bar -->
-        @if (order.status !== 'Cancelled') {
-          <div class="progress-section">
-            <div class="progress-label">
-              <span class="prog-text">
-                @if (order.status === 'Preparing') {
-                  🍳 Preparing your order
-                } @else if (order.status === 'On the way') {
-                  🚴 Delivery in progress
-                } @else if (order.status === 'Delivered') {
-                  ✅ Order delivered
-                } @else {
-                  ⏳ Order received
-                }
+    <!-- Orders List -->
+    @else {
+      <div class="d-flex flex-column gap-3">
+        @for (order of filteredOrders(); track order._id) {
+          <div class="card border-0 shadow-sm rounded-4 p-3">
+            <div class="d-flex justify-content-between align-items-center pb-2 border-bottom">
+              <div>
+                <h5 class="fw-bold mb-0">Order #FDX-{{ order.orderId }}</h5>
+                <small class="text-muted">{{ formatDate(order.createdAt) }}</small>
+              </div>
+              <span class="badge" [ngClass]="getStatusClass(order.status)">
+                {{ order.status }}
               </span>
             </div>
-            <div class="progress-bar-wrap">
-              <div class="progress-bar-fill" [style.width.%]="getProgressValue(order.status)"></div>
-            </div>
-            <div class="progress-steps">
-              <span [class.done]="getProgressValue(order.status) >= 30">Preparing</span>
-              <span [class.done]="getProgressValue(order.status) >= 75">On The Way</span>
-              <span [class.done]="getProgressValue(order.status) >= 100">Delivered</span>
+
+            <!-- Compact Item Summary -->
+            <div class="py-3 d-flex justify-content-between align-items-center">
+              <div>
+                <p class="mb-0 fw-semibold item-qty">
+                  {{ order.orderItems.length }} item(s)
+                  <span class="text-muted fw-normal">
+                    ({{ order.orderItems[0]?.foodItem?.name || 'Meal' }}
+                    {{ order.orderItems.length > 1 ? '+ more' : '' }})
+                  </span>
+                </p>
+                <small class="text-muted"
+                  >Total: <strong class="item-price">{{ order.totalPrice }} EGP</strong></small
+                >
+              </div>
+
+              @if (order.status !== 'Cancelled') {
+                <div class="progress" style="height: 6px">
+                  <div class="progress-bar" [style.width.%]="getProgressValue(order.status)"></div>
+                </div>
+              }
+
+              <!-- Primary Action based on Status -->
+              <div class="d-flex gap-2">
+                @if (order.status === 'On the way' || order.status === 'Preparing') {
+                  <a
+                    [routerLink]="['/orders', order.orderId, 'track']"
+                    class="btn btn-track fw-bold"
+                  >
+                    🚴 Live Track
+                  </a>
+                } @else {
+                  <button class="btn btn-track" (click)="openDetailsModal(order)">
+                    View Details
+                  </button>
+                }
+              </div>
             </div>
           </div>
         }
-
-        <!-- Order Items -->
-        <div class="items-list">
-          @for (item of order.orderItems; track item._id) {
-            <div class="item-row">
-              <div class="item-icon">🍽️</div>
-              <div class="item-info">
-                <span class="item-name">{{ item.foodItem?.name || 'Item' }}</span>
-                <span class="item-qty">Qty: {{ item.quantity }}</span>
-              </div>
-              <span class="item-price">{{ item.priceAtPurchase * item.quantity }} EGP</span>
-            </div>
-          }
-        </div>
-
-        <!-- Footer -->
-        <div class="order-footer">
-          <div class="payment-info">
-            <span>💳 {{ order.paymentMethod }}</span>
-            <span class="delivery-fee">Delivery: {{ order.deliveryPrice }} EGP</span>
-          </div>
-          <div class="total-row">
-            <span>Total</span>
-            <span class="total-price">{{ order.totalPrice }} EGP</span>
-          </div>
-        </div>
-
-        <div class="card-actions">
-          <button class="btn-details" (click)="openDetailsModal(order)">View Details</button>
-          @if (order.status === 'On the way') {
-            <button class="btn-track" (click)="openTrackModal(order)">🚴 Track Order</button>
-          }
-        </div>
       </div>
     }
-  }
-</div>
+  </div>
 
-@if (activeModal() !== null && selectedOrder()) {
-  <div
-    class="modal-backdrop fade show"
-    style="background-color: rgba(0, 0, 0, 0.6); z-index: 1040"
-  ></div>
-
-  @if (activeModal() === 'details') {
-    <div class="modal fade show d-block" tabindex="-1" style="z-index: 1050" (click)="closeModal()">
-      <div
-        class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable"
-        (click)="$event.stopPropagation()"
-      >
-        <div class="modal-content border-0 shadow-lg rounded-4">
-          <!-- Header -->
-          <div class="modal-header border-bottom-0 bg-light rounded-top-4 py-3">
-            <div>
-              <h4 class="modal-title fw-bold mb-1">Order #FDX-{{ selectedOrder().orderId }}</h4>
-              <p class="text-muted small mb-0">{{ formatDate(selectedOrder().createdAt) }}</p>
-            </div>
-            <button type="button" class="btn-close shadow-none" (click)="closeModal()"></button>
-          </div>
-
-          <!-- Body -->
-          <div class="modal-body p-4">
-            <!-- Shipping Info -->
-            <div class="bg-light p-3 rounded-3 mb-4">
-              <h6 class="fw-bold mb-2">
-                <i class="bi bi-geo-alt-fill text-danger me-2"></i>Delivery Address
-              </h6>
-              <p class="mb-1 text-muted">
-                {{ selectedOrder().shippingAddress?.street }},
-                {{ selectedOrder().shippingAddress?.area }},
-                {{ selectedOrder().shippingAddress?.city }}
-              </p>
-              <p class="mb-0 text-muted small">
-                Phone: {{ selectedOrder().shippingAddress?.contactPhone }}
-              </p>
-            </div>
-
-            <!-- Items List -->
-            <h6 class="fw-bold mb-3">Order Items</h6>
-            <div class="list-group mb-4">
-              @for (item of selectedOrder().orderItems; track item._id) {
-                <div
-                  class="list-group-item border-0 px-0 py-2 d-flex justify-content-between align-items-center"
-                >
-                  <div class="d-flex align-items-center gap-3">
-                    <div class="bg-light rounded p-2 text-center" style="width: 45px">
-                      <span class="fw-bold text-dark">{{ item.quantity }}x</span>
-                    </div>
-                    <div>
-                      <h6 class="mb-0 fw-bold">{{ item.foodItem?.name || 'Meal Item' }}</h6>
-                      <small class="text-muted">Size: {{ item.size || 'Regular' }}</small>
-                    </div>
-                  </div>
-                  <span class="fw-bold">{{ item.priceAtPurchase * item.quantity }} EGP</span>
-                </div>
-              }
-            </div>
-
-            <hr class="text-muted" />
-
-            <!-- Summary -->
-            <div class="d-flex justify-content-between mb-2">
-              <span class="text-muted">Subtotal</span>
-              <span>{{ selectedOrder().itemsPrice }} EGP</span>
-            </div>
-            <div class="d-flex justify-content-between mb-2">
-              <span class="text-muted">Delivery Fee</span>
-              <span>{{ selectedOrder().deliveryPrice }} EGP</span>
-            </div>
-            <div class="d-flex justify-content-between mt-3 pt-3 border-top">
-              <span class="fw-bold fs-5">Total Amount</span>
-              <span class="fw-bold fs-5 text-danger">{{ selectedOrder().totalPrice }} EGP</span>
-            </div>
-            <div class="d-flex justify-content-between mt-2">
-              <span class="text-muted small">Payment Method</span>
-              <span class="badge bg-secondary">{{ selectedOrder().paymentMethod }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  }
-
-  @if (activeModal() === 'track') {
-    <div class="modal fade show d-block" tabindex="-1" style="z-index: 1050" (click)="closeModal()">
+  @if (activeModal() === 'details' && selectedOrder(); as order) {
+    <div
+      class="modal d-block"
+      style="background: rgba(0, 0, 0, 0.5)"
+      tabindex="-1"
+      (click)="closeModal()"
+    >
       <div class="modal-dialog modal-dialog-centered" (click)="$event.stopPropagation()">
-        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
-          <div
-            class="map-placeholder position-relative bg-light d-flex justify-content-center align-items-center"
-            style="height: 250px"
-          >
+        <div class="modal-content rounded-4">
+          <div class="modal-header">
+            <h5 class="modal-title fw-bold">Order #FDX-{{ order.orderId }}</h5>
             <button
               type="button"
-              class="btn-close position-absolute top-0 end-0 m-3 bg-white rounded-circle p-2 shadow-sm"
+              class="btn-close"
+              aria-label="Close"
               (click)="closeModal()"
             ></button>
-            <div class="text-center text-muted">
-              <i class="bi bi-geo-alt fs-1 text-primary mb-2 d-block"></i>
-              <p class="mb-0 fw-bold">Live Tracking Map</p>
-              <small>(Connecting to driver...)</small>
-            </div>
           </div>
-
-          <div class="modal-body p-4 text-center">
-            <h5 class="fw-bold mb-3">Order is on the way! 🚀</h5>
-
-            <div
-              class="d-flex align-items-center justify-content-center gap-3 p-3 bg-light rounded-3 mb-3"
-            >
-              <div
-                class="driver-avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold"
-                style="width: 50px; height: 50px; font-size: 20px"
-              >
-                {{ selectedOrder().deliveryPerson?.userName?.charAt(0) || 'D' }}
-              </div>
-              <div class="text-start">
-                <h6 class="fw-bold mb-0">
-                  {{ selectedOrder().deliveryPerson?.userName || 'Delivery Captain' }}
-                </h6>
-                <small class="text-muted">{{
-                  selectedOrder().deliveryPerson?.phone || 'Assigning...'
-                }}</small>
-              </div>
-              <button
-                class="btn btn-outline-success rounded-circle p-2 ms-auto"
-                [disabled]="!selectedOrder().deliveryPerson?.phone"
-              >
-                <i class="bi bi-telephone-fill"></i>
-              </button>
-            </div>
-
-            <div class="alert alert-warning mb-0 border-0" role="alert">
-              <i class="bi bi-clock-history me-2"></i> Expected arrival in
-              <strong>15-20 mins</strong>
-            </div>
+          <div class="modal-body">
+            <span class="badge mb-3" [ngClass]="getStatusClass(order.status)">{{
+              order.status
+            }}</span>
+            <p class="text-muted mb-2">{{ formatDate(order.createdAt) }}</p>
+            <ul class="list-group list-group-flush mb-3">
+              @for (item of order.orderItems; track $index) {
+                <li class="list-group-item d-flex justify-content-between px-0">
+                  <span>{{ item.foodItem?.name || 'Meal' }} × {{ item.quantity }}</span>
+                </li>
+              }
+            </ul>
+            <strong>Total: {{ order.totalPrice }} EGP</strong>
           </div>
         </div>
       </div>
     </div>
   }
-}
+</div>

@@ -1,11 +1,9 @@
 <div class="container py-5">
   <div class="row g-5">
-    <!-- 🟢 القسم الأيسر: الفورم (العنوان وطريقة الدفع) -->
     <div class="col-lg-8">
       <h3 class="fw-bold mb-4">Checkout Details</h3>
 
       <form [formGroup]="checkoutForm" (ngSubmit)="placeOrder()">
-        <!-- 1. Shipping Address Section -->
         <div class="card border-0 shadow-sm mb-4 rounded-4" formGroupName="shippingAddress">
           <div class="card-body p-4">
             <h5 class="fw-bold mb-4">
@@ -13,7 +11,6 @@
             </h5>
 
             <div class="row g-3">
-              <!-- City -->
               <div class="col-md-6">
                 <label class="form-label text-muted small fw-bold"
                   >City <span class="text-danger">*</span></label
@@ -29,7 +26,6 @@
                 }
               </div>
 
-              <!-- Area -->
               <div class="col-md-6">
                 <label class="form-label text-muted small fw-bold"
                   >Area <span class="text-danger">*</span></label
@@ -45,7 +41,6 @@
                 }
               </div>
 
-              <!-- Street -->
               <div class="col-md-12">
                 <label class="form-label text-muted small fw-bold"
                   >Street Name <span class="text-danger">*</span></label
@@ -61,7 +56,6 @@
                 }
               </div>
 
-              <!-- Building, Floor, Apartment -->
               <div class="col-md-4">
                 <label class="form-label text-muted small fw-bold">Building</label>
                 <input
@@ -83,7 +77,6 @@
                 />
               </div>
 
-              <!-- Contact Phone -->
               <div class="col-md-12">
                 <label class="form-label text-muted small fw-bold"
                   >Contact Phone <span class="text-danger">*</span></label

@@ -1,0 +1,168 @@
+<div class="track-page">
+  <div class="container">
+    <!-- Header -->
+    <header class="track-header">
+      <a routerLink="/my-orders-page" class="back-btn" aria-label="Back to orders">
+        <i class="bi bi-arrow-left"></i>
+      </a>
+      <div>
+        <h1>Order #FDX-{{ order()?.orderId }}</h1>
+        <p>Live status updates</p>
+      </div>
+    </header>
+
+    @if (isLoading()) {
+      <div class="state-box">
+        <div class="spinner-border text-primary" role="status"></div>
+        <p>Fetching your order...</p>
+      </div>
+    } @else if (!order()) {
+      <div class="state-box">
+        <h2>Order not found</h2>
+        <p>We couldn't load the tracking details for this order.</p>
+        <a routerLink="/my-orders-page" class="btn btn-primary">Back to my orders</a>
+      </div>
+    } @else {
+      @if (order(); as o) {
+        <!-- Status hero -->
+        <section class="hero" [class.hero-cancelled]="o.status === 'Cancelled'">
+          <div>
+            <span class="hero-label">{{ o.status }}</span>
+            <h2>{{ statusMessage() }}</h2>
+          </div>
+          @if (o.status !== 'Cancelled') {
+            <div
+              class="hero-progress"
+              role="progressbar"
+              [attr.aria-valuenow]="progressValue()"
+              aria-valuemin="0"
+              aria-valuemax="100"
+            >
+              <div class="hero-progress-fill" [style.width.%]="progressValue()"></div>
+            </div>
+          }
+        </section>
+
+        <div class="row g-4">
+          <!-- Left column -->
+          <div class="col-lg-7">
+            <!-- Map card -->
+            <section class="card-block map-card">
+              <div class="map-surface">
+                <div #mapEl class="map-canvas"></div>
+
+                @if (driverLocation(); as loc) {
+                  <div class="map-caption">
+                    <strong>Your driver is moving</strong>
+                    <span>{{ loc.lat | number: '1.4-4' }}, {{ loc.lng | number: '1.4-4' }}</span>
+                    @if (mapsLink()) {
+                      <a [href]="mapsLink()" target="_blank" rel="noopener">Open in Maps</a>
+                    }
+                  </div>
+                } @else {
+                  <div class="map-overlay">
+                    <div class="map-empty">
+                      <i class="bi bi-geo-alt"></i>
+                      @if (o.status === 'On the way') {
+                        <strong>Waiting for the driver's location</strong>
+                        <span>It will appear here in a few seconds.</span>
+                      } @else if (o.status === 'Delivered') {
+                        <strong>Order delivered</strong>
+                        <span>Thank you for ordering with us.</span>
+                      } @else if (o.status === 'Cancelled') {
+                        <strong>Order cancelled</strong>
+                        <span>No delivery is in progress.</span>
+                      } @else {
+                        <strong>Tracking starts when your order is on the way</strong>
+                        <span>We'll show your driver here.</span>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            </section>
+
+            <!-- Driver card -->
+            @if (o.deliveryPerson && o.status === 'On the way') {
+              <section class="card-block driver-card">
+                <div class="avatar">
+                  {{ o.deliveryPerson.userId?.userName?.charAt(0)?.toUpperCase() || 'D' }}
+                </div>
+                <div class="driver-info">
+                  <h3>{{ o.deliveryPerson.userId?.userName || 'Your courier' }}</h3>
+                  <span>Delivery courier</span>
+                  <span class="d-block">{{ o.deliveryPerson.userId?.phone || '' }}</span>
+                </div>
+                @if (o.deliveryPerson.userId?.phone) {
+                  <a class="call-btn" [href]="'tel:' + '+2' + o.deliveryPerson.userId?.phone">
+                    <i class="bi bi-telephone-fill"></i> Call
+                  </a>
+                }
+              </section>
+            } @else if (o.status === 'Preparing' || o.status === 'Pending') {
+              <section class="card-block driver-card driver-pending">
+                <div class="avatar muted"><i class="bi bi-person"></i></div>
+                <div class="driver-info">
+                  <h3>Courier not assigned yet</h3>
+                  <span>We'll show their name here as soon as one is assigned.</span>
+                </div>
+              </section>
+            }
+          </div>
+
+          <!-- Right column -->
+          <div class="col-lg-5">
+            <!-- Timeline -->
+            <section class="card-block">
+              <h3 class="block-title">Order progress</h3>
+              @if (o.status === 'Cancelled') {
+                <div class="cancelled-note">
+                  <i class="bi bi-x-circle"></i> This order was cancelled.
+                </div>
+              } @else {
+                <ol class="timeline">
+                  @for (s of steps; track s.key; let i = $index) {
+                    <li
+                      [class.done]="stepState(i) === 'done'"
+                      [class.active]="stepState(i) === 'active'"
+                    >
+                      <span class="dot"><i class="bi" [ngClass]="s.icon"></i></span>
+                      <div>
+                        <h4>{{ s.title }}</h4>
+                        <p>{{ s.text }}</p>
+                      </div>
+                    </li>
+                  }
+                </ol>
+              }
+            </section>
+
+            <!-- Summary -->
+            <section class="card-block">
+              <h3 class="block-title">Delivery details</h3>
+              <div class="detail-row">
+                <i class="bi bi-geo-alt"></i>
+                <div>
+                  <span class="detail-label">Address</span>
+                  <p>
+                    {{ o.shippingAddress?.street }}, {{ o.shippingAddress?.area }},
+                    {{ o.shippingAddress?.city }}
+                  </p>
+                </div>
+              </div>
+              <div class="detail-row">
+                <i class="bi bi-wallet2"></i>
+                <div>
+                  <span class="detail-label">Total</span>
+                  <p>
+                    <strong>{{ o.totalPrice }} EGP</strong>
+                  </p>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      }
+    }
+  </div>
+</div>

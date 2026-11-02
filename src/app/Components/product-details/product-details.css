@@ -61,3 +61,101 @@
 .related-img-wrap:hover .blob-bg {
   border-radius: 60% 40% 30% 70% / 50% 60% 40% 50%;
 }
+
+/* ---------- layout ---------- */
+@media (min-width: 992px) {
+  .detail-row {
+    min-height: 70vh;
+  }
+}
+.main-img {
+  max-height: 450px;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.main-img.loaded {
+  opacity: 1;
+}
+
+/* ---------- skeleton ---------- */
+.skeleton {
+  background: linear-gradient(90deg, #ececec 25%, #f6f6f6 40%, #ececec 65%);
+  background-size: 300% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+@keyframes shimmer {
+  from {
+    background-position: 100% 50%;
+  }
+  to {
+    background-position: 0% 50%;
+  }
+}
+.sk-hero {
+  height: 450px;
+}
+.sk-line {
+  display: block;
+  height: 14px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+}
+.sk-heading {
+  height: 34px;
+  width: 70%;
+  margin: 10px 0 14px;
+}
+.sk-price {
+  height: 36px;
+  width: 160px;
+  margin-top: 20px;
+}
+.sk-box {
+  display: inline-block;
+  height: 50px;
+  border-radius: 8px;
+}
+.sk-avatar {
+  display: block;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  flex: none;
+}
+
+/* ---------- reviews ---------- */
+.stars {
+  color: #f5a623;
+  white-space: nowrap;
+}
+.review-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #fde8e8;
+  color: #c81f1f;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  flex: none;
+}
+.review-card {
+  transition: box-shadow 0.2s ease;
+}
+.review-card:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1) !important;
+}
+.empty-box {
+  background: #fafafa;
+  border: 1px dashed #d8d8d8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+  .main-img,
+  .review-card {
+    transition: none;
+  }
+}

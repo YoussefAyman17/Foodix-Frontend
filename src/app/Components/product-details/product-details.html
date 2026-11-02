@@ -1,72 +1,82 @@
 <section class="product-details-container container py-5">
   @if (isLoading()) {
-    <div class="text-center py-5">
-      <div class="spinner-border text-danger" role="status"></div>
-      <p class="mt-3 text-muted fw-bold">Loading masterpiece...</p>
+    <!-- Skeleton for the product -->
+    <div class="row gx-5 mb-5 align-items-center" aria-busy="true" aria-label="Loading product">
+      <div class="col-lg-6 mb-4 mb-lg-0">
+        <div class="skeleton sk-hero rounded-4"></div>
+      </div>
+      <div class="col-lg-6">
+        <span class="skeleton sk-line" style="width: 140px"></span>
+        <span class="skeleton sk-line sk-heading"></span>
+        <span class="skeleton sk-line" style="width: 55%"></span>
+        <span class="skeleton sk-line mt-4" style="width: 100%"></span>
+        <span class="skeleton sk-line" style="width: 95%"></span>
+        <span class="skeleton sk-line" style="width: 70%"></span>
+        <span class="skeleton sk-line sk-price"></span>
+        <div class="d-flex gap-3 mt-4">
+          <span class="skeleton sk-box" style="width: 130px"></span>
+          <span class="skeleton sk-box" style="width: 180px"></span>
+        </div>
+        <span class="skeleton sk-box mt-4" style="width: 210px; height: 52px"></span>
+      </div>
     </div>
   } @else if (errorMessage()) {
-    <div class="alert alert-danger text-center shadow-sm w-50 mx-auto mt-5">
+    <div class="alert alert-danger text-center shadow-sm w-75 w-md-50 mx-auto mt-5">
       <p class="mb-3">{{ errorMessage() }}</p>
       <a routerLink="/menu" class="btn btn-outline-danger">Back to menu</a>
     </div>
-  } @else if (meal) {
-    <div class="row gx-5 mb-5 align-items-center" style="height: 75vh">
+  } @else if (meal(); as m) {
+    <div class="row gx-5 mb-5 align-items-center detail-row">
       <div class="col-lg-6 mb-4 mb-lg-0">
-        <div class="image-wrap shadow-sm rounded-4 overflow-hidden position-relative">
-          @if (meal.discount_tag) {
+        <div class="image-wrap shadow-sm rounded-4 overflow-hidden position-relative skeleton">
+          @if (m.discount_tag) {
             <span
               class="badge bg-danger position-absolute top-0 start-0 m-3 px-3 py-2 fs-6 z-1 shadow-sm"
             >
-              {{ meal.discount_tag }}
+              {{ m.discount_tag }}
             </span>
           }
-
           <img
-            [src]="meal.img || meal.image"
-            [alt]="meal.name"
-            class="img-fluid w-100 object-fit-cover"
-            style="max-height: 450px"
+            [src]="m.img || m.image"
+            [alt]="m.name"
+            class="img-fluid w-100 object-fit-cover main-img"
+            (load)="$any($event.target).classList.add('loaded')"
           />
         </div>
       </div>
 
       <div class="col-lg-6">
         <div class="d-flex align-items-center mb-2 gap-2">
-          <div class="text-warning fs-5">
-            <i class="bi bi-star-fill"></i>
-          </div>
-          <span class="fw-bold fs-5">{{ meal.ratingsAverage || 0 }}</span>
-          <span class="text-muted small">({{ meal.orders_count || 0 }} orders)</span>
+          <div class="text-warning fs-5"><i class="bi bi-star-fill"></i></div>
+          <span class="fw-bold fs-5">{{ m.ratingsAverage || 0 }}</span>
+          <span class="text-muted small">({{ m.orders_count || 0 }} orders)</span>
+          <a href="#reviews" class="small ms-2 text-decoration-none">
+            {{ reviews().length }} review{{ reviews().length === 1 ? '' : 's' }}
+          </a>
         </div>
 
-        <h1 class="text-uppercase fw-bold mb-2 product-title">{{ meal.name }}</h1>
+        <h1 class="text-uppercase fw-bold mb-2 product-title">{{ m.name }}</h1>
 
-        @if (meal.short_description) {
-          <h6 class="text-muted fw-bold mb-3">{{ meal.short_description }}</h6>
+        @if (m.short_description) {
+          <h6 class="text-muted fw-bold mb-3">{{ m.short_description }}</h6>
         }
-        <p class="text-muted mb-4 fs-6 description-text">
-          {{ meal.description }}
-        </p>
+        <p class="text-muted mb-4 fs-6 description-text">{{ m.description }}</p>
 
         <div class="d-flex align-items-center mb-3 gap-3">
-          <span class="fs-2 fw-bold text-danger">{{ meal.price }} EGP</span>
-
-          @if (meal.on_sale && meal.old_price) {
-            <span class="fs-4 text-decoration-line-through text-muted"
-              >{{ meal.old_price }} EGP</span
-            >
+          <span class="fs-2 fw-bold text-danger">{{ m.price }} EGP</span>
+          @if (m.on_sale && m.old_price) {
+            <span class="fs-4 text-decoration-line-through text-muted">{{ m.old_price }} EGP</span>
           }
         </div>
 
-        <!-- @if (meal.quantity <= 5 && meal.quantity > 0) {
-          <div class="text-danger small fw-bold mb-3">
-            <i class="bi bi-fire"></i> Hurry! Only {{ meal.quantity }} left in stock.
-          </div>
-        } -->
-
         <div class="d-flex flex-wrap gap-3 mb-4 align-items-end">
           <div class="quantity-selector d-flex align-items-center rounded-2 px-1">
-            <button type="button" class="btn border-0 fs-4 text-dark" (click)="decreaseQty()">
+            <button
+              type="button"
+              class="btn border-0 fs-4 text-dark"
+              aria-label="Decrease quantity"
+              (click)="decreaseQty()"
+            >
               −
             </button>
             <input
@@ -75,23 +85,30 @@
               style="width: 40px"
               [value]="quantity()"
               readonly
+              aria-label="Quantity"
             />
             <button
               type="button"
               class="btn border-0 fs-4 text-dark"
+              aria-label="Increase quantity"
               (click)="increaseQty()"
-              [disabled]="quantity() >= meal.quantity"
+              [disabled]="quantity() >= m.quantity"
             >
               +
             </button>
           </div>
 
-          @if (meal.sizes?.length) {
+          @if (m.sizes?.length) {
             <div class="size-selector">
-              <select class="form-select border-0 shadow-none px-3" (change)="selectSize($event)">
-                <option selected disabled>Variation Size</option>
-                @for (size of meal.sizes; track size.size) {
-                  <option [value]="size.size">{{ size.size }} (+{{ size.extraPrice }} EGP)</option>
+              <select
+                class="form-select border-0 shadow-none px-3"
+                aria-label="Size"
+                (change)="selectSize($event)"
+              >
+                @for (size of m.sizes; track size.size) {
+                  <option [value]="size.size" [selected]="size.size === selectedSize()">
+                    {{ size.size }} (+{{ size.extraPrice }} EGP)
+                  </option>
                 }
               </select>
             </div>
@@ -101,10 +118,10 @@
         <button
           type="button"
           class="btn btn-danger btn-lg px-5 py-2 fw-bold rounded-2 shadow-sm"
-          [disabled]="!meal.isAvailable"
+          [disabled]="!m.isAvailable"
           (click)="addToCart()"
         >
-          @if (!meal.isAvailable) {
+          @if (!m.isAvailable) {
             Out of Stock
           } @else {
             Add To Cart
@@ -113,33 +130,179 @@
       </div>
     </div>
 
-    <!-- Related Items Section -->
-    <div *ngIf="relatedItems().length > 0" class="container my-5">
-      <h3 class="fw-bold mb-4">You Might Also Like</h3>
-      <div class="row g-4">
-        <div *ngFor="let item of relatedItems()" class="col-md-4">
-          <div class="card h-100 shadow-sm border-0">
-            <img
-              [src]="item.img || item.image"
-              class="card-img-top object-fit-cover"
-              style="height: 200px"
-              [alt]="item.name"
-            />
-            <div class="card-body d-flex flex-column justify-content-between">
-              <h5 class="card-title fw-semibold">{{ item.name }}</h5>
-              <p class="card-text text-muted small text-truncate">
-                {{ item.short_description || item.description }}
-              </p>
-              <div class="d-flex justify-content-between align-items-center mt-3">
-                <span class="fw-bold text-danger fs-5">{{ item.price }} EGP</span>
-                <a [routerLink]="['/meal', item._id]" class="btn btn-outline-danger btn-sm">
-                  View Details
-                </a>
-              </div>
+    <!-- Reviews -->
+    <section id="reviews" class="my-5" aria-labelledby="reviews-title">
+      <h3 id="reviews-title" class="fw-bold mb-4">Customer Reviews</h3>
+
+      @if (reviewsLoading()) {
+        <div class="row g-4" aria-busy="true">
+          <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+              <span class="skeleton sk-line" style="width: 90px; height: 40px"></span>
+              <span class="skeleton sk-line" style="width: 120px"></span>
+              @for (i of starScale; track i) {
+                <span class="skeleton sk-line" style="width: 100%; height: 10px"></span>
+              }
             </div>
           </div>
+          <div class="col-md-8 d-flex flex-column gap-3">
+            @for (i of skeletonCards; track i) {
+              <div class="card border-0 shadow-sm rounded-4 p-3">
+                <div class="d-flex gap-3 align-items-center mb-3">
+                  <span class="skeleton sk-avatar"></span>
+                  <div class="flex-grow-1">
+                    <span class="skeleton sk-line" style="width: 40%"></span>
+                    <span class="skeleton sk-line" style="width: 25%; margin-bottom: 0"></span>
+                  </div>
+                </div>
+                <span class="skeleton sk-line" style="width: 100%"></span>
+                <span class="skeleton sk-line" style="width: 75%; margin-bottom: 0"></span>
+              </div>
+            }
+          </div>
+        </div>
+      } @else if (reviewsError()) {
+        <div class="text-center py-4 rounded-4 empty-box">
+          <p class="mb-2">We couldn't load the reviews.</p>
+          <button type="button" class="btn btn-outline-danger btn-sm" (click)="loadReviews(m._id)">
+            Try again
+          </button>
+        </div>
+      } @else if (reviews().length === 0) {
+        <div class="text-center py-5 rounded-4 empty-box">
+          <div class="fs-1 mb-2">💬</div>
+          <h5 class="fw-bold">No reviews yet</h5>
+          <p class="text-muted mb-0">Order this meal and be the first to share your thoughts.</p>
+        </div>
+      } @else {
+        <div class="row g-4">
+          <!-- Summary -->
+          <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+              <div class="d-flex align-items-baseline gap-2">
+                <span class="display-5 fw-bold">{{ averageRating() | number: '1.1-1' }}</span>
+                <span class="text-muted">/ 5</span>
+              </div>
+              <div class="stars mb-1" aria-hidden="true">
+                @for (s of starScale; track s) {
+                  <i
+                    class="bi"
+                    [class.bi-star-fill]="s <= averageRating() + 0.25"
+                    [class.bi-star]="s > averageRating() + 0.25"
+                  ></i>
+                }
+              </div>
+              <p class="text-muted small mb-3">
+                Based on {{ reviews().length }} review{{ reviews().length === 1 ? '' : 's' }}
+              </p>
+
+              @for (row of ratingBreakdown(); track row.star) {
+                <div class="d-flex align-items-center gap-2 mb-1 small">
+                  <span style="width: 12px">{{ row.star }}</span>
+                  <i class="bi bi-star-fill text-warning"></i>
+                  <div class="progress flex-grow-1" style="height: 8px">
+                    <div class="progress-bar bg-warning" [style.width.%]="row.percent"></div>
+                  </div>
+                  <span class="text-muted text-end" style="width: 24px">{{ row.count }}</span>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- List -->
+          <div class="col-md-8">
+            <div class="d-flex flex-column gap-3">
+              @for (r of visibleReviews(); track r._id) {
+                <article class="card border-0 shadow-sm rounded-4 p-3 review-card">
+                  <div class="d-flex align-items-center gap-3 mb-2">
+                    <div class="review-avatar">{{ initialOf(r) }}</div>
+                    <div class="flex-grow-1">
+                      <div class="fw-semibold">{{ r.user?.userName || 'Customer' }}</div>
+                      <div class="text-muted small">{{ r.createdAt | date: 'mediumDate' }}</div>
+                    </div>
+                    <div class="stars" [attr.aria-label]="r.rating + ' out of 5 stars'">
+                      @for (s of starScale; track s) {
+                        <i
+                          class="bi"
+                          [class.bi-star-fill]="s <= r.rating"
+                          [class.bi-star]="s > r.rating"
+                        ></i>
+                      }
+                    </div>
+                  </div>
+                  @if (r.comment || r.review) {
+                    <p class="mb-0 text-secondary">{{ r.comment || r.review }}</p>
+                  }
+                </article>
+              }
+            </div>
+
+            @if (visibleCount() < reviews().length) {
+              <div class="text-center mt-3">
+                <button
+                  type="button"
+                  class="btn btn-outline-danger fw-bold px-4"
+                  (click)="showMoreReviews()"
+                >
+                  Show more reviews ({{ reviews().length - visibleCount() }} left)
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </section>
+
+    <!-- Related items -->
+    @if (relatedLoading()) {
+      <div class="my-5" aria-busy="true">
+        <span class="skeleton sk-line sk-heading" style="width: 260px"></span>
+        <div class="row g-4">
+          @for (i of skeletonCards; track i) {
+            <div class="col-md-4">
+              <div class="card border-0 shadow-sm">
+                <div class="skeleton" style="height: 200px"></div>
+                <div class="card-body">
+                  <span class="skeleton sk-line" style="width: 60%"></span>
+                  <span class="skeleton sk-line" style="width: 90%"></span>
+                  <span class="skeleton sk-box mt-3" style="width: 100%; height: 34px"></span>
+                </div>
+              </div>
+            </div>
+          }
         </div>
       </div>
-    </div>
+    } @else if (relatedItems().length > 0) {
+      <div class="my-5">
+        <h3 class="fw-bold mb-4">You Might Also Like</h3>
+        <div class="row g-4">
+          @for (item of relatedItems(); track item._id) {
+            <div class="col-md-4">
+              <div class="card h-100 shadow-sm border-0">
+                <img
+                  [src]="item.img || item.image"
+                  class="card-img-top object-fit-cover"
+                  style="height: 200px"
+                  [alt]="item.name"
+                  loading="lazy"
+                />
+                <div class="card-body d-flex flex-column justify-content-between">
+                  <h5 class="card-title fw-semibold">{{ item.name }}</h5>
+                  <p class="card-text text-muted small text-truncate">
+                    {{ item.short_description || item.description }}
+                  </p>
+                  <div class="d-flex justify-content-between align-items-center mt-3">
+                    <span class="fw-bold text-danger fs-5">{{ item.price }} EGP</span>
+                    <a [routerLink]="['/meal', item._id]" class="btn btn-outline-danger btn-sm"
+                      >View Details</a
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
   }
 </section>

@@ -1,122 +1,215 @@
-<div class="delivery-container bg-light min-vh-100 pb-5">
-  <!-- Header مع زر الـ Online -->
-  <header class="d-flex justify-content-between align-items-center p-3 bg-white shadow-sm">
-    <div class="d-flex align-items-center gap-2">
-      <div class="avatar-circle">MC</div>
-      <div>
-        <small class="text-muted d-block">Hello, Captain!</small>
-        <span class="fw-bold">{{ authService.decodedUserData()?.name }}</span>
+<div class="container py-4">
+  <!-- Header + online switch -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div>
+      <h1 class="h3 fw-bold mb-0">My Deliveries</h1>
+      <small class="text-muted">
+        {{
+          isOnline() ? 'You are visible to the admin for new orders' : 'Go online to receive orders'
+        }}
+      </small>
+    </div>
+    <div class="form-check form-switch fs-5 mb-0">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        role="switch"
+        id="onlineSwitch"
+        [checked]="isOnline()"
+        (change)="toggleOnlineStatus($any($event.target).checked)"
+      />
+      <label class="form-check-label fw-semibold" for="onlineSwitch">
+        {{ isOnline() ? 'Online' : 'Offline' }}
+      </label>
+    </div>
+  </div>
+
+  @if (showSimulator) {
+    <div class="card border-warning rounded-4 p-3 mb-4">
+      <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+        <strong>🧪 Location simulator <small class="text-muted">(development only)</small></strong>
+        <div class="form-check form-switch mb-0">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="simSwitch"
+            [checked]="simulationOn()"
+            (change)="toggleSimulation($any($event.target).checked)"
+          />
+          <label class="form-check-label" for="simSwitch">Use fake location</label>
+        </div>
+      </div>
+
+      @if (simulationOn()) {
+        <div class="row g-2 align-items-end mt-2">
+          <div class="col-6 col-md-3">
+            <label class="form-label small mb-0" for="simLat">Latitude</label>
+            <input
+              id="simLat"
+              type="number"
+              step="0.0001"
+              class="form-control form-control-sm"
+              [value]="simPosition().lat"
+              (change)="setSimPosition(+$any($event.target).value, simPosition().lng)"
+            />
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label small mb-0" for="simLng">Longitude</label>
+            <input
+              id="simLng"
+              type="number"
+              step="0.0001"
+              class="form-control form-control-sm"
+              [value]="simPosition().lng"
+              (change)="setSimPosition(simPosition().lat, +$any($event.target).value)"
+            />
+          </div>
+          <div class="col-12 col-md-6 d-flex flex-wrap gap-1">
+            <button class="btn btn-sm btn-outline-secondary" (click)="nudge(0.0005, 0)">
+              ⬆ North
+            </button>
+            <button class="btn btn-sm btn-outline-secondary" (click)="nudge(-0.0005, 0)">
+              ⬇ South
+            </button>
+            <button class="btn btn-sm btn-outline-secondary" (click)="nudge(0, -0.0005)">
+              ⬅ West
+            </button>
+            <button class="btn btn-sm btn-outline-secondary" (click)="nudge(0, 0.0005)">
+              ➡ East
+            </button>
+            <button
+              class="btn btn-sm"
+              [class.btn-warning]="!autoDriving()"
+              [class.btn-danger]="autoDriving()"
+              (click)="toggleAutoDrive()"
+            >
+              {{ autoDriving() ? '⏹ Stop auto drive' : '▶ Auto drive' }}
+            </button>
+          </div>
+        </div>
+        <small class="text-muted d-block mt-2">
+          The position is sent only for orders that are On the way. Accept an order first.
+        </small>
+      }
+    </div>
+  }
+
+  <!-- Stats -->
+  <div class="row g-3 mb-4">
+    <div class="col-4">
+      <div class="card border-0 shadow-sm rounded-4 p-3 text-center">
+        <div class="fs-3 fw-bold">{{ awaitingCount() }}</div>
+        <small class="text-muted">Waiting for you</small>
       </div>
     </div>
-    <div class="form-check form-switch">
-      <input
-        class="form-check-input custom-switch"
-        type="checkbox"
-        [ngModel]="isOnline()"
-        (ngModelChange)="isOnline.set($event)"
-      />
+    <div class="col-4">
+      <div class="card border-0 shadow-sm rounded-4 p-3 text-center">
+        <div class="fs-3 fw-bold">{{ runningCount() }}</div>
+        <small class="text-muted">Running</small>
+      </div>
     </div>
-  </header>
+    <div class="col-4">
+      <div class="card border-0 shadow-sm rounded-4 p-3 text-center">
+        <div class="fs-3 fw-bold">{{ deliveredCount() }}</div>
+        <small class="text-muted">Delivered</small>
+      </div>
+    </div>
+  </div>
 
-  <main class="p-3">
-    <div class="orders-container d-flex flex-column gap-3 p-3" *ngIf="isOnline()">
-      <!-- بداية الـ Loop -->
-      @for (order of incomingOrders(); track order._id) {
-        <div
-          class="card order-request-card border-0 shadow-sm"
-          style="border-radius: 16px; overflow: hidden"
-        >
-          <!-- منطقة الخريطة العلوية -->
-          <div
-            class="map-placeholder position-relative d-flex justify-content-center align-items-center"
-            style="height: 120px; background-color: #cde0ff"
-          >
-            <div
-              class="distance-badge bg-white px-3 py-1 fw-bold rounded-pill shadow-sm position-absolute"
-              style="top: 10px; right: 10px; font-size: 0.85rem"
-            >
-              2.3 km
+  <!-- Filters -->
+  <div class="btn-group mb-3" role="group" aria-label="Filter orders">
+    @for (f of filters; track f) {
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        [class.active]="activeFilter() === f"
+        (click)="setFilter(f)"
+      >
+        {{ f === 'Running' ? 'Running only' : f }}
+      </button>
+    }
+  </div>
+
+  @if (isLoading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status"></div>
+    </div>
+  } @else if (filteredOrders().length === 0) {
+    <div class="text-center py-5 border rounded-4 bg-light">
+      <div class="fs-1 mb-2">🛵</div>
+      <h5>No orders here</h5>
+      <p class="text-muted mb-0">
+        {{
+          activeFilter() === 'Running'
+            ? 'New assignments will appear here instantly.'
+            : 'Nothing to show for this filter.'
+        }}
+      </p>
+    </div>
+  } @else {
+    <div class="d-flex flex-column gap-3">
+      @for (order of filteredOrders(); track order._id) {
+        <div class="card border-0 shadow-sm rounded-4 p-3">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <h5 class="fw-bold mb-1">Order #FDX-{{ order.orderId }}</h5>
+              <small class="text-muted d-block">
+                {{ order.shippingAddress?.street }}, {{ order.shippingAddress?.area }},
+                {{ order.shippingAddress?.city }}
+              </small>
+              <small class="text-muted">
+                {{ order.orderItems?.length || 0 }} item(s) ·
+                <strong class="text-dark">{{ order.totalPrice }} EGP</strong>
+              </small>
             </div>
-            <i class="bi bi-geo-alt-fill" style="font-size: 3.5rem; color: #a1c4fd"></i>
+            <span
+              class="badge"
+              [class.bg-warning]="needsResponse(order)"
+              [class.text-dark]="needsResponse(order)"
+              [class.bg-primary]="order.status === 'On the way'"
+              [class.bg-success]="order.status === 'Delivered'"
+              [class.bg-secondary]="order.status === 'Cancelled'"
+            >
+              {{ needsResponse(order) ? 'Awaiting your reply' : order.status }}
+            </span>
           </div>
 
-          <div class="card-body p-4">
-            <!-- اسم العميل ورقم الأوردر وزرار الاتصال -->
-            <div class="d-flex justify-content-between align-items-start mb-4">
-              <div>
-                <h5 class="fw-bold mb-1" style="color: #0b1c3c">
-                  {{ order.userId?.userName || 'Customer Name' }}
-                </h5>
-                <p class="text-muted small mb-0">Order #{{ order?.orderId }}</p>
-              </div>
+          @if (needsResponse(order)) {
+            <div class="d-flex gap-2 mt-3">
               <button
-                class="btn btn-light rounded-circle d-flex justify-content-center align-items-center"
-                style="width: 45px; height: 45px; background-color: #eafaf1; color: #00b873"
+                class="btn btn-success flex-grow-1 fw-bold"
+                [disabled]="processingOrderId() === order._id"
+                (click)="acceptOrder(order)"
               >
-                <i class="bi bi-telephone fs-5"></i>
+                Accept and start
+              </button>
+              <button
+                class="btn btn-outline-danger"
+                [disabled]="processingOrderId() === order._id"
+                (click)="declineOrder(order)"
+              >
+                Decline
               </button>
             </div>
-
-            <!-- تفاصيل العنوان -->
-            <div
-              class="info-box p-3 rounded-3 mb-3 d-flex align-items-start"
-              style="background-color: #f8f9fa"
-            >
-              <i class="bi bi-geo-alt fs-5 me-3" style="color: #9ba4b5; margin-top: 2px"></i>
-              <div>
-                <h6 class="fw-bold mb-1" style="color: #0b1c3c">
-                  {{ order.shippingAddress?.street || 'Street Name' }},
-                  {{ order.shippingAddress?.area || 'Area' }}
-                </h6>
-                <p class="text-muted small mb-0">
-                  Apartment {{ order.shippingAddress?.apartment || 'N/A' }}
-                </p>
-              </div>
-            </div>
-
-            <!-- تفاصيل الدفع (المبلغ) -->
-            <div
-              class="info-box p-3 rounded-3 mb-4 d-flex justify-content-between align-items-center"
-              style="background-color: #fff8f0"
-            >
-              <span class="d-flex align-items-center" style="color: #3b4b6b">
-                <i class="bi bi-currency-dollar fs-5 me-2" style="color: #f26622"></i>
-                Cash to Collect
+          } @else if (order.status === 'On the way') {
+            <div class="d-flex flex-wrap align-items-center gap-2 mt-3">
+              <span class="text-success small fw-semibold">
+                ●
+                {{
+                  isTracking(order._id) ? 'Sharing your live location' : 'Location sharing paused'
+                }}
               </span>
-              <span class="fw-bold fs-4" style="color: #f26622">{{ order.totalPrice }} EGP</span>
+              <button
+                class="btn btn-primary ms-auto fw-bold"
+                [disabled]="processingOrderId() === order._id"
+                (click)="markDelivered(order)"
+              >
+                Mark as delivered
+              </button>
             </div>
-
-            <!-- أزرار التحكم -->
-            <button
-              class="btn w-100 py-3 fw-bold mb-2 shadow-sm"
-              style="
-                background-color: #00b873;
-                color: white;
-                border-radius: 12px;
-                font-size: 1.1rem;
-              "
-              (click)="acceptOrder(order.orderId)"
-            >
-              Accept Order
-            </button>
-            <button
-              class="btn btn-outline-secondary w-100 py-3 fw-bold border-1"
-              style="border-radius: 12px; color: #3b4b6b; font-size: 1.1rem"
-              (click)="rejectOrder(order.orderId)"
-            >
-              Reject
-            </button>
-          </div>
-        </div>
-      }
-
-      <!-- رسالة لو مفيش أوردرات -->
-      @if (incomingOrders().length === 0) {
-        <div class="text-center text-muted mt-5">
-          <i class="bi bi-inbox fs-1 mb-2 d-block text-light"></i>
-          <p>Waiting for new orders...</p>
+          }
         </div>
       }
     </div>
-  </main>
+  }
 </div>

@@ -1,29 +1,55 @@
 import {
   ChangeDetectorRef,
   Component,
+  computed,
   inject,
   Inject,
+  OnDestroy,
   OnInit,
   PLATFORM_ID,
   signal,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { OrderService } from '../../admin/services/order';
-import { Navbar } from '../navbar/navbar';
-import { Footer } from '../footer/footer';
+import { RouterLink } from '@angular/router';
+import { SocketService } from '../../core/services/socket-service';
+import { Subscription } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   standalone: true,
-  imports: [CommonModule, Navbar, Footer],
+  imports: [RouterLink, CommonModule],
   templateUrl: './my-orders-page.html',
   styleUrl: './my-orders-page.css',
 })
-export class MyOrdersPage implements OnInit {
+export class MyOrdersPage implements OnInit, OnDestroy {
+  private socketService = inject(SocketService);
+  private toastr = inject(ToastrService);
+
+  private subscriptions = new Subscription();
   isLoading = signal<boolean>(true);
   orders = signal<any[]>([]);
-  filteredOrders = signal<any[]>([]);
   activeFilter = signal<string>('All');
   searchQuery = signal<string>('');
+
+  // Derived automatically from orders + filter + search, so socket updates show up
+  filteredOrders = computed(() => {
+    let result = this.orders();
+
+    if (this.activeFilter() !== 'All') {
+      result = result.filter((o) => o.status === this.activeFilter());
+    }
+
+    const q = this.searchQuery().toLowerCase();
+    if (q) {
+      result = result.filter(
+        (o) =>
+          ('FDX-' + o.orderId).toLowerCase().includes(q) ||
+          o.orderItems?.some((item: any) => item.name?.toLowerCase().includes(q)),
+      );
+    }
+    return result;
+  });
 
   selectedOrder = signal<any>(null);
   activeModal = signal<'details' | 'track' | null>(null);
@@ -42,6 +68,31 @@ export class MyOrdersPage implements OnInit {
       return;
     }
     this.loadOrders();
+
+    this.subscriptions.add(
+      this.socketService
+        .listen<{
+          orderId: string;
+          orderCode: number | string;
+          status: string;
+        }>('orderStatusChanged')
+        .subscribe((data) => {
+          const isSame = (o: any) =>
+            String(o._id) === String(data.orderId) || String(o.orderId) === String(data.orderCode);
+
+          this.orders.update((list) =>
+            list.map((o) => (isSame(o) ? { ...o, status: data.status } : o)),
+          );
+
+          // keep an open modal in sync too
+          const selected = this.selectedOrder();
+          if (selected && isSame(selected)) {
+            this.selectedOrder.set({ ...selected, status: data.status });
+          }
+
+          this.toastr.info(`Order #${data.orderCode} is now ${data.status}`, 'Order Update');
+        }),
+    );
   }
 
   openDetailsModal(order: any) {
@@ -61,52 +112,27 @@ export class MyOrdersPage implements OnInit {
     this.activeModal.set(null);
     document.body.style.overflow = 'auto';
   }
+
   loadOrders(): void {
     this.isLoading.set(true);
     this.orderService.getMyOrders().subscribe({
       next: (res) => {
-        console.log(res.orders);
-        const data = res.orders || [];
-        this.orders.set(data);
-        this.filteredOrders.set(data);
+        this.orders.set(res.data || []);
         this.isLoading.set(false);
-        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error loading orders:', err);
         this.isLoading.set(false);
-        this.cdr.detectChanges();
       },
     });
   }
 
   setFilter(filter: string): void {
     this.activeFilter.set(filter);
-    this.applyFilters();
   }
 
   onSearch(event: Event): void {
     this.searchQuery.set((event.target as HTMLInputElement).value);
-    this.applyFilters();
-  }
-
-  applyFilters(): void {
-    let result = this.orders();
-
-    if (this.activeFilter() !== 'All') {
-      result = result.filter((o) => o.status === this.activeFilter());
-    }
-
-    const q = this.searchQuery().toLowerCase();
-    if (q) {
-      result = result.filter(
-        (o) =>
-          ('FDX-' + o.orderId).toLowerCase().includes(q) ||
-          o.orderItems?.some((item: any) => item.name?.toLowerCase().includes(q)),
-      );
-    }
-
-    this.filteredOrders.set(result);
   }
 
   getStatusClass(status: string): string {
@@ -134,16 +160,14 @@ export class MyOrdersPage implements OnInit {
   formatDate(dateStr: string): string {
     const d = new Date(dateStr);
     return (
-      d.toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-      }) +
+      d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) +
       ' - ' +
-      d.toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-      })
+      d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
     );
+  }
+
+  ngOnDestroy() {
+    document.body.style.overflow = 'auto'; // don't leave the page locked if a modal was open
+    this.subscriptions.unsubscribe();
   }
 }
