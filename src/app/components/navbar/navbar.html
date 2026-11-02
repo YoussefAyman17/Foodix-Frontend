@@ -372,13 +372,15 @@
             <div class="flex-grow-1">
               <div class="text-light fw-semibold" style="font-size: 14px">{{ item.name }}</div>
               <div class="text-secondary" style="font-size: 12px">
-                {{ item.price + item.selectedSizePrice }} EGP × {{ item.quantity }}
+                {{ item.price + item.selectedSizePrice }} EGP × {{ item.quantity }} ({{
+                  item.selectedSize
+                }})
               </div>
             </div>
             <!-- Remove -->
             <button
               class="btn btn-sm p-0 text-danger"
-              (click)="cartService.removeItem(item.mealId, item.selectedSizePrice)"
+              (click)="cartService.removeItem(item.mealId, item.selectedSize)"
               title="Remove"
             >
               <i class="bi bi-trash3"></i>

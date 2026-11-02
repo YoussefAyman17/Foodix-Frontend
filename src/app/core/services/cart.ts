@@ -6,6 +6,7 @@ export interface CartItem {
   img: string;
   price: number;
   quantity: number;
+  selectedSize: string; // e.g., 'Single', 'Medium', 'Large'
   selectedSizePrice: number;
 }
 
@@ -20,26 +21,25 @@ export class CartService {
   totalItems = computed(() => this.items().reduce((sum, i) => sum + i.quantity, 0));
 
   subtotal = computed(() =>
-    this.items().reduce((sum, i) => sum + (i.price + i.selectedSizePrice) * i.quantity, 0),
+    this.items().reduce((sum, i) => sum + (i.price + (i.selectedSizePrice || 0)) * i.quantity, 0),
   );
 
   // ====== Add to cart ======
   addItem(item: CartItem): void {
+    const sizeName = item.selectedSize || 'Single';
+
     this.items.update((current) => {
-      const existing = current.find(
-        (c) => c.mealId === item.mealId && c.selectedSizePrice === item.selectedSizePrice,
-      );
+      const existing = current.find((c) => c.mealId === item.mealId && c.selectedSize === sizeName);
 
       let updated: CartItem[];
       if (existing) {
-        // زود الكمية لو الأيتم موجود بنفس الحجم
         updated = current.map((c) =>
-          c.mealId === item.mealId && c.selectedSizePrice === item.selectedSizePrice
+          c.mealId === item.mealId && c.selectedSize === sizeName
             ? { ...c, quantity: c.quantity + item.quantity }
             : c,
         );
       } else {
-        updated = [...current, item];
+        updated = [...current, { ...item, selectedSize: sizeName }];
       }
 
       this.saveToStorage(updated);
@@ -48,10 +48,10 @@ export class CartService {
   }
 
   // ====== Remove item ======
-  removeItem(mealId: string, selectedSizePrice: number): void {
+  removeItem(mealId: string, selectedSize: string): void {
     this.items.update((current) => {
       const updated = current.filter(
-        (c) => !(c.mealId === mealId && c.selectedSizePrice === selectedSizePrice),
+        (c) => !(c.mealId === mealId && c.selectedSize === selectedSize),
       );
       this.saveToStorage(updated);
       return updated;
@@ -59,14 +59,15 @@ export class CartService {
   }
 
   // ====== Update quantity ======
-  updateQuantity(mealId: string, selectedSizePrice: number, quantity: number): void {
+  updateQuantity(mealId: string, selectedSize: string, quantity: number): void {
     if (quantity < 1) {
-      this.removeItem(mealId, selectedSizePrice);
+      this.removeItem(mealId, selectedSize);
       return;
     }
+
     this.items.update((current) => {
       const updated = current.map((c) =>
-        c.mealId === mealId && c.selectedSizePrice === selectedSizePrice ? { ...c, quantity } : c,
+        c.mealId === mealId && c.selectedSize === selectedSize ? { ...c, quantity } : c,
       );
       this.saveToStorage(updated);
       return updated;
@@ -76,7 +77,9 @@ export class CartService {
   // ====== Clear cart ======
   clearCart(): void {
     this.items.set([]);
-    localStorage.removeItem(CART_KEY);
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem(CART_KEY);
+    }
   }
 
   // ====== Storage helpers ======
@@ -92,9 +95,11 @@ export class CartService {
 
   private saveToStorage(items: CartItem[]): void {
     try {
-      localStorage.setItem(CART_KEY, JSON.stringify(items));
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem(CART_KEY, JSON.stringify(items));
+      }
     } catch {
-      // SSR or storage full — fail silently
+      // Storage full or SSR context — fail silently
     }
   }
 }

@@ -8,51 +8,51 @@
   </div>
 
   <!-- Loading -->
-  <div *ngIf="isLoading" class="text-center py-5">
+  <div *ngIf="isLoading()" class="text-center py-5">
     <div class="spinner-border text-warning" role="status"></div>
   </div>
 
   <!-- Stats -->
-  <div class="row g-3 mb-4" *ngIf="!isLoading">
+  <div class="row g-3 mb-4" *ngIf="!isLoading()">
     <div class="col">
       <div class="card border-0 p-3 h-100">
         <p class="text-muted mb-1">Total Orders</p>
-        <h3 class="fw-bold">{{ totalOrders }}</h3>
+        <h3 class="fw-bold">{{ totalOrders() }}</h3>
       </div>
     </div>
 
     <div class="col">
       <div class="card border-0 p-3 h-100">
         <p class="text-muted mb-1">Pending</p>
-        <h3 class="fw-bold text-warning">{{ pendingOrders }}</h3>
+        <h3 class="fw-bold text-warning">{{ pendingOrders() }}</h3>
       </div>
     </div>
 
     <div class="col">
       <div class="card border-0 p-3 h-100">
         <p class="text-muted mb-1">Preparing</p>
-        <h3 class="fw-bold text-primary">{{ preparingOrders }}</h3>
+        <h3 class="fw-bold text-primary">{{ preparingOrders() }}</h3>
       </div>
     </div>
 
     <div class="col">
       <div class="card border-0 p-3 h-100">
         <p class="text-muted mb-1">Out for Delivery</p>
-        <h3 class="fw-bold text-info">{{ outForDeliveryOrders }}</h3>
+        <h3 class="fw-bold text-info">{{ outForDeliveryOrders() }}</h3>
       </div>
     </div>
 
     <div class="col">
       <div class="card border-0 p-3 h-100">
         <p class="text-muted mb-1">Delivered</p>
-        <h3 class="fw-bold text-success">{{ deliveredOrders }}</h3>
+        <h3 class="fw-bold text-success">{{ deliveredOrders() }}</h3>
       </div>
     </div>
   </div>
 
   <!-- Orders -->
-  <div class="d-flex flex-column gap-4" *ngIf="!isLoading">
-    <div class="card border-0 p-4" *ngFor="let order of orders">
+  <div class="d-flex flex-column gap-4" *ngIf="!isLoading()">
+    <div class="card border-0 p-4" *ngFor="let order of orders()">
       <!-- Header -->
       <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
         <div>
@@ -73,7 +73,8 @@
               'bg-success': order.status === 'Delivered',
               'bg-danger': order.status === 'Cancelled',
             }"
-            ><i
+          >
+            <i
               class="bi me-1"
               [ngClass]="{
                 'bi-clock': order.status === 'Pending',
@@ -92,15 +93,18 @@
       <div class="row mb-3">
         <div class="col-md-4">
           <p class="text-muted mb-1">Customer</p>
-          <h6>{{ order.userId.userName || 'Unknown User' }}</h6>
-          <small>{{ order.shippingAddress.contactPhone }}</small>
+          <h6>{{ order.userId?.userName || 'Unknown User' }}</h6>
+          <small>{{ order.shippingAddress?.contactPhone || 'N/A' }}</small>
         </div>
 
         <div class="col-md-6">
           <p class="text-muted mb-1">Address</p>
           <h6>
-            {{ order.shippingAddress.street }}, {{ order.shippingAddress.area }},
-            {{ order.shippingAddress.city }}
+            <ng-container *ngIf="order.shippingAddress; else noAddress">
+              {{ order.shippingAddress.street }}, {{ order.shippingAddress.area }},
+              {{ order.shippingAddress.city }}
+            </ng-container>
+            <ng-template #noAddress>No address provided</ng-template>
           </h6>
         </div>
 
@@ -137,6 +141,12 @@
           <i class="bi bi-truck"></i>
           Assign Driver
         </button>
+
+        @if (isAwaitingDriver(order)) {
+          <span class="badge bg-warning text-dark">
+            Waiting for {{ order.deliveryPerson?.userName || 'driver' }} to accept
+          </span>
+        }
       </div>
 
       <div class="d-flex gap-2" *ngIf="order.status === 'On the way'">
@@ -148,24 +158,28 @@
   </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade show d-block" *ngIf="activeModal === 'view' && selectedOrder">
+<!-- Modal: View Order Details -->
+<div class="modal fade show d-block" *ngIf="activeModal() === 'view' && selectedOrder">
   <div class="modal-dialog modal-lg">
     <div class="modal-content p-4">
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4>Order #ORD-{{ selectedOrder.orderId }}</h4>
+        <h4>Order #ORD-{{ selectedOrder()?.orderId }}</h4>
         <button class="btn-close" (click)="closeModal()"></button>
       </div>
 
-      <p><strong>Customer:</strong> {{ selectedOrder.userId.userName }}</p>
+      <p><strong>Customer:</strong> {{ selectedOrder()?.userId?.userName || 'Unknown User' }}</p>
       <p>
         <strong>Phone:</strong>
-        {{ selectedOrder.shippingAddress.contactPhone }}
+        {{ selectedOrder()?.shippingAddress?.contactPhone || 'N/A' }}
       </p>
       <p>
         <strong>Address:</strong>
-        {{ selectedOrder.shippingAddress.street }}, {{ selectedOrder.shippingAddress.area }},
-        {{ selectedOrder.shippingAddress.city }}
+        <ng-container *ngIf="selectedOrder()?.shippingAddress; else noModalAddr">
+          {{ selectedOrder()?.shippingAddress?.street }},
+          {{ selectedOrder()?.shippingAddress?.area }},
+          {{ selectedOrder()?.shippingAddress?.city }}
+        </ng-container>
+        <ng-template #noModalAddr>N/A</ng-template>
       </p>
 
       <hr />
@@ -181,28 +195,29 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let item of selectedOrder.orderItems">
-            <td>{{ item.foodItem?.name }}</td>
+          <tr *ngFor="let item of selectedOrder()?.orderItems">
+            <td>{{ item.foodItem?.name || 'Meal' }}</td>
             <td>{{ item.quantity }}</td>
-            <td>{{ item.size }}</td>
-            <td>{{ item.priceAtPurchase * item.quantity }}</td>
+            <td>{{ item.size || 'Standard' }}</td>
+            <td>EGP {{ item.priceAtPurchase * item.quantity }}</td>
           </tr>
         </tbody>
       </table>
 
       <div class="text-end">
-        <h5>Total: EGP {{ selectedOrder.totalPrice }}</h5>
+        <h5>Total: EGP {{ selectedOrder()?.totalPrice }}</h5>
       </div>
     </div>
   </div>
 </div>
 
-<div class="modal-overlay" *ngIf="activeModal === 'assignDelivery'">
+<!-- Modal: Assign Delivery Person -->
+<div class="modal-overlay" *ngIf="activeModal() === 'assignDelivery'">
   <div class="assign-modal">
     <div class="modal-header">
       <div>
         <h3>Assign Delivery Person</h3>
-        <p>Order #ORD-{{ selectedOrder?.orderId }}</p>
+        <p>Order #ORD-{{ selectedOrder()?.orderId }}</p>
       </div>
 
       <button class="close-btn" (click)="closeModal()">×</button>
@@ -211,19 +226,13 @@
     <div class="drivers-list">
       <div
         class="driver-card"
-        *ngFor="let driver of deliveryPersons"
+        *ngFor="let driver of deliveryPersons()"
         (click)="assignDriver(driver)"
       >
         <div class="driver-info">
-          <h5>{{ driver.userId.userName }}</h5>
-          <p>{{ driver.userId.phone }}</p>
+          <h5>{{ driver.userId?.userName || 'Driver' }}</h5>
+          <p>{{ driver.userId?.phone || 'No phone' }}</p>
         </div>
-
-        <!-- <div>
-          <span class="status-badge" [ngClass]="driver.isBusy ? 'busy' : 'available'">
-            {{ driver.isBusy ? 'Busy' : 'Available' }}
-          </span>
-        </div> -->
       </div>
     </div>
 

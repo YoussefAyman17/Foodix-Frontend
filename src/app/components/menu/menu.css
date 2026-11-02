@@ -1,6 +1,29 @@
 section {
   background-color: var(--bg-color);
 }
+
+/* ---------- category buttons ---------- */
+.btn2 {
+  background-color: #f1dacb;
+  color: black;
+  border: none;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+.btn2:hover {
+  background-color: #ebc9b3;
+}
+.btn2.active {
+  background-color: #bf1109 !important;
+  color: white !important;
+}
+.btn2:focus-visible {
+  outline: 3px solid #bf1109;
+  outline-offset: 2px;
+}
+
+/* ---------- cards ---------- */
 .card_menu {
   height: 100%;
   transition: 0.3s ease-in-out;
@@ -12,28 +35,16 @@ section {
 .card_menu img {
   height: 180px;
   object-fit: cover;
-}
-
-.active {
-  background-color: #bf1109 !important;
-  color: white !important;
-}
-
-.btn2 {
-  background-color: #f1dacb;
-  color: black;
-  border: none;
-}
-
-.text_menu_card a:hover {
-  color: #bf1109;
+  width: 100%;
 }
 .text_menu_card a {
   color: black;
   text-decoration: none;
   transition: all ease 0.3s;
 }
-
+.text_menu_card a:hover {
+  color: #bf1109;
+}
 .border_menu {
   transition: 0.3s ease-in-out;
 }
@@ -41,38 +52,87 @@ section {
   border-color: #bf1109 !important;
 }
 
-/*
-
-
-*/
-
-/* الـ active state للكاتيجوري */
-.category-card.active .category-img-wrapper {
-  border-color: red !important;
+/* ---------- skeleton ---------- */
+.skeleton {
+  background: linear-gradient(90deg, #ece3d0 25%, #f6f0e0 40%, #ece3d0 65%);
+  background-size: 300% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+@keyframes shimmer {
+  from {
+    background-position: 100% 50%;
+  }
+  to {
+    background-position: 0% 50%;
+  }
 }
 
-.category-card.active p {
-  color: red;
+.sk-pill {
+  display: inline-block;
+  width: 110px;
+  height: 42px;
+  border-radius: 0.5rem;
+}
+.sk-img {
+  height: 180px;
+}
+.sk-line {
+  display: block;
+  height: 14px;
+  margin-bottom: 12px;
+}
+.sk-title {
+  width: 60%;
+  height: 20px;
+  margin-bottom: 18px;
+}
+.sk-btn {
+  display: block;
+  height: 42px;
+  margin-top: 20px;
+  border-radius: 0.5rem;
 }
 
-/* hover effect */
-.category-card:hover .category-img-wrapper {
-  border-color: #ccc !important;
+/* grey block behind each picture until it has loaded */
+.img-wrap {
+  height: 180px;
+  overflow: hidden;
+}
+.img-wrap img {
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.img-wrap img.loaded {
+  opacity: 1;
 }
 
-/* #Beef{
-
-  display: none;
-} */
-/*
-#Grilled {
-  display: none;
+/* ---------- cards appearing after a category change ---------- */
+.card-enter {
+  animation: card-in 0.4s ease both;
+}
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
-#steakBliss {
-  display: none;
+.empty-state {
+  background: #fffaf0;
+  border: 1px dashed #d9c9a8;
 }
 
-#sizzling {
-  display: none;
-} */
+@media (prefers-reduced-motion: reduce) {
+  .skeleton,
+  .card-enter {
+    animation: none;
+  }
+  .card_menu,
+  .img-wrap img {
+    transition: none;
+  }
+}

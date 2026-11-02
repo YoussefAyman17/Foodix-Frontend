@@ -11,7 +11,7 @@ export class OrderService {
   private http = inject(HttpClient);
   private auth = inject(Auth);
 
-  private apiUrl = `${environment.apiURL}/orders`;
+  private apiUrl = `${environment.apiURL}orders`;
 
   getAllOrders(): Observable<any> {
     return this.http.get(this.apiUrl);
@@ -19,6 +19,10 @@ export class OrderService {
 
   updateOrderStatus(id: number, newStatus: string): Observable<any> {
     return this.http.patch(`${this.apiUrl}/${id}/status`, { newStatus });
+  }
+
+  declineOrder(id: number) {
+    return this.http.patch(`${this.apiUrl}/${id}/decline`, {});
   }
 
   assignDeliveryPerson(id: number, deliveryPersonId: string): Observable<any> {
@@ -37,9 +41,13 @@ export class OrderService {
     return this.http.get(`${this.apiUrl}/${id}`);
   }
 
+  cancelUnpaidOrder(orderCode: number | string) {
+    return this.http.post(`${this.apiUrl}/${orderCode}/cancel-unpaid`, {});
+  }
+
   getAllDeliveryPersons() {
     // return this.http.get(`${environment.apiURL}/workers/delivery`);
-    return this.http.get(`http://localhost:3000/api/workers/delivery`);
+    return this.http.get(`${environment.apiURL}workers/delivery`);
   }
 
   getDeliveryOrders(): Observable<any> {

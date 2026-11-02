@@ -1,124 +1,169 @@
 <div class="container-fluid py-4">
-  <div class="row g-4 mb-4">
-    <div class="col-md-3">
-      <div class="card custom-card h-100 p-3 border-0">
-        <div class="d-flex justify-content-between align-items-start mb-3">
-          <i class="bi bi-graph-up-arrow fs-4 text-success"></i>
-          <span class="badge bg-transparent text-success fw-bold"
-            ><i class="bi bi-arrow-up-right"></i> +15%</span
-          >
-        </div>
-        <p class="text-muted mb-1 fs-sm">Total Revenue</p>
-        <h3 class="fw-bold mb-0">EGP 45,820</h3>
+  <!-- Loading State (Optional but recommended) -->
+  @if (isLoading()) {
+    <div class="d-flex justify-content-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
       </div>
     </div>
-
-    <div class="col-md-3">
-      <div class="card custom-card h-100 p-3 border-0">
-        <div class="d-flex justify-content-between align-items-start mb-3">
-          <i class="bi bi-clock fs-4 text-primary"></i>
-          <span class="badge bg-transparent text-success fw-bold"
-            ><i class="bi bi-arrow-up-right"></i> +8%</span
-          >
-        </div>
-        <p class="text-muted mb-1 fs-sm">Today's Orders</p>
-        <h3 class="fw-bold mb-0">142</h3>
-      </div>
-    </div>
-
-    <div class="col-md-3">
-      <div class="card custom-card h-100 p-3 border-0">
-        <div class="d-flex justify-content-between align-items-start mb-3">
-          <i class="bi bi-people fs-4 text-purple"></i>
-          <span class="badge bg-transparent text-success fw-bold"
-            ><i class="bi bi-arrow-up-right"></i> +23%</span
-          >
-        </div>
-        <p class="text-muted mb-1 fs-sm">Active Customers</p>
-        <h3 class="fw-bold mb-0">1,284</h3>
-      </div>
-    </div>
-
-    <div class="col-md-3">
-      <div class="card custom-card h-100 p-3 border-0">
-        <div class="d-flex justify-content-between align-items-start mb-3">
-          <i class="bi bi-chat-left-text fs-4 text-orange"></i>
-          <span class="badge bg-transparent text-danger fw-bold"
-            ><i class="bi bi-arrow-down-right"></i> -12%</span
-          >
-        </div>
-        <p class="text-muted mb-1 fs-sm">Pending Complaints</p>
-        <h3 class="fw-bold mb-0">7</h3>
-      </div>
-    </div>
-  </div>
-
-  <div class="row g-4">
-    <div class="col-lg-8">
-      <div class="card custom-card border-0 p-4 h-100">
-        <h5 class="mb-4 fw-bold">Recent Live Orders</h5>
-        <div class="table-responsive">
-          <table class="table table-borderless align-middle">
-            <thead>
-              <tr class="text-muted text-uppercase fs-xs">
-                <th>Order ID</th>
-                <th>Customer</th>
-                <th>Items</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let order of recentOrders" class="border-bottom border-light">
-                <td class="fw-bold">{{ order.id }}</td>
-                <td>{{ order.customer }}</td>
-                <td class="text-muted">{{ order.items }}</td>
-                <td class="fw-bold">
-                  EGP <br />
-                  {{ order.total }}
-                </td>
-                <td>
-                  <span
-                    class="badge rounded-pill custom-badge"
-                    [ngClass]="getStatusClass(order.status)"
-                  >
-                    {{ order.status }}
-                  </span>
-                </td>
-                <td class="text-center text-muted cursor-pointer">
-                  <i class="bi bi-three-dots-vertical"></i>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-lg-4">
-      <div class="card custom-card border-0 p-4 h-100">
-        <h5 class="mb-4 fw-bold">Top Selling Meals</h5>
-
-        <div class="d-flex align-items-center mb-3" *ngFor="let meal of topMeals">
-          <div
-            class="meal-icon bg-orange text-white rounded d-flex align-items-center justify-content-center me-3"
-          >
-            <i class="bi bi-cup-hot-fill"></i>
+  } @else {
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4">
+      <div class="col-md-3">
+        <div class="card custom-card h-100 p-3 border-0">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <i class="bi bi-graph-up-arrow fs-4 text-success"></i>
+            <!-- You can dynamically calculate these percentages later -->
+            <span class="badge bg-transparent text-success fw-bold">
+              <i class="bi bi-arrow-up-right"></i> +15%
+            </span>
           </div>
+          <p class="text-muted mb-1 fs-sm">Total Revenue</p>
+          <!-- Reading the stats signal -->
+          <h3 class="fw-bold mb-0">EGP {{ stats().totalRevenue | number: '1.0-0' }}</h3>
+        </div>
+      </div>
 
-          <div class="flex-grow-1">
-            <h6 class="mb-0 fw-bold">{{ meal.name }}</h6>
-            <small class="text-muted">{{ meal.sales }} sales this week</small>
+      <div class="col-md-3">
+        <div class="card custom-card h-100 p-3 border-0">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <i class="bi bi-clock fs-4 text-primary"></i>
+            <span class="badge bg-transparent text-success fw-bold">
+              <i class="bi bi-arrow-up-right"></i> +8%
+            </span>
           </div>
+          <p class="text-muted mb-1 fs-sm">Today's Orders</p>
+          <h3 class="fw-bold mb-0">{{ stats().todayOrdersCount }}</h3>
+        </div>
+      </div>
 
-          <div
-            class="rank-badge rounded-circle d-flex align-items-center justify-content-center fw-bold"
-          >
-            #{{ meal.rank }}
+      <div class="col-md-3">
+        <div class="card custom-card h-100 p-3 border-0">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <i class="bi bi-people fs-4 text-purple"></i>
+            <span class="badge bg-transparent text-success fw-bold">
+              <i class="bi bi-arrow-up-right"></i> +23%
+            </span>
           </div>
+          <p class="text-muted mb-1 fs-sm">Active Customers</p>
+          <h3 class="fw-bold mb-0">{{ stats().activeCustomersCount | number }}</h3>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="card custom-card h-100 p-3 border-0">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <i class="bi bi-chat-left-text fs-4 text-orange"></i>
+            <span class="badge bg-transparent text-danger fw-bold">
+              <i class="bi bi-arrow-down-right"></i> -12%
+            </span>
+          </div>
+          <p class="text-muted mb-1 fs-sm">Pending Complaints</p>
+          <h3 class="fw-bold mb-0">{{ stats().pendingComplaintsCount }}</h3>
         </div>
       </div>
     </div>
-  </div>
+
+    <!-- Data Tables & Lists -->
+    <div class="row g-4">
+      <!-- Recent Live Orders -->
+      <div class="col-lg-8">
+        <div class="card custom-card border-0 p-4 h-100">
+          <h5 class="mb-4 fw-bold">Recent Live Orders</h5>
+          <div class="table-responsive">
+            <table class="table table-borderless align-middle">
+              <thead>
+                <tr class="text-muted text-uppercase fs-xs">
+                  <th>Order ID</th>
+                  <th>Customer</th>
+                  <th>Items</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- New Angular @for control flow, reading recentOrders() signal -->
+                @for (order of recentOrders(); track order._id) {
+                  <tr class="border-bottom border-light">
+                    <!-- Slicing MongoDB ID so it's readable -->
+                    <td class="fw-bold">#{{ order.orderId | uppercase }}</td>
+
+                    <!-- Mapping to the populated user document -->
+                    <td>{{ order.user?.name || 'Unknown' }}</td>
+
+                    <td class="text-muted">{{ order.items?.length || 0 }} items</td>
+
+                    <td class="fw-bold">
+                      EGP <br />
+                      {{ order.totalPrice | number: '1.0-2' }}
+                    </td>
+
+                    <td>
+                      <span
+                        class="badge rounded-pill custom-badge text-capitalize"
+                        [ngClass]="getStatusClass(order.status)"
+                      >
+                        {{ order.status.replace('_', ' ') }}
+                      </span>
+                    </td>
+
+                    <td class="text-center text-muted cursor-pointer">
+                      <i class="bi bi-three-dots-vertical"></i>
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="6" class="text-center py-4 text-muted">
+                      No live orders right now.
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Selling Meals -->
+      <div class="col-lg-4">
+        <div class="card custom-card border-0 p-4 h-100">
+          <h5 class="mb-4 fw-bold">Top Selling Meals</h5>
+
+          <!-- New Angular @for control flow with $index for ranking -->
+          @for (meal of topMeals(); track meal._id; let idx = $index) {
+            <div class="d-flex align-items-center mb-3">
+              <img
+                [src]="meal.img"
+                class="meal-icon rounded me-3"
+                width="40"
+                height="40"
+                style="object-fit: cover"
+              />
+              <!-- <div
+                class="meal-icon bg-orange text-white rounded d-flex align-items-center justify-content-center me-3"
+              >
+                <i class="bi bi-cup-hot-fill"></i>
+              </div> -->
+
+              <div class="flex-grow-1">
+                <h6 class="mb-0 fw-bold">{{ meal.name }}</h6>
+                <!-- Matches the ordersCount field we saved in the backend -->
+                <small class="text-muted">{{ meal.orders_count || 0 }} sales</small>
+              </div>
+
+              <div
+                class="rank-badge rounded-circle d-flex align-items-center justify-content-center fw-bold"
+              >
+                <!-- Using the built-in $index for automatic rank numbers -->
+                #{{ idx + 1 }}
+              </div>
+            </div>
+          } @empty {
+            <div class="text-center py-4 text-muted">No meal data available.</div>
+          }
+        </div>
+      </div>
+    </div>
+  }
 </div>

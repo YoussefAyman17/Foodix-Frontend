@@ -8,7 +8,7 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root',
 })
 export class OrderService {
-  private baseUrl = `${environment.apiURL}/orders/`;
+  private baseUrl = `${environment.apiURL}orders/`;
 
   constructor(
     private http: HttpClient,
@@ -22,11 +22,15 @@ export class OrderService {
 
   // GET /api/orders/myorders
   getMyOrders(): Observable<any> {
-    return this.http.get(`${this.baseUrl}myorders`, this.getHeaders());
+    return this.http.get(`${this.baseUrl}myorders`);
   }
 
   // GET /api/orders/:id
-  trackOrder(id: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}${id}`, this.getHeaders());
+  trackOrder(id: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}${id}`);
+  }
+
+  cancelUnpaidOrder(orderCode: number | string) {
+    return this.http.post(`${this.baseUrl}${orderCode}/cancel-unpaid`, {});
   }
 }

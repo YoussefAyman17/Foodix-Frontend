@@ -48,6 +48,18 @@ export const routes: Routes = [
           import('./Components/my-orders-page/my-orders-page').then((m) => m.MyOrdersPage),
         title: 'My Orders Page',
       },
+      {
+        path: 'orders/:id/track',
+        loadComponent: () =>
+          import('./Components/track-order/track-order').then((m) => m.TrackOrder),
+        title: 'Order Tracking',
+      },
+      {
+        path: 'success',
+        loadComponent: () =>
+          import('./Components/payment-success/payment-success').then((m) => m.PaymentSuccess),
+        title: 'Payment Success',
+      },
     ],
   },
 
